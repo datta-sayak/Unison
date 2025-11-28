@@ -43,4 +43,4 @@ package-lock.json
 *.tsbuildinfo
 next-env.d.ts
 
-generated/
+# generated/
