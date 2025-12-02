@@ -66,7 +66,11 @@ function RoomPageContent() {
     
     hasInitializedSocket.current = true
     console.log("Connecting to socket with roomId:", roomId)
-    const socketInstance = io("http://localhost:4000", {
+    const socketUrl = process.env.NODE_ENV === 'production' 
+      ? process.env.WEBSOCKET_SERVER_URL?.replace('http://', 'wss://').replace('https://', 'wss://')
+      : process.env.WEBSOCKET_SERVER_URL
+    
+    const socketInstance = io(socketUrl, {
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionAttempts: 5
