@@ -4,7 +4,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { LogOut, Plus, Trash2, Share2, Play, Users, Activity, Lock, LogIn } from "lucide-react"
+import { Plus, Trash2, Share2, Play, Users, Activity, Lock, LogIn, Loader2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { signOut } from "next-auth/react"
 import { useSession } from "next-auth/react";
@@ -94,9 +94,6 @@ export default function DashboardPage() {
     }
   }, [status, session?.user?.email])
 
-  const handleLogout = () => {
-    signOut()
-  }
 
   const handleDeleteRoom = (roomId: string) => {
     console.log('Delete room:', roomId)
@@ -113,59 +110,8 @@ export default function DashboardPage() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 rounded-t-3xl">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          {/* User Profile Card */}
-          <div className="lg:col-span-1">
-            <div className="bg-card border border-border rounded-2xl p-6 space-y-6 lg:fixed lg:top-28 lg:z-40 lg:w-55">
-              {/* User Info Section */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-14 h-14 rounded-full bg-accent flex items-center justify-center flex-shrink-0 ring-2 ring-accent/20">
-                    {session?.user?.image ? (
-                      <Image
-                        src={session.user.image}
-                        alt={session.user.name || "User"}
-                        width={56}
-                        height={56}
-                        className="w-14 h-14 rounded-full object-cover"
-                      />
-                    ) : (
-                      <span className="text-lg font-bold text-accent-foreground">
-                        {session?.user?.name?.charAt(0).toUpperCase() || "U"}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h2 className="font-semibold text-foreground text-sm truncate">{session?.user?.name || "User"}</h2>
-                    <p className="text-xs text-muted-foreground truncate mt-0.5">ID: {session?.user?.email?.split("@")[0] || "N/A"}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Stats Grid */}
-              <div className="grid grid-cols-2 gap-3 p-4 bg-muted/40 rounded-xl">
-                <div className="space-y-2">
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Rooms</p>
-                  <p className="text-2xl font-bold text-accent">{userData?.createdRooms?.length || 0}</p>
-                </div>
-                <div className="space-y-2">
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Members</p>
-                  <p className="text-2xl font-bold text-accent">
-                    {userData?.createdRooms?.reduce((sum, room) => sum + room._count.roomUsers, 0) || 0}
-                  </p>
-                </div>
-              </div>
-
-              {/* Sign Out Button */}
-              <Button
-                onClick={handleLogout}
-                className="w-full bg-destructive/10 text-destructive hover:bg-destructive/20 transition-theme border border-destructive/20"
-              >
-                Sign Out
-              </Button>
-            </div>
-          </div>
-          <div className="lg:col-span-4">
+        <div className="flex justify-center">
+          <div className="w-full max-w-5xl">
             <div className="space-y-6">
               {/* Section Header */}
               <div className="flex items-center justify-between">
@@ -214,7 +160,10 @@ export default function DashboardPage() {
                   </div>
               {/* Rooms Grid */}
               {loading ? (
-                <div className="text-muted-foreground">Loading rooms...</div>
+                <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
+                  <Loader2 className="w-8 h-8 animate-spin text-accent mb-3" />
+                  <p>Loading rooms...</p>
+                </div>
               ) : !userData?.createdRooms || (userData.createdRooms.length === 0 && userData.roomUsers.length === 0) ? (
                 <>
                   <div className="border-2 border-dashed border-border rounded-2xl p-12 text-center space-y-4">
@@ -248,107 +197,85 @@ export default function DashboardPage() {
                     ].map((room) => (
                       <div
                         key={room.roomId}
-                        className="group relative overflow-hidden rounded-2xl bg-card border border-border transition-all duration-300 hover:border-accent/50 hover:shadow-xl hover:bg-accent/5"
+                        className="group rounded-xl bg-card border border-border p-4 hover:border-accent/50 hover:shadow-lg transition-all"
                       >
-
-                        <div className="relative p-4 space-y-3">
-                          {/* Room Header with Icon and Access Mode */}
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2 mb-1">
-                                <h3 className="text-lg font-bold text-foreground group-hover:text-accent transition-colors truncate">
-                                  {room.roomName}
-                                </h3>
-                                {room.playbackState?.currentEntry?.song && (
-                                  <div className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0 animate-pulse"></div>
-                                )}
-                              </div>
-                              <p className="text-xs text-muted-foreground">
-                                {room.accessMode === "Public" ? "Public" : (
-                                  <span className="flex gap-1">
-                                    <Lock className="h-3.5 w-3.5 text-accent" />
-                                    Private
-                                  </span>
-                                )}
-                              </p>
-                            </div>
-                            <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-accent/20 border border-accent/20 flex items-center justify-center group-hover:border-accent/50 group-hover:bg-accent/30 transition-all">
-                              <span className="text-sm font-bold text-accent">
-                                {room.roomName.charAt(0).toUpperCase()}
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Host Info */}
+                        {/* Room Header */}
+                        <div className="flex items-start gap-3 mb-3">
                           {room.createdBy && (
-                            <div className="flex items-center gap-2 p-2.5 bg-muted/30 rounded-lg">
-                              <div className="w-6 h-6 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
-                                {room.createdBy.avatarUrl ? (
-                                  <Image
-                                    src={room.createdBy.avatarUrl}
-                                    alt={room.createdBy.name || "Host"}
-                                    width={24}
-                                    height={24}
-                                    className="w-6 h-6 rounded-full object-cover"
-                                  />
-                                ) : (
-                                  <span className="text-xs font-bold text-accent">
-                                    {(room.createdBy.name || "H").charAt(0).toUpperCase()}
-                                  </span>
-                                )}
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="text-xs font-semibold text-foreground truncate">{room.createdBy.name || "Unknown"}</p>
-                              </div>
+                            <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
+                              {room.createdBy.avatarUrl ? (
+                                <Image
+                                  src={room.createdBy.avatarUrl}
+                                  alt={room.createdBy.name || "Host"}
+                                  width={40}
+                                  height={40}
+                                  className="w-10 h-10 rounded-full object-cover"
+                                />
+                              ) : (
+                                <span className="text-sm font-bold text-accent">
+                                  {(room.createdBy.name || "H").charAt(0).toUpperCase()}
+                                </span>
+                              )}
                             </div>
                           )}
-
-                          {/* Room Stats - Live Users and Queue Count */}
-                          <div className="grid grid-cols-2 gap-2 p-3 bg-muted/30 rounded-lg">
-                            <div className="space-y-0.5">
-                              <div className="flex items-center gap-1.5">
-                                <Users className="h-3.5 w-3.5 text-accent/70" />
-                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                                  Users
-                                </p>
-                              </div>
-                              <p className="text-xl font-bold text-foreground">{room._count.roomUsers}</p>
-                            </div>
-                            <div className="space-y-0.5">
-                              <div className="flex items-center gap-1.5">
-                                <Activity className="h-3.5 w-3.5 text-accent/70" />
-                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                                  Queue
-                                </p>
-                              </div>
-                              <p className="text-xl font-bold text-foreground">{room._count.queueEntries}</p>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-lg font-bold text-foreground truncate">
+                              {room.roomName}
+                            </h3>
+                            {room.createdBy && (
+                              <p className="text-xs text-muted-foreground truncate mb-1">
+                                by {room.createdBy.name || "Unknown"}
+                              </p>
+                            )}
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                <Users className="h-3 w-3" />
+                                {room._count.roomUsers}
+                              </span>
+                              <span className="text-xs text-muted-foreground">•</span>
+                              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                <Activity className="h-3 w-3" />
+                                {room._count.queueEntries}
+                              </span>
+                              {room.accessMode === "Private" && (
+                                <>
+                                  <span className="text-xs text-muted-foreground">•</span>
+                                  <Lock className="h-3 w-3 text-muted-foreground" />
+                                  <span className="text-xs text-muted-foreground">Private</span>
+                                </>
+                              )}
+                              {room.playbackState?.currentEntry?.song && (
+                                <>
+                                  <span className="text-xs text-muted-foreground">•</span>
+                                  <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                                </>
+                              )}
                             </div>
                           </div>
+                        </div>
 
-                          {/* Action Buttons - Improved Layout */}
-                          <div className="flex gap-2 pt-2 border-t border-border">
-                            <Link href={`/room?id=${room.roomId}`} className="flex-1">
-                              <button className="w-full px-3 py-2 rounded-lg bg-accent text-accent-foreground font-medium text-sm transition-all duration-200 hover:opacity-90 active:scale-95 flex items-center justify-center gap-2 group/btn">
-                                <Play className="h-3.5 w-3.5" />
-                                Enter
-                              </button>
-                            </Link>
-                            <button
-                              onClick={() => handleShareRoom(room.roomId)}
-                              className="px-2.5 py-2 rounded-lg border border-border bg-transparent hover:bg-muted transition-colors text-foreground"
-                              title="Share room"
-                            >
-                              <Share2 className="h-3.5 w-3.5" />
+                        {/* Action Buttons */}
+                        <div className="flex gap-2">
+                          <Link href={`/room?id=${room.roomId}`} className="flex-1">
+                            <button className="w-full px-3 py-2 rounded-lg bg-accent text-accent-foreground font-medium text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+                              <Play className="h-4 w-4" />
+                              Enter
                             </button>
-                            <button
-                              onClick={() => handleDeleteRoom(room.roomId)}
-                              className="px-2.5 py-2 rounded-lg border border-border bg-transparent hover:bg-destructive/10 hover:border-destructive/30 hover:text-destructive transition-colors text-foreground"
-                              title="Delete room"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
-                          </div>
-
+                          </Link>
+                          <button
+                            onClick={() => handleShareRoom(room.roomId)}
+                            className="px-3 py-2 rounded-lg border border-border hover:bg-muted transition-colors"
+                            title="Share room"
+                          >
+                            <Share2 className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteRoom(room.roomId)}
+                            className="px-3 py-2 rounded-lg border border-border hover:bg-destructive/10 hover:border-destructive/30 hover:text-destructive transition-colors"
+                            title="Delete room"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
                         </div>
                       </div>
                     ))}

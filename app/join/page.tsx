@@ -8,6 +8,7 @@ import Link from "next/link"
 import axios from "axios"
 import type { AxiosError } from "axios"
 import { useSession } from "next-auth/react"
+import { toast } from "sonner"
 
 function JoinRoomForm() {
   const { status } = useSession()
@@ -51,7 +52,7 @@ function JoinRoomForm() {
       if (!pwd && errorMessage.includes("requires an access code")) {
         setShowPasswordInput(true)
       } else {
-        setError(errorMessage)
+        toast.error(errorMessage)
       }
     } finally {
       setIsLoading(false)
@@ -119,6 +120,7 @@ function JoinRoomForm() {
                   setShowPasswordInput(false)
                   setPassword("")
                   setError(null)
+                  router.push("/dashboard")
                 }}
                 variant="outline"
                 className="w-full bg-transparent border-border text-foreground hover:bg-muted"
@@ -128,11 +130,6 @@ function JoinRoomForm() {
             </>
           )}
 
-          <Link href="/dashboard">
-            <Button variant="outline" className="w-full bg-transparent border-border text-foreground hover:bg-muted">
-              Back to Dashboard
-            </Button>
-          </Link>
         </div>
       </div>
     </main>
