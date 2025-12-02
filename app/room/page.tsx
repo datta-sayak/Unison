@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, Suspense, useEffect } from "react"
+import { useState, Suspense, useEffect, useRef } from "react"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { SearchPanel } from "@/components/SearchPanel"
 import { QueuePanel } from "@/components/QueuePanel"
@@ -8,6 +9,7 @@ import { Copy, LogOut, Send, Shield, X, Menu } from "lucide-react"
 import { useSession } from "next-auth/react";
 import InvalidRoomPage from "./[roomId]/page";
 import { useRouter, useSearchParams } from "next/navigation";
+import { io, Socket } from "socket.io-client";
 
 interface Song {
   id: string
@@ -25,7 +27,6 @@ interface Participant {
   avatar: string
   isHost: boolean
   isActive: boolean
-  device: string
 }
 
 interface SongInput {
@@ -48,6 +49,10 @@ function RoomPageContent() {
   const searchParams = useSearchParams()
   const roomId = searchParams.get("id")
   const { data: session, status } = useSession()
+  const socketRef = useRef<Socket | null>(null)
+  const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [participants, setParticipants] = useState<Participant[]>([])
+  const hasInitializedSocket = useRef(false)
 
   useEffect(() => {
     if (status === "loading") return
@@ -55,6 +60,55 @@ function RoomPageContent() {
       router.push(`/api/auth/signin?callbackUrl=${encodeURIComponent(window.location.href)}`)
     }
   }, [status, router])
+
+  useEffect(() => {
+    if (!roomId || !session?.user || hasInitializedSocket.current) return
+    
+    hasInitializedSocket.current = true
+    console.log("Connecting to socket with roomId:", roomId)
+    const socketInstance = io("http://localhost:4000", {
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionAttempts: 5
+    })
+
+    socketInstance.on("connect", () => {
+      socketInstance.emit("join_room", {
+        roomId,
+        userId: session.user.email || "",
+        userName: session.user.name || "Anonymous",
+        userAvatar: session.user.image || ""
+      })
+    })
+
+    socketInstance.on("room_participants", (users: Array<{ socketId: string; userId: string; userName: string; userAvatar: string }>) => {
+      const participants: Participant[] = users.map(user => ({
+        id: user.socketId,
+        name: user.userName,
+        avatar: user.userAvatar,
+        isHost: user.userId === session.user?.email,
+        isActive: true
+      }))
+      setParticipants(participants)
+    })
+    
+    socketInstance.on("message", (data: { roomId: string; userId: string; userName: string; userAvatar: string; content: string }) => {
+      const newMessage: ChatMessage = {
+        id: `msg_${data.roomId}_${Date.now()}_${data.userId}`,
+        user: data.userName,
+        avatar: data.userAvatar || data.userName.substring(0, 2).toUpperCase(),
+        message: data.content,
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      }
+      setMessages(prev => [newMessage, ...prev])
+    })
+    socketRef.current = socketInstance
+
+    return () => {
+      hasInitializedSocket.current = false
+      socketInstance.disconnect()
+    }
+  }, [roomId, session?.user?.email])
   
 
   const [queue, setQueue] = useState<Song[]>([
@@ -69,34 +123,7 @@ function RoomPageContent() {
     },
   ])
 
-  const [participants] = useState<Participant[]>([
-    { id: "1", name: "You", avatar: "AB", isHost: true, isActive: true, device: "Desktop" },
-    { id: "2", name: "Alex", avatar: "AJ", isHost: false, isActive: true, device: "Mobile" },
-    { id: "3", name: "Alex", avatar: "AJ", isHost: false, isActive: true, device: "Mobile" },
-    { id: "4", name: "Alex", avatar: "AJ", isHost: false, isActive: true, device: "Mobile" },
-    { id: "5", name: "Alex", avatar: "AJ", isHost: false, isActive: true, device: "Mobile" },
-    { id: "6", name: "Alex", avatar: "AJ", isHost: false, isActive: true, device: "Mobile" },
-    { id: "7", name: "Alex", avatar: "AJ", isHost: false, isActive: true, device: "Mobile" },
-    { id: "8", name: "Alex", avatar: "AJ", isHost: false, isActive: true, device: "Mobile" },
-    { id: "9", name: "Alex", avatar: "AJ", isHost: false, isActive: true, device: "Mobile" },
-    { id: "10", name: "Jordan", avatar: "JD", isHost: false, isActive: false, device: "Desktop" },
-    { id: "11", name: "Jordan", avatar: "JD", isHost: false, isActive: false, device: "Desktop" },
-    { id: "12", name: "Jordan", avatar: "JD", isHost: false, isActive: false, device: "Desktop" },
-    { id: "13", name: "Jordan", avatar: "JD", isHost: false, isActive: false, device: "Desktop" },
-    { id: "14", name: "Jordan", avatar: "JD", isHost: false, isActive: false, device: "Desktop" },
-    { id: "15", name: "Jordan", avatar: "JD", isHost: false, isActive: false, device: "Desktop" },
-    { id: "16", name: "Jordan", avatar: "JD", isHost: false, isActive: false, device: "Desktop" },
-    { id: "17", name: "Jordan", avatar: "JD", isHost: false, isActive: false, device: "Desktop" },
-    { id: "18", name: "Jordan", avatar: "JD", isHost: false, isActive: false, device: "Desktop" },
-    { id: "19", name: "Jordan", avatar: "JD", isHost: false, isActive: false, device: "Desktop" },
-  ])
-
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    { id: "1", user: "You", avatar: "AB", message: "Just added Midnight City!", timestamp: "2:30 PM" },
-    { id: "2", user: "Alex", avatar: "AJ", message: "Great song choice", timestamp: "2:32 PM" },
-  ])
   const [newMessage, setNewMessage] = useState("")
-
   const [copied, setCopied] = useState(false)
   const [isHost] = useState(true)
   const [showMobileSidebar, setShowMobileSidebar] = useState(false)
@@ -127,18 +154,18 @@ function RoomPageContent() {
 
   const handleSendMessage = () => {
     if (!newMessage.trim()) return
-    const message: ChatMessage = {
-      id: String(messages.length + 1),
-      user: "You",
-      avatar: "AB",
-      message: newMessage,
-      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-    }
-    setMessages([...messages, message])
+    
+    socketRef.current.emit("send_message", {
+      roomId,
+      userId: session.user.email,
+      userName: session.user.name,
+      userAvatar: session.user.image || session.user.name?.substring(0, 2).toUpperCase(),
+      content: newMessage
+    })
+    
     setNewMessage("")
   }
 
-  const activeUsers = participants.filter((p) => p.isActive).length
   if (!roomId)  return <InvalidRoomPage /> 
 
   return (
@@ -206,12 +233,24 @@ function RoomPageContent() {
                   .map((user) => (
                     <div
                       key={user.id}
-                      className="flex-shrink-0 flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-muted/50 transition-colors min-w-[60px]"
+                      className="flex-shrink-0 flex flex-col items-center gap-1 rounded-lg hover:bg-muted/50 transition-colors min-w-[60px]"
                     >
                       <div className="relative">
-                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-accent/20 flex items-center justify-center text-xs font-bold text-accent">
-                          {user.avatar}
-                        </div>
+                        {user.avatar ? (
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden">
+                            <Image
+                              src={user.avatar}
+                              alt={user.name}
+                              width={40}
+                              height={40}
+                              className="object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-accent/20 flex items-center justify-center text-xs font-bold text-accent">
+                            {user.name.substring(0, 2).toUpperCase()}
+                          </div>
+                        )}
                         <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-background"></div>
                       </div>
                       <div className="text-center min-w-0 flex-1">
@@ -219,7 +258,6 @@ function RoomPageContent() {
                           {user.name}
                           {user.isHost && <Shield className="h-2 w-2 text-accent flex-shrink-0" />}
                         </p>
-                        <p className="text-xs text-muted-foreground truncate">{user.device}</p>
                       </div>
                     </div>
                   ))}
@@ -243,13 +281,24 @@ function RoomPageContent() {
                       className="flex-shrink-0 flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-muted/50 transition-colors min-w-[60px] opacity-60"
                     >
                       <div className="relative">
-                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-muted flex items-center justify-center text-xs font-bold text-muted-foreground">
-                          {user.avatar}
-                        </div>
+                        {user.avatar && user.avatar.startsWith('http') ? (
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden opacity-60">
+                            <Image
+                              src={user.avatar}
+                              alt={user.name}
+                              width={40}
+                              height={40}
+                              className="object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-muted flex items-center justify-center text-xs font-bold text-muted-foreground">
+                            {user.avatar || user.name.substring(0, 2).toUpperCase()}
+                          </div>
+                        )}
                       </div>
                       <div className="text-center min-w-0 flex-1">
                         <p className="text-xs font-medium text-foreground truncate">{user.name}</p>
-                        <p className="text-xs text-muted-foreground truncate">{user.device}</p>
                       </div>
                     </div>
                   ))}
@@ -273,8 +322,14 @@ function RoomPageContent() {
                 <div className="max-h-48 overflow-y-auto space-y-2">
                   {messages.map((msg) => (
                     <div key={msg.id} className="flex gap-2">
-                      <div className="w-6 h-6 rounded-full bg-accent/20 flex items-center justify-center text-xs font-bold text-accent flex-shrink-0">
-                        {msg.avatar}
+                      <div className="w-6 h-6 rounded-full overflow-hidden flex-shrink-0">
+                        <Image 
+                          src={msg.avatar} 
+                          alt={msg.user}
+                          width={24}
+                          height={24}
+                          className="object-cover"
+                        />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
@@ -361,8 +416,14 @@ function RoomPageContent() {
             <div className="space-y-3 flex flex-col-reverse">
               {messages.map((msg) => (
                 <div key={msg.id} className="flex gap-3 animate-in">
-                  <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-xs font-bold text-accent flex-shrink-0">
-                    {msg.avatar}
+                  <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+                    <Image 
+                      src={msg.avatar} 
+                      alt={msg.user}
+                      width={32}
+                      height={32}
+                      className="object-cover"
+                    />
                   </div>
                   <div className="flex-1 min-w-0 bg-muted/30 rounded-lg p-3">
                     <div className="flex items-center justify-between gap-2 mb-1">
