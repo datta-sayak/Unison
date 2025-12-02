@@ -67,8 +67,8 @@ function RoomPageContent() {
     hasInitializedSocket.current = true
     console.log("Connecting to socket with roomId:", roomId)
     const socketUrl = process.env.NODE_ENV === 'production' 
-      ? process.env.WEBSOCKET_SERVER_URL?.replace('http://', 'wss://').replace('https://', 'wss://')
-      : process.env.WEBSOCKET_SERVER_URL
+      ? process.env.NEXT_PUBLIC_WEBSOCKET_SERVER_URL?.replace('http://', 'wss://').replace('https://', 'wss://') || 'wss://your-render-app.onrender.com'
+      : process.env.NEXT_PUBLIC_WEBSOCKET_SERVER_URL || 'http://localhost:4000'
     
     const socketInstance = io(socketUrl, {
       reconnection: true,
