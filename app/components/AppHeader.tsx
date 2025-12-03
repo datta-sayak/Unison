@@ -11,7 +11,7 @@ export function AppHeader() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-border backdrop-blur-xl">
+      <header className="sticky top-0 z-40 border-b border-border backdrop-blur bg-background/90">
         <div className="flex items-center px-4 md:px-6 py-3 max-w-full">
           <Button
             onClick={() => setShowThemeSelector(true)}
