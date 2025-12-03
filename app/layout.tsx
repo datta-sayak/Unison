@@ -1,6 +1,7 @@
 import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
+import { Analytics } from "@vercel/analytics/next"
 import { Providers } from "./providers";
 import "./globals.css"
 import { AppHeader } from "@/components/AppHeader";
@@ -30,6 +31,7 @@ export default function RootLayout({
         <Providers>
           <AppHeader />
           {children}
+          <Analytics />
         </Providers>
       </body>
     </html>
