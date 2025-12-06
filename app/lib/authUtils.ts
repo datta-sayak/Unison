@@ -1,36 +1,34 @@
-import { getServerSession } from "next-auth"
-import { prismaClient } from "./db"
-
+import { getServerSession } from 'next-auth';
+import { prismaClient } from './db';
 
 export async function getAuthenticatedUser() {
-    const session = await getServerSession()
-    if (!session?.user?.email)  throw new Error("Unauthenticated")
+    const session = await getServerSession();
+    if (!session?.user?.email) throw new Error('Unauthenticated');
 
     const user = await prismaClient.user.findUnique({
         where: {
-            email: session.user.email
+            email: session.user.email,
         },
         select: {
             id: true,
             name: true,
             email: true,
             avatarUrl: true,
-            createdAt: true
-        }
-    })
+            createdAt: true,
+        },
+    });
 
-    if (!user)  throw new Error("Invalid User")
-    return user
+    if (!user) throw new Error('Invalid User');
+    return user;
 }
 
-
 export async function getAuthenticatedUserWithRooms() {
-    const session = await getServerSession()
-    if (!session?.user?.email)  throw new Error("Unauthenticated")
+    const session = await getServerSession();
+    if (!session?.user?.email) throw new Error('Unauthenticated');
 
     const user = await prismaClient.user.findUnique({
         where: {
-            email: session.user.email
+            email: session.user.email,
         },
         select: {
             name: true,
@@ -46,14 +44,14 @@ export async function getAuthenticatedUserWithRooms() {
                     createdBy: {
                         select: {
                             name: true,
-                            avatarUrl: true
-                        }
+                            avatarUrl: true,
+                        },
                     },
                     _count: {
                         select: {
                             roomUsers: true,
-                            queueEntries: true
-                        }
+                            queueEntries: true,
+                        },
                     },
                     playbackState: {
                         select: {
@@ -62,17 +60,17 @@ export async function getAuthenticatedUserWithRooms() {
                                     song: {
                                         select: {
                                             title: true,
-                                            smallImage: true
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                                            smallImage: true,
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
                 },
                 orderBy: {
-                    createdAt: 'desc'
-                }
+                    createdAt: 'desc',
+                },
             },
             roomUsers: {
                 select: {
@@ -85,14 +83,14 @@ export async function getAuthenticatedUserWithRooms() {
                             createdBy: {
                                 select: {
                                     name: true,
-                                    avatarUrl: true
-                                }
+                                    avatarUrl: true,
+                                },
                             },
                             _count: {
                                 select: {
                                     roomUsers: true,
-                                    queueEntries: true
-                                }
+                                    queueEntries: true,
+                                },
                             },
                             playbackState: {
                                 select: {
@@ -101,20 +99,20 @@ export async function getAuthenticatedUserWithRooms() {
                                             song: {
                                                 select: {
                                                     title: true,
-                                                    smallImage: true
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    })
+                                                    smallImage: true,
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    });
 
-    if (!user)  throw new Error("Invalid User")
-    return user
+    if (!user) throw new Error('Invalid User');
+    return user;
 }
