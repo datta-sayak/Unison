@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import { Shield } from 'lucide-react';
-import type { Participant } from '@/lib';
+import Image from "next/image";
+import { Shield } from "lucide-react";
+import type { Participant } from "@/lib";
 
 interface MembersSectionProps {
     allUsers: Participant[];
@@ -12,9 +12,7 @@ interface MembersSectionProps {
 export function MembersSection({ allUsers, onlineUsers }: MembersSectionProps) {
     return (
         <div className="p-4 space-y-4 max-w-4xl mx-auto">
-            <h3 className="text-sm font-semibold text-muted-foreground">
-                All Members ({allUsers.length})
-            </h3>
+            <h3 className="text-sm font-semibold text-muted-foreground">All Members ({allUsers.length})</h3>
             <div className="space-y-2">
                 {allUsers.map(member => (
                     <div
@@ -38,9 +36,7 @@ export function MembersSection({ allUsers, onlineUsers }: MembersSectionProps) {
                         </div>
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
-                                <p className="text-sm font-semibold text-muted-foreground truncate">
-                                    {member.name}
-                                </p>
+                                <p className="text-sm font-semibold text-muted-foreground truncate">{member.name}</p>
                                 {member.isHost && (
                                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-accent/10 border border-accent/30 text-xs font-semibold text-accent/70">
                                         <Shield className="h-3 w-3" />
@@ -53,9 +49,7 @@ export function MembersSection({ allUsers, onlineUsers }: MembersSectionProps) {
                 ))}
             </div>
 
-            <h3 className="text-sm font-semibold text-foreground mt-6">
-                Online Now ({onlineUsers.length})
-            </h3>
+            <h3 className="text-sm font-semibold text-foreground mt-6">Online Now ({onlineUsers.length})</h3>
             <div className="space-y-2">
                 {onlineUsers.map(member => (
                     <div
@@ -80,9 +74,7 @@ export function MembersSection({ allUsers, onlineUsers }: MembersSectionProps) {
                         </div>
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
-                                <p className="text-sm font-semibold text-foreground truncate">
-                                    {member.name}
-                                </p>
+                                <p className="text-sm font-semibold text-foreground truncate">{member.name}</p>
                                 {member.isHost && (
                                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-accent/20 border border-accent/40 text-xs font-semibold text-accent">
                                         <Shield className="h-3 w-3" />

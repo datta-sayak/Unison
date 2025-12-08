@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { Music } from 'lucide-react';
-import type { Song } from '@/lib';
+import { Music } from "lucide-react";
+import type { Song } from "@/lib";
 
 interface YouTubePlayerSectionProps {
     currentSong: Song | null;
@@ -28,9 +28,7 @@ export function YouTubePlayerSection({ currentSong }: YouTubePlayerSectionProps)
                             <Music className="w-8 h-8" />
                         </div>
                         <p className="text-lg font-semibold">No song playing</p>
-                        <p className="text-sm text-white/70">
-                            Add songs to the queue to start listening
-                        </p>
+                        <p className="text-sm text-white/70">Add songs to the queue to start listening</p>
                     </div>
                 )}
             </div>

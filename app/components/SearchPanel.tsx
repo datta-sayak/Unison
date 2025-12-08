@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Search, Plus, Loader2 } from 'lucide-react';
-import Image from 'next/image';
-import type { YouTubeSearchItem, YouTubeVideoDetailsItem } from '@/lib';
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Search, Plus, Loader2 } from "lucide-react";
+import Image from "next/image";
+import type { YouTubeSearchItem, YouTubeVideoDetailsItem } from "@/lib";
 
 interface SearchResult {
     id: string;
@@ -21,7 +21,7 @@ interface SearchPanelProps {
 }
 
 export function SearchPanel({ onAddSong }: SearchPanelProps) {
-    const [query, setQuery] = useState('');
+    const [query, setQuery] = useState("");
     const [results, setResults] = useState<SearchResult[]>([]);
     const [hasSearched, setHasSearched] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -30,14 +30,14 @@ export function SearchPanel({ onAddSong }: SearchPanelProps) {
     const formatDuration = (duration: string) => {
         // youtube duration format ISO8601
         const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
-        if (!match) return '0:00';
-        const hours = parseInt(match[1] || '0');
-        const minutes = parseInt(match[2] || '0');
-        const seconds = parseInt(match[3] || '0');
+        if (!match) return "0:00";
+        const hours = parseInt(match[1] || "0");
+        const minutes = parseInt(match[2] || "0");
+        const seconds = parseInt(match[3] || "0");
         if (hours > 0) {
-            return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            return `${hours}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
         }
-        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        return `${minutes}:${seconds.toString().padStart(2, "0")}`;
     };
 
     const searchYouTube = async (searchQuery: string) => {
@@ -47,9 +47,9 @@ export function SearchPanel({ onAddSong }: SearchPanelProps) {
 
         try {
             const apiKey = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
-            if (!apiKey) throw new Error('YouTube API key not configured');
+            if (!apiKey) throw new Error("YouTube API key not configured");
 
-            searchQuery = searchQuery + ' songs';
+            searchQuery = searchQuery + " songs";
             const response = await fetch(
                 `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(searchQuery)}&type=video&maxResults=10&key=${apiKey}`,
             );
@@ -58,13 +58,12 @@ export function SearchPanel({ onAddSong }: SearchPanelProps) {
 
             const data = await response.json();
 
-            const videoIds = data.items.map((item: YouTubeSearchItem) => item.id.videoId).join(',');
+            const videoIds = data.items.map((item: YouTubeSearchItem) => item.id.videoId).join(",");
             const detailsResponse = await fetch(
                 `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${videoIds}&key=${apiKey}`,
             );
 
-            if (!detailsResponse.ok)
-                throw new Error(`YouTube API error: ${detailsResponse.status}`);
+            if (!detailsResponse.ok) throw new Error(`YouTube API error: ${detailsResponse.status}`);
 
             const detailsData = await detailsResponse.json();
 
@@ -78,14 +77,14 @@ export function SearchPanel({ onAddSong }: SearchPanelProps) {
                 videoId: item.id.videoId,
                 title: item.snippet.title,
                 channel: item.snippet.channelTitle,
-                duration: formatDuration(durationMap.get(item.id.videoId) || 'PT0S'),
+                duration: formatDuration(durationMap.get(item.id.videoId) || "PT0S"),
                 thumbnail: item.snippet.thumbnails.medium?.url,
             }));
 
             setResults(searchResults);
             setHasSearched(true);
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'Failed to search YouTube');
+            setError(err instanceof Error ? err.message : "Failed to search YouTube");
             setResults([]);
             setHasSearched(true);
         } finally {
@@ -107,7 +106,7 @@ export function SearchPanel({ onAddSong }: SearchPanelProps) {
                             placeholder="Search songs..."
                             value={query}
                             onChange={e => setQuery(e.target.value)}
-                            onKeyDown={e => e.key === 'Enter' && !isLoading && handleSearch()}
+                            onKeyDown={e => e.key === "Enter" && !isLoading && handleSearch()}
                             className="pl-9 bg-card border-border rounded-xl h-11 focus:border-accent transition-colors"
                             disabled={isLoading}
                         />
@@ -117,7 +116,7 @@ export function SearchPanel({ onAddSong }: SearchPanelProps) {
                         disabled={isLoading || !query.trim()}
                         className="bg-accent text-accent-foreground hover:bg-accent/90 px-6 rounded-xl transition-colors font-medium disabled:opacity-50"
                     >
-                        {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Search'}
+                        {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Search"}
                     </Button>
                 </div>
             </div>
@@ -134,7 +133,7 @@ export function SearchPanel({ onAddSong }: SearchPanelProps) {
             <div className="space-y-2">
                 {results.length > 0 && (
                     <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-1">
-                        {results.length} result{results.length !== 1 ? 's' : ''}
+                        {results.length} result{results.length !== 1 ? "s" : ""}
                     </p>
                 )}
 

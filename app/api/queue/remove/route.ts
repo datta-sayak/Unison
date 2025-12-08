@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { redisClient } from "@/lib/redis";
 import z from "zod";
 
-const AddToQueueSchema = z.object({
+const RemoveFromQueueSchema = z.object({
     roomCode: z.string().length(5),
     songCode: z.string(),
 });
@@ -18,25 +18,24 @@ export async function POST(req: NextRequest) {
             });
         }
 
-        const { songCode, roomCode } = AddToQueueSchema.parse(await req.json());
-        const timestamp = Date.now();
-        await redisClient.zAdd(roomCode, { score: timestamp, value: songCode });
+        const { songCode, roomCode } = RemoveFromQueueSchema.parse(await req.json());
+        await redisClient.zRem(roomCode, songCode);
 
         return NextResponse.json({
-            message: "Added to queue",
+            message: "Removed from queue",
             status: 200,
         });
     } catch (error) {
         if (error instanceof z.ZodError) {
             return NextResponse.json({
                 message: "Invalid input",
-                errors: error.issues,
                 status: 400,
+                errors: error.issues,
             });
         }
 
         return NextResponse.json({
-            message: "Failed to add to queue",
+            message: "Failed to remove from queue",
             status: 500,
         });
     }

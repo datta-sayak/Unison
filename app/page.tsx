@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Music, Users, Zap } from 'lucide-react';
-import { useSession } from 'next-auth/react';
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Music, Users, Zap } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 export default function LandingPage() {
     const { data: session } = useSession();
@@ -19,8 +19,8 @@ export default function LandingPage() {
                             Listen Together, Seamlessly.
                         </h1>
                         <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto text-balance leading-relaxed">
-                            Create a room, invite friends, and enjoy music in sync. Control the
-                            queue democratically with voting.
+                            Create a room, invite friends, and enjoy music in sync. Control the queue democratically
+                            with voting.
                         </p>
                     </div>
 
@@ -63,9 +63,7 @@ export default function LandingPage() {
             {/* Features Section */}
             <section id="features" className="py-16 px-4 bg-card/30 border-t border-border">
                 <div className="max-w-4xl mx-auto">
-                    <h2 className="text-3xl font-bold text-foreground text-center mb-12">
-                        How It Works
-                    </h2>
+                    <h2 className="text-3xl font-bold text-foreground text-center mb-12">How It Works</h2>
 
                     <div className="grid md:grid-cols-3 gap-8">
                         {/* Feature 1 */}
@@ -77,8 +75,7 @@ export default function LandingPage() {
                             </div>
                             <h3 className="text-lg font-semibold text-foreground">Create a Room</h3>
                             <p className="text-muted-foreground text-sm leading-relaxed">
-                                Generate a unique room code and invite your friends to join your
-                                listening session.
+                                Generate a unique room code and invite your friends to join your listening session.
                             </p>
                         </div>
 
@@ -89,12 +86,9 @@ export default function LandingPage() {
                                     <Music className="h-6 w-6 text-accent" />
                                 </div>
                             </div>
-                            <h3 className="text-lg font-semibold text-foreground">
-                                Search & Queue
-                            </h3>
+                            <h3 className="text-lg font-semibold text-foreground">Search & Queue</h3>
                             <p className="text-muted-foreground text-sm leading-relaxed">
-                                Search for YouTube music and add songs to the shared queue. Everyone
-                                can contribute.
+                                Search for YouTube music and add songs to the shared queue. Everyone can contribute.
                             </p>
                         </div>
 
@@ -107,8 +101,7 @@ export default function LandingPage() {
                             </div>
                             <h3 className="text-lg font-semibold text-foreground">Vote & Sync</h3>
                             <p className="text-muted-foreground text-sm leading-relaxed">
-                                Upvote or downvote songs. Higher voted tracks play first, keeping
-                                everyone happy.
+                                Upvote or downvote songs. Higher voted tracks play first, keeping everyone happy.
                             </p>
                         </div>
                     </div>

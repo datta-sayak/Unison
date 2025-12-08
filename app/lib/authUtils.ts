@@ -1,9 +1,9 @@
-import { getServerSession } from 'next-auth';
-import { prismaClient } from './db';
+import { getServerSession } from "next-auth";
+import { prismaClient } from "./db";
 
 export async function getAuthenticatedUser() {
     const session = await getServerSession();
-    if (!session?.user?.email) throw new Error('Unauthenticated');
+    if (!session?.user?.email) throw new Error("Unauthenticated");
 
     const user = await prismaClient.user.findUnique({
         where: {
@@ -18,13 +18,13 @@ export async function getAuthenticatedUser() {
         },
     });
 
-    if (!user) throw new Error('Invalid User');
+    if (!user) throw new Error("Invalid User");
     return user;
 }
 
 export async function getAuthenticatedUserWithRooms() {
     const session = await getServerSession();
-    if (!session?.user?.email) throw new Error('Unauthenticated');
+    if (!session?.user?.email) throw new Error("Unauthenticated");
 
     const user = await prismaClient.user.findUnique({
         where: {
@@ -69,7 +69,7 @@ export async function getAuthenticatedUserWithRooms() {
                     },
                 },
                 orderBy: {
-                    createdAt: 'desc',
+                    createdAt: "desc",
                 },
             },
             roomUsers: {
@@ -113,6 +113,6 @@ export async function getAuthenticatedUserWithRooms() {
         },
     });
 
-    if (!user) throw new Error('Invalid User');
+    if (!user) throw new Error("Invalid User");
     return user;
 }

@@ -1,23 +1,23 @@
-'use client';
+"use client";
 
-import { LogOut } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { useSession, signOut } from 'next-auth/react';
-import Image from 'next/image';
-import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 export function UserAvatar() {
     const { data: session, status } = useSession();
     const router = useRouter();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    if (status === 'loading' || !session?.user) return null;
+    if (status === "loading" || !session?.user) return null;
 
     const handleLogout = () => {
         signOut();
-        router.push('/');
+        router.push("/");
     };
 
     return (
@@ -37,7 +37,7 @@ export function UserAvatar() {
                     {session?.user?.image && (
                         <Image
                             src={session.user.image}
-                            alt={session.user.name || 'Avatar'}
+                            alt={session.user.name || "Avatar"}
                             width={40}
                             height={40}
                             className="rounded-full object-cover"
@@ -48,7 +48,7 @@ export function UserAvatar() {
                 {/* Dropdown Menu */}
                 <div
                     className={`absolute right-0 top-full mt-2 w-48 bg-card border border-border rounded-lg shadow-lg transition-all z-50 ${
-                        isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+                        isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
                     }`}
                 >
                     <div className="p-4 border-b border-border">

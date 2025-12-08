@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { ChevronUp, ChevronDown, Trash2 } from 'lucide-react';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { ChevronUp, ChevronDown, Trash2 } from "lucide-react";
 
 interface QueueItem {
     id: string;
@@ -16,7 +16,7 @@ interface QueueItem {
 
 interface QueuePanelProps {
     items: QueueItem[];
-    onVote: (id: string, direction: 'up' | 'down') => void;
+    onVote: (id: string, direction: "up" | "down") => void;
 }
 
 export function QueuePanel({ items, onVote }: QueuePanelProps) {
@@ -34,7 +34,7 @@ export function QueuePanel({ items, onVote }: QueuePanelProps) {
                     <div className="group bg-gradient-to-br from-card to-card/50 border border-border rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all hover:border-accent/30">
                         <div className="relative">
                             <img
-                                src={currentPlaying.thumbnail || '/placeholder.svg'}
+                                src={currentPlaying.thumbnail || "/placeholder.svg"}
                                 alt={currentPlaying.title}
                                 className="w-full aspect-video object-cover"
                             />
@@ -51,17 +51,13 @@ export function QueuePanel({ items, onVote }: QueuePanelProps) {
                                 <p className="font-bold text-lg text-foreground text-balance leading-snug mb-2">
                                     {currentPlaying.title}
                                 </p>
-                                <p className="text-sm text-muted-foreground font-medium">
-                                    {currentPlaying.channel}
-                                </p>
+                                <p className="text-sm text-muted-foreground font-medium">{currentPlaying.channel}</p>
                             </div>
 
                             <div className="flex items-center justify-between pt-2">
                                 <span className="text-xs text-muted-foreground">
-                                    Requested by{' '}
-                                    <span className="font-semibold text-foreground">
-                                        {currentPlaying.requestedBy}
-                                    </span>
+                                    Requested by{" "}
+                                    <span className="font-semibold text-foreground">{currentPlaying.requestedBy}</span>
                                 </span>
                             </div>
 
@@ -91,9 +87,7 @@ export function QueuePanel({ items, onVote }: QueuePanelProps) {
                             <div className="w-8 h-8 border-2 border-muted-foreground/30 border-t-muted-foreground rounded-full animate-spin"></div>
                         </div>
                         <p className="text-muted-foreground font-medium">Queue is empty</p>
-                        <p className="text-sm text-muted-foreground mt-1">
-                            Search and add songs to get started
-                        </p>
+                        <p className="text-sm text-muted-foreground mt-1">Search and add songs to get started</p>
                     </div>
                 ) : (
                     <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
@@ -103,14 +97,12 @@ export function QueuePanel({ items, onVote }: QueuePanelProps) {
                                 className="flex items-center gap-4 p-4 bg-card border border-border rounded-xl hover:border-accent/30 hover:shadow-md transition-all group"
                             >
                                 <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
-                                    <span className="text-xs font-bold text-foreground">
-                                        {index + 2}
-                                    </span>
+                                    <span className="text-xs font-bold text-foreground">{index + 2}</span>
                                 </div>
 
                                 {/* Thumbnail */}
                                 <img
-                                    src={item.thumbnail || '/placeholder.svg'}
+                                    src={item.thumbnail || "/placeholder.svg"}
                                     alt={item.title}
                                     className="w-12 h-12 rounded-lg object-cover"
                                 />
@@ -125,16 +117,14 @@ export function QueuePanel({ items, onVote }: QueuePanelProps) {
                                         <span>•</span>
                                         <span>{item.duration}</span>
                                     </div>
-                                    <p className="text-xs text-muted-foreground mt-1">
-                                        by {item.requestedBy}
-                                    </p>
+                                    <p className="text-xs text-muted-foreground mt-1">by {item.requestedBy}</p>
                                 </div>
 
                                 <div className="flex items-center gap-1 flex-shrink-0 bg-muted/50 rounded-lg p-1">
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        onClick={() => onVote(item.id, 'up')}
+                                        onClick={() => onVote(item.id, "up")}
                                         className="h-7 w-7 text-muted-foreground hover:text-accent hover:bg-accent/10 transition-colors"
                                         title="Upvote"
                                     >
@@ -146,7 +136,7 @@ export function QueuePanel({ items, onVote }: QueuePanelProps) {
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        onClick={() => onVote(item.id, 'down')}
+                                        onClick={() => onVote(item.id, "down")}
                                         className="h-7 w-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
                                         title="Downvote"
                                     >

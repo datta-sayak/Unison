@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Plus, Trash2, Share2, Play, Users, Activity, Lock, LogIn, Loader2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { signOut } from 'next-auth/react';
-import { useSession } from 'next-auth/react';
-import axios from 'axios';
-import { toast } from 'sonner';
+import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Plus, Trash2, Share2, Play, Users, Activity, Lock, LogIn, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import axios from "axios";
+import { toast } from "sonner";
 
 interface UserData {
     name: string;
@@ -71,31 +71,31 @@ export default function DashboardPage() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (status === 'loading') return;
-        if (status === 'unauthenticated') {
-            router.push('/api/auth/signin');
+        if (status === "loading") return;
+        if (status === "unauthenticated") {
+            router.push("/api/auth/signin");
         }
     }, [router, status]);
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const response = await axios.get('/api/user');
+                const response = await axios.get("/api/user");
                 setUserData(response.data);
             } catch (error) {
-                console.error('Failed to fetch user data:', error);
-                signOut({ callbackUrl: '/' });
+                console.error("Failed to fetch user data:", error);
+                signOut({ callbackUrl: "/" });
             } finally {
                 setLoading(false);
             }
         };
-        if (status === 'authenticated') {
+        if (status === "authenticated") {
             fetchUserData();
         }
     }, [status, session?.user?.email]);
 
     const handleDeleteRoom = (roomId: string) => {
-        console.log('Delete room:', roomId);
+        console.log("Delete room:", roomId);
     };
 
     const handleShareRoom = (roomId: string) => {
@@ -114,14 +114,12 @@ export default function DashboardPage() {
                             {/* Section Header */}
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <h2 className="text-2xl font-bold text-foreground">
-                                        Your Rooms
-                                    </h2>
+                                    <h2 className="text-2xl font-bold text-foreground">Your Rooms</h2>
                                     <p className="font-bold text-accent">
                                         {userData?.createdRooms &&
                                         userData.createdRooms.length + userData.roomUsers.length > 0
                                             ? `${userData.createdRooms.length} created, ${userData.roomUsers.length} joined`
-                                            : 'Create or join a room to get started'}
+                                            : "Create or join a room to get started"}
                                     </p>
                                 </div>
                             </div>
@@ -170,8 +168,7 @@ export default function DashboardPage() {
                                     <p>Loading rooms...</p>
                                 </div>
                             ) : !userData?.createdRooms ||
-                              (userData.createdRooms.length === 0 &&
-                                  userData.roomUsers.length === 0) ? (
+                              (userData.createdRooms.length === 0 && userData.roomUsers.length === 0) ? (
                                 <>
                                     <div className="border-2 border-dashed border-border rounded-2xl p-12 text-center space-y-4">
                                         <div className="flex justify-center">
@@ -180,12 +177,9 @@ export default function DashboardPage() {
                                             </div>
                                         </div>
                                         <div>
-                                            <h3 className="font-semibold text-foreground text-lg">
-                                                No rooms yet
-                                            </h3>
+                                            <h3 className="font-semibold text-foreground text-lg">No rooms yet</h3>
                                             <p className="text-sm text-muted-foreground mt-2 max-w-xs mx-auto">
-                                                Create your first collaborative music room or join
-                                                one using a room code
+                                                Create your first collaborative music room or join one using a room code
                                             </p>
                                         </div>
                                         <Link href="/create">
@@ -206,9 +200,7 @@ export default function DashboardPage() {
                                                 .filter(
                                                     joinedRoom =>
                                                         !userData.createdRooms.some(
-                                                            created =>
-                                                                created.roomId ===
-                                                                joinedRoom.roomId,
+                                                            created => created.roomId === joinedRoom.roomId,
                                                         ),
                                                 ),
                                         ].map(room => (
@@ -223,17 +215,14 @@ export default function DashboardPage() {
                                                             {room.createdBy.avatarUrl ? (
                                                                 <Image
                                                                     src={room.createdBy.avatarUrl}
-                                                                    alt={
-                                                                        room.createdBy.name ||
-                                                                        'Host'
-                                                                    }
+                                                                    alt={room.createdBy.name || "Host"}
                                                                     width={40}
                                                                     height={40}
                                                                     className="w-10 h-10 rounded-full object-cover"
                                                                 />
                                                             ) : (
                                                                 <span className="text-sm font-bold text-accent">
-                                                                    {(room.createdBy.name || 'H')
+                                                                    {(room.createdBy.name || "H")
                                                                         .charAt(0)
                                                                         .toUpperCase()}
                                                                 </span>
@@ -246,8 +235,7 @@ export default function DashboardPage() {
                                                         </h3>
                                                         {room.createdBy && (
                                                             <p className="text-xs text-muted-foreground truncate mb-1">
-                                                                by{' '}
-                                                                {room.createdBy.name || 'Unknown'}
+                                                                by {room.createdBy.name || "Unknown"}
                                                             </p>
                                                         )}
                                                         <div className="flex items-center gap-2">
@@ -255,14 +243,12 @@ export default function DashboardPage() {
                                                                 <Users className="h-3 w-3" />
                                                                 {room._count.roomUsers}
                                                             </span>
-                                                            <span className="text-xs text-muted-foreground">
-                                                                •
-                                                            </span>
+                                                            <span className="text-xs text-muted-foreground">•</span>
                                                             <span className="text-xs text-muted-foreground flex items-center gap-1">
                                                                 <Activity className="h-3 w-3" />
                                                                 {room._count.queueEntries}
                                                             </span>
-                                                            {room.accessMode === 'Private' && (
+                                                            {room.accessMode === "Private" && (
                                                                 <>
                                                                     <span className="text-xs text-muted-foreground">
                                                                         •
@@ -273,8 +259,7 @@ export default function DashboardPage() {
                                                                     </span>
                                                                 </>
                                                             )}
-                                                            {room.playbackState?.currentEntry
-                                                                ?.song && (
+                                                            {room.playbackState?.currentEntry?.song && (
                                                                 <>
                                                                     <span className="text-xs text-muted-foreground">
                                                                         •
@@ -288,10 +273,7 @@ export default function DashboardPage() {
 
                                                 {/* Action Buttons */}
                                                 <div className="flex gap-2">
-                                                    <Link
-                                                        href={`/room?id=${room.roomId}`}
-                                                        className="flex-1"
-                                                    >
+                                                    <Link href={`/room?id=${room.roomId}`} className="flex-1">
                                                         <button className="w-full px-3 py-2 rounded-lg bg-accent text-accent-foreground font-medium text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
                                                             <Play className="h-4 w-4" />
                                                             Enter
@@ -305,9 +287,7 @@ export default function DashboardPage() {
                                                         <Share2 className="h-4 w-4" />
                                                     </button>
                                                     <button
-                                                        onClick={() =>
-                                                            handleDeleteRoom(room.roomId)
-                                                        }
+                                                        onClick={() => handleDeleteRoom(room.roomId)}
                                                         className="px-3 py-2 rounded-lg border border-border hover:bg-destructive/10 hover:border-destructive/30 hover:text-destructive transition-colors"
                                                         title="Delete room"
                                                     >

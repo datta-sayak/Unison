@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { useTheme } from '@/providers';
-import { Button } from '@/components/ui/button';
-import { X, Check, Moon, Sun } from 'lucide-react';
+import { useTheme } from "@/providers";
+import { Button } from "@/components/ui/button";
+import { X, Check, Moon, Sun } from "lucide-react";
 
-type Theme = 'blue' | 'teal' | 'lilac' | 'rose' | 'sage' | 'warm';
+type Theme = "blue" | "teal" | "lilac" | "rose" | "sage" | "warm";
 
 const THEMES: { name: string; value: Theme; color: string }[] = [
-    { name: 'Soft Blue', value: 'blue', color: 'oklch(0.65 0.08 260)' },
-    { name: 'Muted Teal', value: 'teal', color: 'oklch(0.62 0.09 195)' },
-    { name: 'Soft Lilac', value: 'lilac', color: 'oklch(0.68 0.08 310)' },
-    { name: 'Dusty Rose', value: 'rose', color: 'oklch(0.68 0.09 25)' },
-    { name: 'Muted Green', value: 'sage', color: 'oklch(0.65 0.06 150)' },
-    { name: 'Warm Gray', value: 'warm', color: 'oklch(0.68 0.08 50)' },
+    { name: "Soft Blue", value: "blue", color: "oklch(0.65 0.08 260)" },
+    { name: "Muted Teal", value: "teal", color: "oklch(0.62 0.09 195)" },
+    { name: "Soft Lilac", value: "lilac", color: "oklch(0.68 0.08 310)" },
+    { name: "Dusty Rose", value: "rose", color: "oklch(0.68 0.09 25)" },
+    { name: "Muted Green", value: "sage", color: "oklch(0.65 0.06 150)" },
+    { name: "Warm Gray", value: "warm", color: "oklch(0.68 0.08 50)" },
 ];
 
 interface ThemeSelectorProps {
@@ -46,16 +46,16 @@ export function ThemeSelector({ onClose }: ThemeSelectorProps) {
                     </label>
                     <div className="flex gap-2">
                         <Button
-                            onClick={() => setMode('light')}
-                            variant={mode === 'light' ? 'default' : 'outline'}
+                            onClick={() => setMode("light")}
+                            variant={mode === "light" ? "default" : "outline"}
                             className="flex-1 flex items-center justify-center gap-2"
                         >
                             <Sun className="h-4 w-4" />
                             Light
                         </Button>
                         <Button
-                            onClick={() => setMode('dark')}
-                            variant={mode === 'dark' ? 'default' : 'outline'}
+                            onClick={() => setMode("dark")}
+                            variant={mode === "dark" ? "default" : "outline"}
                             className="flex-1 flex items-center justify-center gap-2"
                         >
                             <Moon className="h-4 w-4" />
@@ -80,8 +80,8 @@ export function ThemeSelector({ onClose }: ThemeSelectorProps) {
                                 <div
                                     className={`w-12 h-12 rounded-full border-2 transition-all ${
                                         currentTheme === theme.value
-                                            ? 'border-accent scale-110 ring-2 ring-accent/30'
-                                            : 'border-border hover:border-accent/50'
+                                            ? "border-accent scale-110 ring-2 ring-accent/30"
+                                            : "border-border hover:border-accent/50"
                                     }`}
                                     style={{ backgroundColor: theme.color }}
                                 >
@@ -99,10 +99,7 @@ export function ThemeSelector({ onClose }: ThemeSelectorProps) {
                     </div>
                 </div>
 
-                <Button
-                    onClick={onClose}
-                    className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
-                >
+                <Button onClick={onClose} className="w-full bg-accent text-accent-foreground hover:bg-accent/90">
                     Done
                 </Button>
             </div>

@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { UserAvatar } from '@/components/UserAvatar';
-import { ThemeSelector } from '@/components/ThemeSelector';
-import { Button } from '@/components/ui/button';
-import { Sun } from 'lucide-react';
+import { useState } from "react";
+import { UserAvatar } from "@/components/UserAvatar";
+import { ThemeSelector } from "@/components/ThemeSelector";
+import { Button } from "@/components/ui/button";
+import { Sun } from "lucide-react";
 
 export function AppHeader() {
     const [showThemeSelector, setShowThemeSelector] = useState(false);
@@ -23,9 +23,7 @@ export function AppHeader() {
                         Theme
                     </Button>
                     <div className="flex-1 text-center">
-                        <h1 className="text-2xl font-black text-foreground tracking-wide">
-                            Unison
-                        </h1>
+                        <h1 className="text-2xl font-black text-foreground tracking-wide">Unison</h1>
                     </div>
                     <UserAvatar />
                 </div>

@@ -1,12 +1,12 @@
-import NextAuth from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
-import { prismaClient } from '../../../lib/db';
+import NextAuth from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import { prismaClient } from "../../../lib/db";
 
 const handler = NextAuth({
     providers: [
         GoogleProvider({
-            clientId: process.env.GOOGLE_CLIENT_ID ?? '',
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
+            clientId: process.env.GOOGLE_CLIENT_ID ?? "",
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
         }),
     ],
     callbacks: {
@@ -39,7 +39,7 @@ const handler = NextAuth({
         },
     },
     pages: {
-        signIn: '/auth/signin',
+        signIn: "/auth/signin",
     },
 });
 

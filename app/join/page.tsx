@@ -1,35 +1,35 @@
-'use client';
+"use client";
 
-import { useState, useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import Link from 'next/link';
-import axios from 'axios';
-import type { AxiosError } from 'axios';
-import { useSession } from 'next-auth/react';
-import { toast } from 'sonner';
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import Link from "next/link";
+import axios from "axios";
+import type { AxiosError } from "axios";
+import { useSession } from "next-auth/react";
+import { toast } from "sonner";
 
 function JoinRoomForm() {
     const { status } = useSession();
     const router = useRouter();
     const searchParams = useSearchParams();
-    const [roomCode, setRoomCode] = useState('');
-    const [password, setPassword] = useState('');
+    const [roomCode, setRoomCode] = useState("");
+    const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [showPasswordInput, setShowPasswordInput] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const code = searchParams.get('roomId');
+        const code = searchParams.get("roomId");
         if (code) {
             setRoomCode(code.toUpperCase());
         }
     }, [searchParams]);
 
     useEffect(() => {
-        if (status === 'loading') return;
-        if (status === 'unauthenticated') {
+        if (status === "loading") return;
+        if (status === "unauthenticated") {
             router.push(`/api/auth/signin?callbackUrl=${encodeURIComponent(window.location.href)}`);
         }
     }, [status, router]);
@@ -39,7 +39,7 @@ function JoinRoomForm() {
         setError(null);
 
         try {
-            const response = await axios.post('/api/rooms/join', {
+            const response = await axios.post("/api/rooms/join", {
                 roomCode: roomCode.toUpperCase(),
                 ...(pwd && { password: pwd }),
             });
@@ -47,9 +47,9 @@ function JoinRoomForm() {
             router.push(`/room?id=${response.data.roomId}`);
         } catch (err) {
             const axiosError = err as AxiosError<{ message?: string }>;
-            const errorMessage = axiosError.response?.data?.message || 'Failed to join room';
+            const errorMessage = axiosError.response?.data?.message || "Failed to join room";
 
-            if (!pwd && errorMessage.includes('requires an access code')) {
+            if (!pwd && errorMessage.includes("requires an access code")) {
                 setShowPasswordInput(true);
             } else {
                 toast.error(errorMessage);
@@ -64,9 +64,7 @@ function JoinRoomForm() {
             <div className="w-full max-w-md space-y-8">
                 <div className="space-y-2 text-center">
                     <h1 className="text-3xl font-bold text-foreground">Join a Room</h1>
-                    <p className="text-muted-foreground">
-                        Enter the room code shared by your friends
-                    </p>
+                    <p className="text-muted-foreground">Enter the room code shared by your friends</p>
                 </div>
 
                 <div className="bg-card rounded-2xl p-8 shadow-sm border border-border space-y-6">
@@ -76,7 +74,7 @@ function JoinRoomForm() {
                             placeholder="Enter room code"
                             value={roomCode}
                             onChange={e => setRoomCode(e.target.value.toUpperCase())}
-                            onKeyDown={e => e.key === 'Enter' && handleJoinRoom()}
+                            onKeyDown={e => e.key === "Enter" && handleJoinRoom()}
                             className="bg-input border-border text-foreground placeholder:text-muted-foreground h-11 rounded-lg"
                             maxLength={9}
                             disabled={showPasswordInput}
@@ -95,20 +93,18 @@ function JoinRoomForm() {
                             disabled={isLoading || !roomCode}
                             className="w-full bg-accent text-accent-foreground hover:opacity-90 h-11 font-medium transition-theme"
                         >
-                            {isLoading ? 'Checking...' : 'Continue'}
+                            {isLoading ? "Checking..." : "Continue"}
                         </Button>
                     ) : (
                         <>
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-foreground">
-                                    Access Code
-                                </label>
+                                <label className="text-sm font-medium text-foreground">Access Code</label>
                                 <Input
                                     type="password"
                                     placeholder="Enter access code"
                                     value={password}
                                     onChange={e => setPassword(e.target.value)}
-                                    onKeyDown={e => e.key === 'Enter' && handleJoinRoom(password)}
+                                    onKeyDown={e => e.key === "Enter" && handleJoinRoom(password)}
                                     className="bg-input border-border text-foreground placeholder:text-muted-foreground h-11 rounded-lg"
                                 />
                             </div>
@@ -117,14 +113,14 @@ function JoinRoomForm() {
                                 disabled={isLoading || !password}
                                 className="w-full bg-accent text-accent-foreground hover:opacity-90 h-11 font-medium transition-theme"
                             >
-                                {isLoading ? 'Joining...' : 'Join Room'}
+                                {isLoading ? "Joining..." : "Join Room"}
                             </Button>
                             <Button
                                 onClick={() => {
                                     setShowPasswordInput(false);
-                                    setPassword('');
+                                    setPassword("");
                                     setError(null);
-                                    router.push('/dashboard');
+                                    router.push("/dashboard");
                                 }}
                                 variant="outline"
                                 className="w-full bg-transparent border-border text-foreground hover:bg-muted"

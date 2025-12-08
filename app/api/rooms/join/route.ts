@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
-import { prismaClient } from '../../../lib/db';
-import { getAuthenticatedUser } from '../../../lib/authUtils';
+import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+import { prismaClient } from "../../../lib/db";
+import { getAuthenticatedUser } from "../../../lib/authUtils";
 
 const joinSchema = z.object({
     roomCode: z.string(),
@@ -34,27 +34,24 @@ export async function POST(req: NextRequest) {
         });
 
         if (!roomWithUserStatus) {
-            return NextResponse.json({ message: 'Room not found' }, { status: 404 });
+            return NextResponse.json({ message: "Room not found" }, { status: 404 });
         }
         if (roomWithUserStatus.roomUsers.length > 0) {
             return NextResponse.json(
                 {
-                    message: 'Already joined',
+                    message: "Already joined",
                     roomId: roomWithUserStatus.roomId,
                     roomName: roomWithUserStatus.roomName,
                 },
                 { status: 200 },
             );
         }
-        if (roomWithUserStatus.accessMode === 'Private' && roomWithUserStatus.passwordHash) {
+        if (roomWithUserStatus.accessMode === "Private" && roomWithUserStatus.passwordHash) {
             if (!data.password) {
-                return NextResponse.json(
-                    { message: 'This room requires an access code' },
-                    { status: 403 },
-                );
+                return NextResponse.json({ message: "This room requires an access code" }, { status: 403 });
             }
             if (roomWithUserStatus.passwordHash !== data.password) {
-                return NextResponse.json({ message: 'Invalid access code' }, { status: 403 });
+                return NextResponse.json({ message: "Invalid access code" }, { status: 403 });
             }
         }
 
@@ -67,18 +64,18 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json(
             {
-                message: 'Successfully joined room',
+                message: "Successfully joined room",
                 roomId: roomWithUserStatus.roomId,
                 roomName: roomWithUserStatus.roomName,
             },
             { status: 200 },
         );
     } catch (error) {
-        console.error('Error while joining room:', error);
+        console.error("Error while joining room:", error);
         if (error instanceof z.ZodError) {
-            return NextResponse.json({ message: 'Invalid credentials' }, { status: 400 });
+            return NextResponse.json({ message: "Invalid credentials" }, { status: 400 });
         }
-        const message = error instanceof Error ? error.message : 'Failed to join room';
+        const message = error instanceof Error ? error.message : "Failed to join room";
         return NextResponse.json({ message }, { status: 500 });
     }
 }

@@ -1,28 +1,28 @@
-'use client';
+"use client";
 
-import { signIn } from 'next-auth/react';
-import { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import Link from 'next/link';
+import { signIn } from "next-auth/react";
+import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import Link from "next/link";
 
 export default function SignInForm() {
-    const [username, setUsername] = useState('');
+    const [username, setUsername] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     const searchParams = useSearchParams();
-    const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
+    const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
 
     const handleGoogleSignIn = async () => {
         setIsLoading(true);
-        signIn('google', { callbackUrl });
+        signIn("google", { callbackUrl });
     };
 
     const handleGuestSignIn = () => {
         if (!username.trim()) return;
-        localStorage.setItem('userId', `guest-${Math.random().toString(36).substring(7)}`);
-        localStorage.setItem('username', username);
+        localStorage.setItem("userId", `guest-${Math.random().toString(36).substring(7)}`);
+        localStorage.setItem("username", username);
         router.push(callbackUrl);
     };
 
@@ -58,7 +58,7 @@ export default function SignInForm() {
                                 fill="#EA4335"
                             />
                         </svg>
-                        {isLoading ? 'Signing in' : 'Sign in with Google'}
+                        {isLoading ? "Signing in" : "Sign in with Google"}
                     </Button>
 
                     <div className="relative">
@@ -66,23 +66,19 @@ export default function SignInForm() {
                             <div className="w-full border-t border-border"></div>
                         </div>
                         <div className="relative flex justify-center text-sm">
-                            <span className="px-2 bg-card text-muted-foreground">
-                                or continue as guest
-                            </span>
+                            <span className="px-2 bg-card text-muted-foreground">or continue as guest</span>
                         </div>
                     </div>
 
                     {/* Guest Sign-In */}
                     <div className="space-y-3">
                         <div>
-                            <label className="text-sm font-medium text-foreground">
-                                Guest Username
-                            </label>
+                            <label className="text-sm font-medium text-foreground">Guest Username</label>
                             <Input
                                 placeholder="Enter your username"
                                 value={username}
                                 onChange={e => setUsername(e.target.value)}
-                                onKeyDown={e => e.key === 'Enter' && handleGuestSignIn()}
+                                onKeyDown={e => e.key === "Enter" && handleGuestSignIn()}
                                 className="bg-input border-border text-foreground placeholder:text-muted-foreground h-11 rounded-lg mt-1"
                             />
                         </div>
@@ -97,7 +93,7 @@ export default function SignInForm() {
                 </div>
 
                 <p className="text-center text-sm text-muted-foreground">
-                    Already have an account?{' '}
+                    Already have an account?{" "}
                     <Link href="/" className="text-accent hover:underline">
                         Go back
                     </Link>

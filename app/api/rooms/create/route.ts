@@ -1,7 +1,7 @@
-import { NextResponse, NextRequest } from 'next/server';
-import { prismaClient } from '../../../lib/db';
-import { getAuthenticatedUser } from '../../../lib/authUtils';
-import { z } from 'zod';
+import { NextResponse, NextRequest } from "next/server";
+import { prismaClient } from "../../../lib/db";
+import { getAuthenticatedUser } from "../../../lib/authUtils";
+import { z } from "zod";
 
 const createRoomSchema = z.object({
     email: z.string(),
@@ -16,8 +16,8 @@ export async function POST(req: NextRequest) {
         const data = createRoomSchema.parse(await req.json());
         const user = await getAuthenticatedUser();
 
-        if (data.isPrivate && (!data.password || data.password.trim() === '')) {
-            return NextResponse.json({ message: 'Private rooms need a password' }, { status: 400 });
+        if (data.isPrivate && (!data.password || data.password.trim() === "")) {
+            return NextResponse.json({ message: "Private rooms need a password" }, { status: 400 });
         }
 
         // ROOM CREATION
@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
                 roomId: newRoomId,
                 roomName: data.roomName || roomName,
                 createdById: user.id,
-                accessMode: data.isPrivate ? 'Private' : 'Public',
+                accessMode: data.isPrivate ? "Private" : "Public",
                 passwordHash: data.isPrivate ? data.password : null,
                 themeId: data.themeId || null,
             },
@@ -57,14 +57,14 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({
             room,
-            message: 'Room created successfully',
+            message: "Room created successfully",
         });
     } catch (error) {
-        console.error('Create room error:', error);
+        console.error("Create room error:", error);
 
         if (error instanceof z.ZodError) {
-            return NextResponse.json({ message: 'Invalid request data' }, { status: 400 });
+            return NextResponse.json({ message: "Invalid request data" }, { status: 400 });
         }
-        return NextResponse.json({ message: 'Failed to create room' }, { status: 500 });
+        return NextResponse.json({ message: "Failed to create room" }, { status: 500 });
     }
 }

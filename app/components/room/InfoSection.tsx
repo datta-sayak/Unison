@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { Copy, LogOut } from 'lucide-react';
-import type { Song, Participant } from '@/lib';
+import { Copy, LogOut } from "lucide-react";
+import type { Song, Participant } from "@/lib";
 
 interface InfoSectionProps {
     roomId: string | null;
@@ -11,13 +11,7 @@ interface InfoSectionProps {
     handleLeaveRoom: () => void;
 }
 
-export function InfoSection({
-    roomId,
-    allUsers,
-    queue,
-    handleCopyLink,
-    handleLeaveRoom,
-}: InfoSectionProps) {
+export function InfoSection({ roomId, allUsers, queue, handleCopyLink, handleLeaveRoom }: InfoSectionProps) {
     return (
         <div className="p-4 space-y-6 max-w-4xl mx-auto">
             {/* Room Details */}
@@ -28,9 +22,7 @@ export function InfoSection({
                         <div className="flex items-center justify-between">
                             <span className="text-xs text-muted-foreground">Room ID</span>
                             <div className="flex items-center gap-2">
-                                <span className="text-sm font-mono font-semibold text-foreground">
-                                    {roomId}
-                                </span>
+                                <span className="text-sm font-mono font-semibold text-foreground">{roomId}</span>
                                 <button
                                     onClick={handleCopyLink}
                                     className="p-1 hover:bg-muted/50 rounded transition-colors"
@@ -42,15 +34,11 @@ export function InfoSection({
                         </div>
                         <div className="flex items-center justify-between">
                             <span className="text-xs text-muted-foreground">Members</span>
-                            <span className="text-sm font-semibold text-foreground">
-                                {allUsers.length}
-                            </span>
+                            <span className="text-sm font-semibold text-foreground">{allUsers.length}</span>
                         </div>
                         <div className="flex items-center justify-between">
                             <span className="text-xs text-muted-foreground">Queue Length</span>
-                            <span className="text-sm font-semibold text-foreground">
-                                {queue.length}
-                            </span>
+                            <span className="text-sm font-semibold text-foreground">{queue.length}</span>
                         </div>
                     </div>
                 </div>
@@ -82,9 +70,7 @@ export function InfoSection({
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="text-sm font-semibold text-destructive">Leave Room</p>
-                            <p className="text-xs text-muted-foreground">
-                                Disconnect and return to dashboard
-                            </p>
+                            <p className="text-xs text-muted-foreground">Disconnect and return to dashboard</p>
                         </div>
                     </button>
                 </div>

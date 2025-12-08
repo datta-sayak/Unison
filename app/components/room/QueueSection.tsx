@@ -1,23 +1,18 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import { ChevronUp, ChevronDown } from 'lucide-react';
-import { SearchPanel } from '@/components/SearchPanel';
-import type { Song, SongInput } from '@/lib';
+import Image from "next/image";
+import { ChevronUp, ChevronDown } from "lucide-react";
+import { SearchPanel } from "@/components/SearchPanel";
+import type { Song, SongInput } from "@/lib";
 
 interface QueueSectionProps {
     queue: Song[];
     handleAddSong: (song: SongInput) => void;
-    handleVote: (id: string, direction: 'up' | 'down') => void;
+    handleVote: (id: string, direction: "up" | "down") => void;
     loading?: boolean;
 }
 
-export function QueueSection({
-    queue,
-    handleAddSong,
-    handleVote,
-    loading = false,
-}: QueueSectionProps) {
+export function QueueSection({ queue, handleAddSong, handleVote, loading = false }: QueueSectionProps) {
     return (
         <div className="p-4 space-y-6 max-w-4xl mx-auto">
             {/* Search Panel */}
@@ -48,36 +43,28 @@ export function QueueSection({
                                     {idx + 1}
                                 </span>
                                 <Image
-                                    src={song.thumbnail || '/placeholder.svg'}
+                                    src={song.thumbnail || "/placeholder.svg"}
                                     alt={song.title}
                                     width={44}
                                     height={44}
                                     className="rounded-lg object-cover flex-shrink-0"
                                 />
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-semibold text-foreground truncate">
-                                        {song.title}
-                                    </p>
-                                    <p className="text-xs text-muted-foreground truncate">
-                                        {song.channel}
-                                    </p>
-                                    <p className="text-xs text-muted-foreground mt-0.5">
-                                        Added by {song.requestedBy}
-                                    </p>
+                                    <p className="text-sm font-semibold text-foreground truncate">{song.title}</p>
+                                    <p className="text-xs text-muted-foreground truncate">{song.channel}</p>
+                                    <p className="text-xs text-muted-foreground mt-0.5">Added by {song.requestedBy}</p>
                                 </div>
                                 <div className="flex flex-col items-center gap-1 flex-shrink-0">
                                     <button
-                                        onClick={() => handleVote(song.id, 'up')}
+                                        onClick={() => handleVote(song.id, "up")}
                                         className="p-1 hover:bg-muted rounded transition-colors"
                                         title="Vote up"
                                     >
                                         <ChevronUp className="w-4 h-4 text-accent" />
                                     </button>
-                                    <span className="text-xs font-bold text-accent">
-                                        {song.votes}
-                                    </span>
+                                    <span className="text-xs font-bold text-accent">{song.votes}</span>
                                     <button
-                                        onClick={() => handleVote(song.id, 'down')}
+                                        onClick={() => handleVote(song.id, "down")}
                                         className="p-1 hover:bg-muted rounded transition-colors"
                                         title="Vote down"
                                     >
