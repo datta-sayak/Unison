@@ -16,30 +16,7 @@ interface UserData {
     email: string;
     avatarUrl?: string;
     createdAt: string;
-    createdRooms: Array<{
-        roomId: string;
-        roomName: string;
-        accessMode: string;
-        createdAt: string;
-        createdBy: {
-            name: string | null;
-            avatarUrl: string | null;
-        } | null;
-        _count: {
-            roomUsers: number;
-            queueEntries: number;
-        };
-        playbackState: {
-            currentEntry: {
-                song: {
-                    title: string;
-                    smallImage: string | null;
-                };
-            } | null;
-        } | null;
-    }>;
-    roomUsers: Array<{
-        room: {
+    room: Array<{
             roomId: string;
             roomName: string;
             accessMode: string;
@@ -47,20 +24,10 @@ interface UserData {
             createdBy: {
                 name: string | null;
                 avatarUrl: string | null;
-            } | null;
+            };
             _count: {
                 roomUsers: number;
-                queueEntries: number;
             };
-            playbackState: {
-                currentEntry: {
-                    song: {
-                        title: string;
-                        smallImage: string | null;
-                    };
-                } | null;
-            } | null;
-        };
     }>;
 }
 
@@ -101,7 +68,7 @@ export default function DashboardPage() {
     const handleShareRoom = (roomId: string) => {
         const roomLink = `${window.location.origin}/room?id=${roomId}`;
         navigator.clipboard.writeText(roomLink);
-        toast.info(`"${roomId}" copied!`);
+        toast.success("Room link copied to clipboard!");
     };
 
     return (
@@ -115,12 +82,6 @@ export default function DashboardPage() {
                             <div className="flex items-center justify-between">
                                 <div>
                                     <h2 className="text-2xl font-bold text-foreground">Your Rooms</h2>
-                                    <p className="font-bold text-accent">
-                                        {userData?.createdRooms &&
-                                        userData.createdRooms.length + userData.roomUsers.length > 0
-                                            ? `${userData.createdRooms.length} created, ${userData.roomUsers.length} joined`
-                                            : "Create or join a room to get started"}
-                                    </p>
                                 </div>
                             </div>
                             {/* Join Room and New Room Cards - Above Empty State */}
@@ -167,8 +128,7 @@ export default function DashboardPage() {
                                     <Loader2 className="w-8 h-8 animate-spin text-accent mb-3" />
                                     <p>Loading rooms...</p>
                                 </div>
-                            ) : !userData?.createdRooms ||
-                              (userData.createdRooms.length === 0 && userData.roomUsers.length === 0) ? (
+                            ) : ( userData.room.length === 0 ) ? (
                                 <>
                                     <div className="border-2 border-dashed border-border rounded-2xl p-12 text-center space-y-4">
                                         <div className="flex justify-center">
@@ -193,17 +153,8 @@ export default function DashboardPage() {
                                 <>
                                     {/* Rooms Grid */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        {[
-                                            ...userData.createdRooms,
-                                            ...userData.roomUsers
-                                                .map(ru => ru.room)
-                                                .filter(
-                                                    joinedRoom =>
-                                                        !userData.createdRooms.some(
-                                                            created => created.roomId === joinedRoom.roomId,
-                                                        ),
-                                                ),
-                                        ].map(room => (
+                                        {
+                                            ...userData.room.map(room => (
                                             <div
                                                 key={room.roomId}
                                                 className="group rounded-xl bg-card border border-border p-4 hover:border-accent/50 hover:shadow-lg transition-all"
@@ -243,11 +194,6 @@ export default function DashboardPage() {
                                                                 <Users className="h-3 w-3" />
                                                                 {room._count.roomUsers}
                                                             </span>
-                                                            <span className="text-xs text-muted-foreground">•</span>
-                                                            <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                                                <Activity className="h-3 w-3" />
-                                                                {room._count.queueEntries}
-                                                            </span>
                                                             {room.accessMode === "Private" && (
                                                                 <>
                                                                     <span className="text-xs text-muted-foreground">
@@ -257,14 +203,6 @@ export default function DashboardPage() {
                                                                     <span className="text-xs text-muted-foreground">
                                                                         Private
                                                                     </span>
-                                                                </>
-                                                            )}
-                                                            {room.playbackState?.currentEntry?.song && (
-                                                                <>
-                                                                    <span className="text-xs text-muted-foreground">
-                                                                        •
-                                                                    </span>
-                                                                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
                                                                 </>
                                                             )}
                                                         </div>

@@ -10,8 +10,15 @@ export async function GET() {
             const user = await prismaClient.user.findUnique({
                 where: {
                     email: session.user.email
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    avatarUrl: true,
+                    createdAt: true
                 }
-            })
+            });
             if (!user) throw new Error("Invalid User");
         
             const room = await prismaClient.room.findMany({
@@ -33,12 +40,15 @@ export async function GET() {
                             name: true,
                             avatarUrl: true
                         }
+                    },
+                    _count: {
+                        select: { roomUsers: true }
                     }
                 },
                 orderBy: {
                     createdAt: "desc"
                 }
-            })
+            });
         
             const { id, ...res } = { ...user, room };
             return NextResponse.json(res);
