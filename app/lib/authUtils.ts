@@ -28,6 +28,45 @@ export async function getAuthenticatedUserWithRooms() {
 
     const user = await prismaClient.user.findUnique({
         where: {
+            email: session.user.email
+        }
+    })
+    if (!user) throw new Error("Invalid User");
+
+    const room = await prismaClient.room.findMany({
+        where: {
+            OR: [
+                { createdById: user.id },
+                {  
+                    roomUsers: { some: { userId: user.id }}
+                }
+            ]
+        },
+        select: {
+            roomId: true,
+            roomName: true,
+            accessMode: true,
+            createdAt: true,
+            createdBy: {
+                select: {
+                    name: true,
+                    avatarUrl: true
+                }
+            }
+        },
+        orderBy: {
+            createdAt: "desc"
+        }
+    })
+
+    const { id, ...res } = { ...user, room };
+    return res;
+}
+
+
+/**
+ * const user = await prismaClient.user.findUnique({
+        where: {
             email: session.user.email,
         },
         select: {
@@ -79,7 +118,4 @@ export async function getAuthenticatedUserWithRooms() {
             },
         },
     });
-
-    if (!user) throw new Error("Invalid User");
-    return user;
-}
+ */

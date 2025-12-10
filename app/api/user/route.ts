@@ -1,10 +1,47 @@
 import { NextResponse } from "next/server";
-import { getAuthenticatedUserWithRooms } from "../../lib/authUtils";
+import { prismaClient } from "@/lib/db";
+import { getCachedSession } from "@/lib/cacheSession";
 
 export async function GET() {
     try {
-        const user = await getAuthenticatedUserWithRooms();
-        return NextResponse.json(user);
+            const session = await getCachedSession();
+            if (!session?.user?.email) throw new Error("Unauthenticated");
+
+            const user = await prismaClient.user.findUnique({
+                where: {
+                    email: session.user.email
+                }
+            })
+            if (!user) throw new Error("Invalid User");
+        
+            const room = await prismaClient.room.findMany({
+                where: {
+                    OR: [
+                        { createdById: user.id },
+                        {  
+                            roomUsers: { some: { userId: user.id }}
+                        }
+                    ]
+                },
+                select: {
+                    roomId: true,
+                    roomName: true,
+                    accessMode: true,
+                    createdAt: true,
+                    createdBy: {
+                        select: {
+                            name: true,
+                            avatarUrl: true
+                        }
+                    }
+                },
+                orderBy: {
+                    createdAt: "desc"
+                }
+            })
+        
+            const { id, ...res } = { ...user, room };
+            return NextResponse.json(res);
     } catch (error) {
         console.error(error);
         return NextResponse.json({ message: "Authentication failed" }, { status: 400 });
