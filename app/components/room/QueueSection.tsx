@@ -15,12 +15,6 @@ interface QueueSectionProps {
 export function QueueSection({ queue, handleAddSong, handleVote, loading = false }: QueueSectionProps) {
     return (
         <div className="p-4 space-y-6 max-w-4xl mx-auto">
-            {/* Search Panel */}
-            <div>
-                <h3 className="text-sm font-semibold text-foreground mb-3">Search & Add Songs</h3>
-                <SearchPanel handleAddSong={handleAddSong} />
-            </div>
-
             {/* Queue List */}
             <div>
                 <h3 className="text-sm font-semibold text-foreground mb-3">Up Next</h3>

@@ -4,26 +4,16 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import Link from "next/link";
 
 export default function SignInForm() {
-    const [username, setUsername] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const router = useRouter();
     const searchParams = useSearchParams();
     const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
 
     const handleGoogleSignIn = async () => {
         setIsLoading(true);
         signIn("google", { callbackUrl });
-    };
-
-    const handleGuestSignIn = () => {
-        if (!username.trim()) return;
-        localStorage.setItem("userId", `guest-${Math.random().toString(36).substring(7)}`);
-        localStorage.setItem("username", username);
-        router.push(callbackUrl);
     };
 
     return (

@@ -1,14 +1,15 @@
 "use client";
 
 import { useState, Suspense, useEffect, useRef } from "react";
-import { Music, Users, MessageCircle, Info } from "lucide-react";
+import { Music, Users, MessageCircle, Info, List } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { io, Socket } from "socket.io-client";
+import { Socket } from "socket.io-client";
 import { clientSocket, disconnectSocket } from "@/lib/socket";
 import { toast } from "sonner";
 import axios from "axios";
 import { QueueSection } from "@/components/room/QueueSection";
+import { SongSection } from "@/components/room/SongSection";
 import { MembersSection } from "@/components/room/MembersSection";
 import { ChatSection } from "@/components/room/ChatSection";
 import { InfoSection } from "@/components/room/InfoSection";
@@ -30,7 +31,7 @@ function RoomPageContent() {
     const [queue, setQueue] = useState<Song[]>([]);
     const [newMessage, setNewMessage] = useState("");
     const [activeSection, setActiveSection] = useState("queue");
-    const [currentSong] = useState<Song | null>(null);
+    const [isChecking, setIsChecking] = useState(true);
 
     useEffect(() => {
         if (status === "loading") return;
@@ -38,6 +39,31 @@ function RoomPageContent() {
             router.push(`/api/auth/signin?callbackUrl=${encodeURIComponent(window.location.href)}`);
         }
     }, [status, router]);
+
+    useEffect(() => {
+        if (!roomId || !session?.user || status === "loading") return;
+
+        const checkUserPresentInRoom = async () => {
+            try {
+                setIsChecking(true);
+                const { data } = await axios.get(`/api/roomusers?roomCode=${roomId}`);
+                const isMember = data.some((roomUsers: RoomUserFromAPI) => roomUsers.user.email === session.user.email);
+
+                if (!isMember) {
+                    toast.info("You need to join this room");
+                    router.push(`/join?roomId=${roomId}`);
+                    return;
+                }
+                setIsChecking(false);
+            } catch (error) {
+                console.error("Failed to check room membership:", error);
+                toast.error("Failed to join room");
+                router.push("/dashboard");
+            }
+        };
+
+        checkUserPresentInRoom();
+    }, [roomId, session?.user, status, router]);
 
     // For auto scroll to bottom of the page
     useEffect(() => {
@@ -48,7 +74,7 @@ function RoomPageContent() {
     }, [activeSection]);
 
     useEffect(() => {
-        if (!roomId || !session?.user || hasInitializedSocket.current) return;
+        if (!roomId || !session?.user || hasInitializedSocket.current || isChecking) return;
 
         hasInitializedSocket.current = true;
         const socketInstance = clientSocket();
@@ -139,7 +165,7 @@ function RoomPageContent() {
             socketInstance.off("message", handleIncomingMessage);
             socketInstance.off("updated_queue", handleUpdatedQueue);
         };
-    }, [roomId, session?.user]);
+    }, [roomId, session?.user, isChecking]);
 
     // cleanup when the user logouts or closes tab
     useEffect(() => {
@@ -152,7 +178,7 @@ function RoomPageContent() {
     }, []);
 
     useEffect(() => {
-        if (!roomId || !session?.user) return;
+        if (!roomId || !session?.user || isChecking) return;
 
         const fetchRoomUsers = async () => {
             try {
@@ -174,7 +200,7 @@ function RoomPageContent() {
         };
 
         fetchRoomUsers();
-    }, [roomId, session?.user]);
+    }, [roomId, session?.user, isChecking]);
 
     const handleAddSong = async (song: SongMetaData) => {
         const newSong: Song = {
@@ -213,7 +239,7 @@ function RoomPageContent() {
     };
 
     const handleCopyLink = () => {
-        navigator.clipboard.writeText(`${window.location.origin}/join?roomId=${roomId}`);
+        navigator.clipboard.writeText(`${window.location.origin}/room?id=${roomId}`);
         toast.success("Room link copied to clipboard!");
     };
 
@@ -237,12 +263,17 @@ function RoomPageContent() {
         setNewMessage("");
     };
 
-    if (!roomId) return <LoadingContext />;
+    if (!roomId || isChecking) return <LoadingContext />;
 
     return (
         <main className="min-h-screen bg-background flex flex-col">
             {/* YouTube Player Section */}
-            <YouTubePlayerSection currentSong={currentSong} />
+            <YouTubePlayerSection
+                queue={queue}
+                onSongEnd={videoId => {
+                    console.log("Song ended:", videoId);
+                }}
+            />
 
             {/* Main Content Area - Scrollable */}
             <div ref={contentRef} className="flex-1 overflow-y-auto">
@@ -256,8 +287,19 @@ function RoomPageContent() {
                                 : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                         }`}
                     >
-                        <Music className="w-5 h-5" />
+                        <List className="w-5 h-5" />
                         <span className="text-xs font-semibold">Queue</span>
+                    </button>
+                    <button
+                        onClick={() => setActiveSection("songs")}
+                        className={`flex-1 px-3 py-2.5 text-sm font-medium transition-all rounded-lg flex flex-col items-center gap-1.5 ${
+                            activeSection === "songs"
+                                ? "bg-accent text-accent-foreground shadow-md"
+                                : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                        }`}
+                    >
+                        <Music className="w-5 h-5" />
+                        <span className="text-xs font-semibold">Songs</span>
                     </button>
                     <button
                         onClick={() => setActiveSection("members")}
@@ -298,6 +340,9 @@ function RoomPageContent() {
                 {activeSection === "queue" && (
                     <QueueSection queue={queue} handleAddSong={handleAddSong} handleVote={handleVote} />
                 )}
+
+                {/* Queue Section */}
+                {activeSection === "songs" && <SongSection handleAddSong={handleAddSong} />}
 
                 {/* Members Section */}
                 {activeSection === "members" && <MembersSection allUsers={allUsers} onlineUsers={onlineUsers} />}
