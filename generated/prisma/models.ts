@@ -8,12 +8,10 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/User.js'
-export type * from './models/Room.js'
-export type * from './models/RoomUser.js'
-export type * from './models/Song.js'
-export type * from './models/RoomQueue.js'
-export type * from './models/Vote.js'
-export type * from './models/PlaybackState.js'
-export type * from './models/PlaybackHistory.js'
-export type * from './commonInputTypes.js'
+export type * from './models/User'
+export type * from './models/Room'
+export type * from './models/RoomUser'
+export type * from './models/Song'
+export type * from './models/Vote'
+export type * from './models/PlaybackHistory'
+export type * from './commonInputTypes'

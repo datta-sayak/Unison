@@ -17,8 +17,8 @@
 
 import * as runtime from "@prisma/client/runtime/index-browser"
 
-export type * from '../models.js'
-export type * from './prismaNamespace.js'
+export type * from '../models'
+export type * from './prismaNamespace'
 
 export const Decimal = runtime.Decimal
 
@@ -55,9 +55,7 @@ export const ModelName = {
   Room: 'Room',
   RoomUser: 'RoomUser',
   Song: 'Song',
-  RoomQueue: 'RoomQueue',
   Vote: 'Vote',
-  PlaybackState: 'PlaybackState',
   PlaybackHistory: 'PlaybackHistory'
 } as const
 
@@ -117,26 +115,12 @@ export const SongScalarFieldEnum = {
   youtubeId: 'youtubeId',
   title: 'title',
   channelName: 'channelName',
-  smallImage: 'smallImage',
-  bigImage: 'bigImage',
+  image: 'image',
   duration: 'duration',
   tags: 'tags'
 } as const
 
 export type SongScalarFieldEnum = (typeof SongScalarFieldEnum)[keyof typeof SongScalarFieldEnum]
-
-
-export const RoomQueueScalarFieldEnum = {
-  id: 'id',
-  roomId: 'roomId',
-  songId: 'songId',
-  addedById: 'addedById',
-  addedAt: 'addedAt',
-  status: 'status',
-  voteScore: 'voteScore'
-} as const
-
-export type RoomQueueScalarFieldEnum = (typeof RoomQueueScalarFieldEnum)[keyof typeof RoomQueueScalarFieldEnum]
 
 
 export const VoteScalarFieldEnum = {
@@ -148,19 +132,6 @@ export const VoteScalarFieldEnum = {
 } as const
 
 export type VoteScalarFieldEnum = (typeof VoteScalarFieldEnum)[keyof typeof VoteScalarFieldEnum]
-
-
-export const PlaybackStateScalarFieldEnum = {
-  id: 'id',
-  roomId: 'roomId',
-  currentEntryId: 'currentEntryId',
-  startedAt: 'startedAt',
-  isPaused: 'isPaused',
-  elapsedTime: 'elapsedTime',
-  providerData: 'providerData'
-} as const
-
-export type PlaybackStateScalarFieldEnum = (typeof PlaybackStateScalarFieldEnum)[keyof typeof PlaybackStateScalarFieldEnum]
 
 
 export const PlaybackHistoryScalarFieldEnum = {
@@ -184,14 +155,6 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
-export const NullableJsonNullValueInput = {
-  DbNull: 'DbNull',
-  JsonNull: 'JsonNull'
-} as const
-
-export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
-
-
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -206,13 +169,4 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
-
-
-export const JsonNullValueFilter = {
-  DbNull: 'DbNull',
-  JsonNull: 'JsonNull',
-  AnyNull: 'AnyNull'
-} as const
-
-export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

@@ -9,8 +9,8 @@
  * 🟢 You can import this file directly.
  */
 import type * as runtime from "@prisma/client/runtime/client"
-import type * as $Enums from "../enums.js"
-import type * as Prisma from "../internal/prismaNamespace.js"
+import type * as $Enums from "../enums"
+import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model Room
@@ -200,8 +200,6 @@ export type RoomWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Room"> | Date | string
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   roomUsers?: Prisma.RoomUserListRelationFilter
-  queueEntries?: Prisma.RoomQueueListRelationFilter
-  playbackState?: Prisma.XOR<Prisma.PlaybackStateNullableScalarRelationFilter, Prisma.PlaybackStateWhereInput> | null
   history?: Prisma.PlaybackHistoryListRelationFilter
 }
 
@@ -215,8 +213,6 @@ export type RoomOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   createdBy?: Prisma.UserOrderByWithRelationInput
   roomUsers?: Prisma.RoomUserOrderByRelationAggregateInput
-  queueEntries?: Prisma.RoomQueueOrderByRelationAggregateInput
-  playbackState?: Prisma.PlaybackStateOrderByWithRelationInput
   history?: Prisma.PlaybackHistoryOrderByRelationAggregateInput
 }
 
@@ -233,8 +229,6 @@ export type RoomWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Room"> | Date | string
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   roomUsers?: Prisma.RoomUserListRelationFilter
-  queueEntries?: Prisma.RoomQueueListRelationFilter
-  playbackState?: Prisma.XOR<Prisma.PlaybackStateNullableScalarRelationFilter, Prisma.PlaybackStateWhereInput> | null
   history?: Prisma.PlaybackHistoryListRelationFilter
 }, "roomId">
 
@@ -273,8 +267,6 @@ export type RoomCreateInput = {
   createdAt?: Date | string
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedRoomsInput
   roomUsers?: Prisma.RoomUserCreateNestedManyWithoutRoomInput
-  queueEntries?: Prisma.RoomQueueCreateNestedManyWithoutRoomInput
-  playbackState?: Prisma.PlaybackStateCreateNestedOneWithoutRoomInput
   history?: Prisma.PlaybackHistoryCreateNestedManyWithoutRoomInput
 }
 
@@ -287,8 +279,6 @@ export type RoomUncheckedCreateInput = {
   themeId?: string | null
   createdAt?: Date | string
   roomUsers?: Prisma.RoomUserUncheckedCreateNestedManyWithoutRoomInput
-  queueEntries?: Prisma.RoomQueueUncheckedCreateNestedManyWithoutRoomInput
-  playbackState?: Prisma.PlaybackStateUncheckedCreateNestedOneWithoutRoomInput
   history?: Prisma.PlaybackHistoryUncheckedCreateNestedManyWithoutRoomInput
 }
 
@@ -301,8 +291,6 @@ export type RoomUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedRoomsNestedInput
   roomUsers?: Prisma.RoomUserUpdateManyWithoutRoomNestedInput
-  queueEntries?: Prisma.RoomQueueUpdateManyWithoutRoomNestedInput
-  playbackState?: Prisma.PlaybackStateUpdateOneWithoutRoomNestedInput
   history?: Prisma.PlaybackHistoryUpdateManyWithoutRoomNestedInput
 }
 
@@ -315,8 +303,6 @@ export type RoomUncheckedUpdateInput = {
   themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roomUsers?: Prisma.RoomUserUncheckedUpdateManyWithoutRoomNestedInput
-  queueEntries?: Prisma.RoomQueueUncheckedUpdateManyWithoutRoomNestedInput
-  playbackState?: Prisma.PlaybackStateUncheckedUpdateOneWithoutRoomNestedInput
   history?: Prisma.PlaybackHistoryUncheckedUpdateManyWithoutRoomNestedInput
 }
 
@@ -454,34 +440,6 @@ export type RoomUpdateOneRequiredWithoutRoomUsersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.RoomUpdateToOneWithWhereWithoutRoomUsersInput, Prisma.RoomUpdateWithoutRoomUsersInput>, Prisma.RoomUncheckedUpdateWithoutRoomUsersInput>
 }
 
-export type RoomCreateNestedOneWithoutQueueEntriesInput = {
-  create?: Prisma.XOR<Prisma.RoomCreateWithoutQueueEntriesInput, Prisma.RoomUncheckedCreateWithoutQueueEntriesInput>
-  connectOrCreate?: Prisma.RoomCreateOrConnectWithoutQueueEntriesInput
-  connect?: Prisma.RoomWhereUniqueInput
-}
-
-export type RoomUpdateOneRequiredWithoutQueueEntriesNestedInput = {
-  create?: Prisma.XOR<Prisma.RoomCreateWithoutQueueEntriesInput, Prisma.RoomUncheckedCreateWithoutQueueEntriesInput>
-  connectOrCreate?: Prisma.RoomCreateOrConnectWithoutQueueEntriesInput
-  upsert?: Prisma.RoomUpsertWithoutQueueEntriesInput
-  connect?: Prisma.RoomWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.RoomUpdateToOneWithWhereWithoutQueueEntriesInput, Prisma.RoomUpdateWithoutQueueEntriesInput>, Prisma.RoomUncheckedUpdateWithoutQueueEntriesInput>
-}
-
-export type RoomCreateNestedOneWithoutPlaybackStateInput = {
-  create?: Prisma.XOR<Prisma.RoomCreateWithoutPlaybackStateInput, Prisma.RoomUncheckedCreateWithoutPlaybackStateInput>
-  connectOrCreate?: Prisma.RoomCreateOrConnectWithoutPlaybackStateInput
-  connect?: Prisma.RoomWhereUniqueInput
-}
-
-export type RoomUpdateOneRequiredWithoutPlaybackStateNestedInput = {
-  create?: Prisma.XOR<Prisma.RoomCreateWithoutPlaybackStateInput, Prisma.RoomUncheckedCreateWithoutPlaybackStateInput>
-  connectOrCreate?: Prisma.RoomCreateOrConnectWithoutPlaybackStateInput
-  upsert?: Prisma.RoomUpsertWithoutPlaybackStateInput
-  connect?: Prisma.RoomWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.RoomUpdateToOneWithWhereWithoutPlaybackStateInput, Prisma.RoomUpdateWithoutPlaybackStateInput>, Prisma.RoomUncheckedUpdateWithoutPlaybackStateInput>
-}
-
 export type RoomCreateNestedOneWithoutHistoryInput = {
   create?: Prisma.XOR<Prisma.RoomCreateWithoutHistoryInput, Prisma.RoomUncheckedCreateWithoutHistoryInput>
   connectOrCreate?: Prisma.RoomCreateOrConnectWithoutHistoryInput
@@ -504,8 +462,6 @@ export type RoomCreateWithoutCreatedByInput = {
   themeId?: string | null
   createdAt?: Date | string
   roomUsers?: Prisma.RoomUserCreateNestedManyWithoutRoomInput
-  queueEntries?: Prisma.RoomQueueCreateNestedManyWithoutRoomInput
-  playbackState?: Prisma.PlaybackStateCreateNestedOneWithoutRoomInput
   history?: Prisma.PlaybackHistoryCreateNestedManyWithoutRoomInput
 }
 
@@ -517,8 +473,6 @@ export type RoomUncheckedCreateWithoutCreatedByInput = {
   themeId?: string | null
   createdAt?: Date | string
   roomUsers?: Prisma.RoomUserUncheckedCreateNestedManyWithoutRoomInput
-  queueEntries?: Prisma.RoomQueueUncheckedCreateNestedManyWithoutRoomInput
-  playbackState?: Prisma.PlaybackStateUncheckedCreateNestedOneWithoutRoomInput
   history?: Prisma.PlaybackHistoryUncheckedCreateNestedManyWithoutRoomInput
 }
 
@@ -569,8 +523,6 @@ export type RoomCreateWithoutRoomUsersInput = {
   themeId?: string | null
   createdAt?: Date | string
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedRoomsInput
-  queueEntries?: Prisma.RoomQueueCreateNestedManyWithoutRoomInput
-  playbackState?: Prisma.PlaybackStateCreateNestedOneWithoutRoomInput
   history?: Prisma.PlaybackHistoryCreateNestedManyWithoutRoomInput
 }
 
@@ -582,8 +534,6 @@ export type RoomUncheckedCreateWithoutRoomUsersInput = {
   passwordHash?: string | null
   themeId?: string | null
   createdAt?: Date | string
-  queueEntries?: Prisma.RoomQueueUncheckedCreateNestedManyWithoutRoomInput
-  playbackState?: Prisma.PlaybackStateUncheckedCreateNestedOneWithoutRoomInput
   history?: Prisma.PlaybackHistoryUncheckedCreateNestedManyWithoutRoomInput
 }
 
@@ -611,8 +561,6 @@ export type RoomUpdateWithoutRoomUsersInput = {
   themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedRoomsNestedInput
-  queueEntries?: Prisma.RoomQueueUpdateManyWithoutRoomNestedInput
-  playbackState?: Prisma.PlaybackStateUpdateOneWithoutRoomNestedInput
   history?: Prisma.PlaybackHistoryUpdateManyWithoutRoomNestedInput
 }
 
@@ -624,144 +572,6 @@ export type RoomUncheckedUpdateWithoutRoomUsersInput = {
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  queueEntries?: Prisma.RoomQueueUncheckedUpdateManyWithoutRoomNestedInput
-  playbackState?: Prisma.PlaybackStateUncheckedUpdateOneWithoutRoomNestedInput
-  history?: Prisma.PlaybackHistoryUncheckedUpdateManyWithoutRoomNestedInput
-}
-
-export type RoomCreateWithoutQueueEntriesInput = {
-  roomId: string
-  roomName: string
-  accessMode?: $Enums.AccessMode
-  passwordHash?: string | null
-  themeId?: string | null
-  createdAt?: Date | string
-  createdBy: Prisma.UserCreateNestedOneWithoutCreatedRoomsInput
-  roomUsers?: Prisma.RoomUserCreateNestedManyWithoutRoomInput
-  playbackState?: Prisma.PlaybackStateCreateNestedOneWithoutRoomInput
-  history?: Prisma.PlaybackHistoryCreateNestedManyWithoutRoomInput
-}
-
-export type RoomUncheckedCreateWithoutQueueEntriesInput = {
-  roomId: string
-  roomName: string
-  createdById: string
-  accessMode?: $Enums.AccessMode
-  passwordHash?: string | null
-  themeId?: string | null
-  createdAt?: Date | string
-  roomUsers?: Prisma.RoomUserUncheckedCreateNestedManyWithoutRoomInput
-  playbackState?: Prisma.PlaybackStateUncheckedCreateNestedOneWithoutRoomInput
-  history?: Prisma.PlaybackHistoryUncheckedCreateNestedManyWithoutRoomInput
-}
-
-export type RoomCreateOrConnectWithoutQueueEntriesInput = {
-  where: Prisma.RoomWhereUniqueInput
-  create: Prisma.XOR<Prisma.RoomCreateWithoutQueueEntriesInput, Prisma.RoomUncheckedCreateWithoutQueueEntriesInput>
-}
-
-export type RoomUpsertWithoutQueueEntriesInput = {
-  update: Prisma.XOR<Prisma.RoomUpdateWithoutQueueEntriesInput, Prisma.RoomUncheckedUpdateWithoutQueueEntriesInput>
-  create: Prisma.XOR<Prisma.RoomCreateWithoutQueueEntriesInput, Prisma.RoomUncheckedCreateWithoutQueueEntriesInput>
-  where?: Prisma.RoomWhereInput
-}
-
-export type RoomUpdateToOneWithWhereWithoutQueueEntriesInput = {
-  where?: Prisma.RoomWhereInput
-  data: Prisma.XOR<Prisma.RoomUpdateWithoutQueueEntriesInput, Prisma.RoomUncheckedUpdateWithoutQueueEntriesInput>
-}
-
-export type RoomUpdateWithoutQueueEntriesInput = {
-  roomId?: Prisma.StringFieldUpdateOperationsInput | string
-  roomName?: Prisma.StringFieldUpdateOperationsInput | string
-  accessMode?: Prisma.EnumAccessModeFieldUpdateOperationsInput | $Enums.AccessMode
-  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedRoomsNestedInput
-  roomUsers?: Prisma.RoomUserUpdateManyWithoutRoomNestedInput
-  playbackState?: Prisma.PlaybackStateUpdateOneWithoutRoomNestedInput
-  history?: Prisma.PlaybackHistoryUpdateManyWithoutRoomNestedInput
-}
-
-export type RoomUncheckedUpdateWithoutQueueEntriesInput = {
-  roomId?: Prisma.StringFieldUpdateOperationsInput | string
-  roomName?: Prisma.StringFieldUpdateOperationsInput | string
-  createdById?: Prisma.StringFieldUpdateOperationsInput | string
-  accessMode?: Prisma.EnumAccessModeFieldUpdateOperationsInput | $Enums.AccessMode
-  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  roomUsers?: Prisma.RoomUserUncheckedUpdateManyWithoutRoomNestedInput
-  playbackState?: Prisma.PlaybackStateUncheckedUpdateOneWithoutRoomNestedInput
-  history?: Prisma.PlaybackHistoryUncheckedUpdateManyWithoutRoomNestedInput
-}
-
-export type RoomCreateWithoutPlaybackStateInput = {
-  roomId: string
-  roomName: string
-  accessMode?: $Enums.AccessMode
-  passwordHash?: string | null
-  themeId?: string | null
-  createdAt?: Date | string
-  createdBy: Prisma.UserCreateNestedOneWithoutCreatedRoomsInput
-  roomUsers?: Prisma.RoomUserCreateNestedManyWithoutRoomInput
-  queueEntries?: Prisma.RoomQueueCreateNestedManyWithoutRoomInput
-  history?: Prisma.PlaybackHistoryCreateNestedManyWithoutRoomInput
-}
-
-export type RoomUncheckedCreateWithoutPlaybackStateInput = {
-  roomId: string
-  roomName: string
-  createdById: string
-  accessMode?: $Enums.AccessMode
-  passwordHash?: string | null
-  themeId?: string | null
-  createdAt?: Date | string
-  roomUsers?: Prisma.RoomUserUncheckedCreateNestedManyWithoutRoomInput
-  queueEntries?: Prisma.RoomQueueUncheckedCreateNestedManyWithoutRoomInput
-  history?: Prisma.PlaybackHistoryUncheckedCreateNestedManyWithoutRoomInput
-}
-
-export type RoomCreateOrConnectWithoutPlaybackStateInput = {
-  where: Prisma.RoomWhereUniqueInput
-  create: Prisma.XOR<Prisma.RoomCreateWithoutPlaybackStateInput, Prisma.RoomUncheckedCreateWithoutPlaybackStateInput>
-}
-
-export type RoomUpsertWithoutPlaybackStateInput = {
-  update: Prisma.XOR<Prisma.RoomUpdateWithoutPlaybackStateInput, Prisma.RoomUncheckedUpdateWithoutPlaybackStateInput>
-  create: Prisma.XOR<Prisma.RoomCreateWithoutPlaybackStateInput, Prisma.RoomUncheckedCreateWithoutPlaybackStateInput>
-  where?: Prisma.RoomWhereInput
-}
-
-export type RoomUpdateToOneWithWhereWithoutPlaybackStateInput = {
-  where?: Prisma.RoomWhereInput
-  data: Prisma.XOR<Prisma.RoomUpdateWithoutPlaybackStateInput, Prisma.RoomUncheckedUpdateWithoutPlaybackStateInput>
-}
-
-export type RoomUpdateWithoutPlaybackStateInput = {
-  roomId?: Prisma.StringFieldUpdateOperationsInput | string
-  roomName?: Prisma.StringFieldUpdateOperationsInput | string
-  accessMode?: Prisma.EnumAccessModeFieldUpdateOperationsInput | $Enums.AccessMode
-  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedRoomsNestedInput
-  roomUsers?: Prisma.RoomUserUpdateManyWithoutRoomNestedInput
-  queueEntries?: Prisma.RoomQueueUpdateManyWithoutRoomNestedInput
-  history?: Prisma.PlaybackHistoryUpdateManyWithoutRoomNestedInput
-}
-
-export type RoomUncheckedUpdateWithoutPlaybackStateInput = {
-  roomId?: Prisma.StringFieldUpdateOperationsInput | string
-  roomName?: Prisma.StringFieldUpdateOperationsInput | string
-  createdById?: Prisma.StringFieldUpdateOperationsInput | string
-  accessMode?: Prisma.EnumAccessModeFieldUpdateOperationsInput | $Enums.AccessMode
-  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  roomUsers?: Prisma.RoomUserUncheckedUpdateManyWithoutRoomNestedInput
-  queueEntries?: Prisma.RoomQueueUncheckedUpdateManyWithoutRoomNestedInput
   history?: Prisma.PlaybackHistoryUncheckedUpdateManyWithoutRoomNestedInput
 }
 
@@ -774,8 +584,6 @@ export type RoomCreateWithoutHistoryInput = {
   createdAt?: Date | string
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedRoomsInput
   roomUsers?: Prisma.RoomUserCreateNestedManyWithoutRoomInput
-  queueEntries?: Prisma.RoomQueueCreateNestedManyWithoutRoomInput
-  playbackState?: Prisma.PlaybackStateCreateNestedOneWithoutRoomInput
 }
 
 export type RoomUncheckedCreateWithoutHistoryInput = {
@@ -787,8 +595,6 @@ export type RoomUncheckedCreateWithoutHistoryInput = {
   themeId?: string | null
   createdAt?: Date | string
   roomUsers?: Prisma.RoomUserUncheckedCreateNestedManyWithoutRoomInput
-  queueEntries?: Prisma.RoomQueueUncheckedCreateNestedManyWithoutRoomInput
-  playbackState?: Prisma.PlaybackStateUncheckedCreateNestedOneWithoutRoomInput
 }
 
 export type RoomCreateOrConnectWithoutHistoryInput = {
@@ -816,8 +622,6 @@ export type RoomUpdateWithoutHistoryInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedRoomsNestedInput
   roomUsers?: Prisma.RoomUserUpdateManyWithoutRoomNestedInput
-  queueEntries?: Prisma.RoomQueueUpdateManyWithoutRoomNestedInput
-  playbackState?: Prisma.PlaybackStateUpdateOneWithoutRoomNestedInput
 }
 
 export type RoomUncheckedUpdateWithoutHistoryInput = {
@@ -829,8 +633,6 @@ export type RoomUncheckedUpdateWithoutHistoryInput = {
   themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roomUsers?: Prisma.RoomUserUncheckedUpdateManyWithoutRoomNestedInput
-  queueEntries?: Prisma.RoomQueueUncheckedUpdateManyWithoutRoomNestedInput
-  playbackState?: Prisma.PlaybackStateUncheckedUpdateOneWithoutRoomNestedInput
 }
 
 export type RoomCreateManyCreatedByInput = {
@@ -850,8 +652,6 @@ export type RoomUpdateWithoutCreatedByInput = {
   themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roomUsers?: Prisma.RoomUserUpdateManyWithoutRoomNestedInput
-  queueEntries?: Prisma.RoomQueueUpdateManyWithoutRoomNestedInput
-  playbackState?: Prisma.PlaybackStateUpdateOneWithoutRoomNestedInput
   history?: Prisma.PlaybackHistoryUpdateManyWithoutRoomNestedInput
 }
 
@@ -863,8 +663,6 @@ export type RoomUncheckedUpdateWithoutCreatedByInput = {
   themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roomUsers?: Prisma.RoomUserUncheckedUpdateManyWithoutRoomNestedInput
-  queueEntries?: Prisma.RoomQueueUncheckedUpdateManyWithoutRoomNestedInput
-  playbackState?: Prisma.PlaybackStateUncheckedUpdateOneWithoutRoomNestedInput
   history?: Prisma.PlaybackHistoryUncheckedUpdateManyWithoutRoomNestedInput
 }
 
@@ -884,13 +682,11 @@ export type RoomUncheckedUpdateManyWithoutCreatedByInput = {
 
 export type RoomCountOutputType = {
   roomUsers: number
-  queueEntries: number
   history: number
 }
 
 export type RoomCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   roomUsers?: boolean | RoomCountOutputTypeCountRoomUsersArgs
-  queueEntries?: boolean | RoomCountOutputTypeCountQueueEntriesArgs
   history?: boolean | RoomCountOutputTypeCountHistoryArgs
 }
 
@@ -914,13 +710,6 @@ export type RoomCountOutputTypeCountRoomUsersArgs<ExtArgs extends runtime.Types.
 /**
  * RoomCountOutputType without action
  */
-export type RoomCountOutputTypeCountQueueEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.RoomQueueWhereInput
-}
-
-/**
- * RoomCountOutputType without action
- */
 export type RoomCountOutputTypeCountHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.PlaybackHistoryWhereInput
 }
@@ -936,8 +725,6 @@ export type RoomSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   roomUsers?: boolean | Prisma.Room$roomUsersArgs<ExtArgs>
-  queueEntries?: boolean | Prisma.Room$queueEntriesArgs<ExtArgs>
-  playbackState?: boolean | Prisma.Room$playbackStateArgs<ExtArgs>
   history?: boolean | Prisma.Room$historyArgs<ExtArgs>
   _count?: boolean | Prisma.RoomCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["room"]>
@@ -978,8 +765,6 @@ export type RoomOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type RoomInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   roomUsers?: boolean | Prisma.Room$roomUsersArgs<ExtArgs>
-  queueEntries?: boolean | Prisma.Room$queueEntriesArgs<ExtArgs>
-  playbackState?: boolean | Prisma.Room$playbackStateArgs<ExtArgs>
   history?: boolean | Prisma.Room$historyArgs<ExtArgs>
   _count?: boolean | Prisma.RoomCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -995,8 +780,6 @@ export type $RoomPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     createdBy: Prisma.$UserPayload<ExtArgs>
     roomUsers: Prisma.$RoomUserPayload<ExtArgs>[]
-    queueEntries: Prisma.$RoomQueuePayload<ExtArgs>[]
-    playbackState: Prisma.$PlaybackStatePayload<ExtArgs> | null
     history: Prisma.$PlaybackHistoryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1403,8 +1186,6 @@ export interface Prisma__RoomClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   createdBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   roomUsers<T extends Prisma.Room$roomUsersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Room$roomUsersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoomUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  queueEntries<T extends Prisma.Room$queueEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Room$queueEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoomQueuePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  playbackState<T extends Prisma.Room$playbackStateArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Room$playbackStateArgs<ExtArgs>>): Prisma.Prisma__PlaybackStateClient<runtime.Types.Result.GetResult<Prisma.$PlaybackStatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   history<T extends Prisma.Room$historyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Room$historyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlaybackHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1859,49 +1640,6 @@ export type Room$roomUsersArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.RoomUserScalarFieldEnum | Prisma.RoomUserScalarFieldEnum[]
-}
-
-/**
- * Room.queueEntries
- */
-export type Room$queueEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the RoomQueue
-   */
-  select?: Prisma.RoomQueueSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the RoomQueue
-   */
-  omit?: Prisma.RoomQueueOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.RoomQueueInclude<ExtArgs> | null
-  where?: Prisma.RoomQueueWhereInput
-  orderBy?: Prisma.RoomQueueOrderByWithRelationInput | Prisma.RoomQueueOrderByWithRelationInput[]
-  cursor?: Prisma.RoomQueueWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.RoomQueueScalarFieldEnum | Prisma.RoomQueueScalarFieldEnum[]
-}
-
-/**
- * Room.playbackState
- */
-export type Room$playbackStateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the PlaybackState
-   */
-  select?: Prisma.PlaybackStateSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the PlaybackState
-   */
-  omit?: Prisma.PlaybackStateOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.PlaybackStateInclude<ExtArgs> | null
-  where?: Prisma.PlaybackStateWhereInput
 }
 
 /**

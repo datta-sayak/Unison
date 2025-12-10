@@ -12,15 +12,15 @@
  */
 
 import * as runtime from "@prisma/client/runtime/client"
-import type * as Prisma from "./prismaNamespace.js"
+import type * as Prisma from "./prismaNamespace"
 
 
 const config: runtime.GetPrismaClientConfig = {
   "previewFeatures": [],
-  "clientVersion": "7.0.1",
-  "engineVersion": "f09f2815f091dbba658cdcd2264306d88bb5bda6",
+  "clientVersion": "7.1.0",
+  "engineVersion": "ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba",
   "activeProvider": "postgresql",
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel User {\n  id                String            @id @default(cuid())\n  name              String?\n  email             String            @unique\n  avatarUrl         String?\n  createdAt         DateTime          @default(now())\n  roomUsers         RoomUser[]\n  vote              Vote[]\n  createdRooms      Room[]            @relation(\"RoomCreator\")\n  addedQueueEntries RoomQueue[]       @relation(\"QueueEntryAdder\")\n  addedHistory      PlaybackHistory[] @relation(\"HistoryAdder\")\n\n  @@index([email])\n  @@index([createdAt])\n}\n\nmodel Room {\n  roomId        String            @id\n  roomName      String\n  createdById   String\n  accessMode    AccessMode        @default(Public)\n  passwordHash  String?\n  themeId       String?\n  createdAt     DateTime          @default(now())\n  createdBy     User              @relation(\"RoomCreator\", fields: [createdById], references: [id])\n  roomUsers     RoomUser[]\n  queueEntries  RoomQueue[]\n  playbackState PlaybackState?\n  history       PlaybackHistory[]\n\n  @@index([createdById])\n  @@index([createdAt])\n  @@index([accessMode])\n}\n\nmodel RoomUser {\n  id       String   @id @default(cuid())\n  roomId   String\n  userId   String\n  room     Room     @relation(fields: [roomId], references: [roomId])\n  user     User     @relation(fields: [userId], references: [id])\n  lastSeen DateTime @default(now())\n  muted    Boolean  @default(false)\n\n  @@unique([roomId, userId])\n  @@index([roomId])\n  @@index([userId])\n  @@index([lastSeen])\n}\n\nmodel Song {\n  id           String            @id @default(cuid())\n  youtubeId    String            @unique\n  title        String\n  channelName  String?\n  smallImage   String?\n  bigImage     String?\n  duration     Int?\n  tags         String[]\n  queueEntries RoomQueue[]\n  history      PlaybackHistory[]\n}\n\nmodel RoomQueue {\n  id            String            @id @default(cuid())\n  roomId        String\n  songId        String\n  addedById     String\n  room          Room              @relation(fields: [roomId], references: [roomId])\n  song          Song              @relation(fields: [songId], references: [id])\n  addedBy       User              @relation(\"QueueEntryAdder\", fields: [addedById], references: [id])\n  addedAt       DateTime          @default(now())\n  status        QueueStatus       @default(Queued)\n  voteScore     Int               @default(0)\n  votes         Vote[]\n  playbackState PlaybackState?    @relation(\"CurrentPlaybackEntry\")\n  history       PlaybackHistory[]\n\n  @@index([roomId])\n  @@index([addedAt])\n  @@index([status])\n  @@index([voteScore])\n}\n\nmodel Vote {\n  id           String    @id @default(cuid())\n  queueEntryId String\n  userId       String\n  entry        RoomQueue @relation(fields: [queueEntryId], references: [id])\n  user         User      @relation(fields: [userId], references: [id])\n  value        Int\n  createdAt    DateTime  @default(now())\n\n  @@unique([queueEntryId, userId])\n}\n\nmodel PlaybackState {\n  id             String     @id\n  roomId         String     @unique\n  room           Room       @relation(fields: [roomId], references: [roomId])\n  currentEntryId String?    @unique\n  startedAt      DateTime?\n  isPaused       Boolean    @default(true)\n  elapsedTime    Int        @default(0)\n  providerData   Json?\n  currentEntry   RoomQueue? @relation(\"CurrentPlaybackEntry\", fields: [currentEntryId], references: [id])\n}\n\nmodel PlaybackHistory {\n  id           String     @id @default(cuid())\n  roomId       String\n  songId       String\n  queueEntryId String?\n  addedById    String?\n  room         Room       @relation(fields: [roomId], references: [roomId])\n  song         Song       @relation(fields: [songId], references: [id])\n  queueEntry   RoomQueue? @relation(fields: [queueEntryId], references: [id])\n  addedBy      User?      @relation(\"HistoryAdder\", fields: [addedById], references: [id])\n  playedAt     DateTime   @default(now())\n  duration     Int\n}\n\nenum QueueStatus {\n  Queued\n  Playing\n  Skipped\n}\n\nenum AccessMode {\n  Public\n  Private\n}\n",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel User {\n  id           String            @id @default(cuid())\n  name         String?\n  email        String            @unique\n  avatarUrl    String?\n  createdAt    DateTime          @default(now())\n  roomUsers    RoomUser[]\n  vote         Vote[]\n  createdRooms Room[]            @relation(\"RoomCreator\")\n  addedHistory PlaybackHistory[] @relation(\"HistoryAdder\")\n\n  @@index([email])\n  @@index([createdAt])\n}\n\nmodel Room {\n  roomId       String            @id\n  roomName     String\n  createdById  String\n  accessMode   AccessMode        @default(Public)\n  passwordHash String?\n  themeId      String?\n  createdAt    DateTime          @default(now())\n  createdBy    User              @relation(\"RoomCreator\", fields: [createdById], references: [id])\n  roomUsers    RoomUser[]\n  history      PlaybackHistory[]\n\n  @@index([createdById])\n  @@index([createdAt])\n  @@index([accessMode])\n}\n\nmodel RoomUser {\n  id       String   @id @default(cuid())\n  roomId   String\n  userId   String\n  room     Room     @relation(fields: [roomId], references: [roomId])\n  user     User     @relation(fields: [userId], references: [id])\n  lastSeen DateTime @default(now())\n  muted    Boolean  @default(false)\n\n  @@unique([roomId, userId])\n  @@index([roomId])\n  @@index([userId])\n  @@index([lastSeen])\n}\n\nmodel Song {\n  id          String            @id @default(cuid())\n  youtubeId   String            @unique\n  title       String\n  channelName String\n  image       String?\n  duration    String\n  tags        String[]\n  history     PlaybackHistory[]\n}\n\nmodel Vote {\n  id           String   @id @default(cuid())\n  queueEntryId String\n  userId       String\n  user         User     @relation(fields: [userId], references: [id])\n  value        Int\n  createdAt    DateTime @default(now())\n\n  @@unique([queueEntryId, userId])\n}\n\nmodel PlaybackHistory {\n  id           String   @id @default(cuid())\n  roomId       String\n  songId       String\n  queueEntryId String?\n  addedById    String?\n  room         Room     @relation(fields: [roomId], references: [roomId])\n  song         Song     @relation(fields: [songId], references: [id])\n  addedBy      User?    @relation(\"HistoryAdder\", fields: [addedById], references: [id])\n  playedAt     DateTime @default(now())\n  duration     Int\n}\n\nenum QueueStatus {\n  Queued\n  Playing\n  Skipped\n}\n\nenum AccessMode {\n  Public\n  Private\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -28,7 +28,7 @@ const config: runtime.GetPrismaClientConfig = {
   }
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"avatarUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"roomUsers\",\"kind\":\"object\",\"type\":\"RoomUser\",\"relationName\":\"RoomUserToUser\"},{\"name\":\"vote\",\"kind\":\"object\",\"type\":\"Vote\",\"relationName\":\"UserToVote\"},{\"name\":\"createdRooms\",\"kind\":\"object\",\"type\":\"Room\",\"relationName\":\"RoomCreator\"},{\"name\":\"addedQueueEntries\",\"kind\":\"object\",\"type\":\"RoomQueue\",\"relationName\":\"QueueEntryAdder\"},{\"name\":\"addedHistory\",\"kind\":\"object\",\"type\":\"PlaybackHistory\",\"relationName\":\"HistoryAdder\"}],\"dbName\":null},\"Room\":{\"fields\":[{\"name\":\"roomId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"roomName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accessMode\",\"kind\":\"enum\",\"type\":\"AccessMode\"},{\"name\":\"passwordHash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"themeId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"RoomCreator\"},{\"name\":\"roomUsers\",\"kind\":\"object\",\"type\":\"RoomUser\",\"relationName\":\"RoomToRoomUser\"},{\"name\":\"queueEntries\",\"kind\":\"object\",\"type\":\"RoomQueue\",\"relationName\":\"RoomToRoomQueue\"},{\"name\":\"playbackState\",\"kind\":\"object\",\"type\":\"PlaybackState\",\"relationName\":\"PlaybackStateToRoom\"},{\"name\":\"history\",\"kind\":\"object\",\"type\":\"PlaybackHistory\",\"relationName\":\"PlaybackHistoryToRoom\"}],\"dbName\":null},\"RoomUser\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"roomId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"room\",\"kind\":\"object\",\"type\":\"Room\",\"relationName\":\"RoomToRoomUser\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"RoomUserToUser\"},{\"name\":\"lastSeen\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"muted\",\"kind\":\"scalar\",\"type\":\"Boolean\"}],\"dbName\":null},\"Song\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"youtubeId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"channelName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"smallImage\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"bigImage\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"duration\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"tags\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"queueEntries\",\"kind\":\"object\",\"type\":\"RoomQueue\",\"relationName\":\"RoomQueueToSong\"},{\"name\":\"history\",\"kind\":\"object\",\"type\":\"PlaybackHistory\",\"relationName\":\"PlaybackHistoryToSong\"}],\"dbName\":null},\"RoomQueue\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"roomId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"songId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"addedById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"room\",\"kind\":\"object\",\"type\":\"Room\",\"relationName\":\"RoomToRoomQueue\"},{\"name\":\"song\",\"kind\":\"object\",\"type\":\"Song\",\"relationName\":\"RoomQueueToSong\"},{\"name\":\"addedBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"QueueEntryAdder\"},{\"name\":\"addedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"QueueStatus\"},{\"name\":\"voteScore\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"votes\",\"kind\":\"object\",\"type\":\"Vote\",\"relationName\":\"RoomQueueToVote\"},{\"name\":\"playbackState\",\"kind\":\"object\",\"type\":\"PlaybackState\",\"relationName\":\"CurrentPlaybackEntry\"},{\"name\":\"history\",\"kind\":\"object\",\"type\":\"PlaybackHistory\",\"relationName\":\"PlaybackHistoryToRoomQueue\"}],\"dbName\":null},\"Vote\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"queueEntryId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"entry\",\"kind\":\"object\",\"type\":\"RoomQueue\",\"relationName\":\"RoomQueueToVote\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"UserToVote\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"PlaybackState\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"roomId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"room\",\"kind\":\"object\",\"type\":\"Room\",\"relationName\":\"PlaybackStateToRoom\"},{\"name\":\"currentEntryId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"startedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"isPaused\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"elapsedTime\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"providerData\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"currentEntry\",\"kind\":\"object\",\"type\":\"RoomQueue\",\"relationName\":\"CurrentPlaybackEntry\"}],\"dbName\":null},\"PlaybackHistory\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"roomId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"songId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"queueEntryId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"addedById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"room\",\"kind\":\"object\",\"type\":\"Room\",\"relationName\":\"PlaybackHistoryToRoom\"},{\"name\":\"song\",\"kind\":\"object\",\"type\":\"Song\",\"relationName\":\"PlaybackHistoryToSong\"},{\"name\":\"queueEntry\",\"kind\":\"object\",\"type\":\"RoomQueue\",\"relationName\":\"PlaybackHistoryToRoomQueue\"},{\"name\":\"addedBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"HistoryAdder\"},{\"name\":\"playedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"duration\",\"kind\":\"scalar\",\"type\":\"Int\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"avatarUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"roomUsers\",\"kind\":\"object\",\"type\":\"RoomUser\",\"relationName\":\"RoomUserToUser\"},{\"name\":\"vote\",\"kind\":\"object\",\"type\":\"Vote\",\"relationName\":\"UserToVote\"},{\"name\":\"createdRooms\",\"kind\":\"object\",\"type\":\"Room\",\"relationName\":\"RoomCreator\"},{\"name\":\"addedHistory\",\"kind\":\"object\",\"type\":\"PlaybackHistory\",\"relationName\":\"HistoryAdder\"}],\"dbName\":null},\"Room\":{\"fields\":[{\"name\":\"roomId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"roomName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accessMode\",\"kind\":\"enum\",\"type\":\"AccessMode\"},{\"name\":\"passwordHash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"themeId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"RoomCreator\"},{\"name\":\"roomUsers\",\"kind\":\"object\",\"type\":\"RoomUser\",\"relationName\":\"RoomToRoomUser\"},{\"name\":\"history\",\"kind\":\"object\",\"type\":\"PlaybackHistory\",\"relationName\":\"PlaybackHistoryToRoom\"}],\"dbName\":null},\"RoomUser\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"roomId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"room\",\"kind\":\"object\",\"type\":\"Room\",\"relationName\":\"RoomToRoomUser\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"RoomUserToUser\"},{\"name\":\"lastSeen\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"muted\",\"kind\":\"scalar\",\"type\":\"Boolean\"}],\"dbName\":null},\"Song\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"youtubeId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"channelName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"duration\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"tags\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"history\",\"kind\":\"object\",\"type\":\"PlaybackHistory\",\"relationName\":\"PlaybackHistoryToSong\"}],\"dbName\":null},\"Vote\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"queueEntryId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"UserToVote\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"PlaybackHistory\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"roomId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"songId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"queueEntryId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"addedById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"room\",\"kind\":\"object\",\"type\":\"Room\",\"relationName\":\"PlaybackHistoryToRoom\"},{\"name\":\"song\",\"kind\":\"object\",\"type\":\"Song\",\"relationName\":\"PlaybackHistoryToSong\"},{\"name\":\"addedBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"HistoryAdder\"},{\"name\":\"playedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"duration\",\"kind\":\"scalar\",\"type\":\"Int\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 
 async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Module> {
   const { Buffer } = await import('node:buffer')
@@ -62,7 +62,7 @@ export interface PrismaClientConstructor {
    * const users = await prisma.user.findMany()
    * ```
    * 
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
+   * Read more in our [docs](https://pris.ly/d/client).
    */
 
   new <
@@ -84,7 +84,7 @@ export interface PrismaClientConstructor {
  * const users = await prisma.user.findMany()
  * ```
  * 
- * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
+ * Read more in our [docs](https://pris.ly/d/client).
  */
 
 export interface PrismaClient<
@@ -113,7 +113,7 @@ export interface PrismaClient<
    * const result = await prisma.$executeRaw`UPDATE User SET cool = ${true} WHERE email = ${'user@email.com'};`
    * ```
    *
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
+   * Read more in our [docs](https://pris.ly/d/raw-queries).
    */
   $executeRaw<T = unknown>(query: TemplateStringsArray | Prisma.Sql, ...values: any[]): Prisma.PrismaPromise<number>;
 
@@ -125,7 +125,7 @@ export interface PrismaClient<
    * const result = await prisma.$executeRawUnsafe('UPDATE User SET cool = $1 WHERE email = $2 ;', true, 'user@email.com')
    * ```
    *
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
+   * Read more in our [docs](https://pris.ly/d/raw-queries).
    */
   $executeRawUnsafe<T = unknown>(query: string, ...values: any[]): Prisma.PrismaPromise<number>;
 
@@ -136,7 +136,7 @@ export interface PrismaClient<
    * const result = await prisma.$queryRaw`SELECT * FROM User WHERE id = ${1} OR email = ${'user@email.com'};`
    * ```
    *
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
+   * Read more in our [docs](https://pris.ly/d/raw-queries).
    */
   $queryRaw<T = unknown>(query: TemplateStringsArray | Prisma.Sql, ...values: any[]): Prisma.PrismaPromise<T>;
 
@@ -148,7 +148,7 @@ export interface PrismaClient<
    * const result = await prisma.$queryRawUnsafe('SELECT * FROM User WHERE id = $1 OR email = $2;', 1, 'user@email.com')
    * ```
    *
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
+   * Read more in our [docs](https://pris.ly/d/raw-queries).
    */
   $queryRawUnsafe<T = unknown>(query: string, ...values: any[]): Prisma.PrismaPromise<T>;
 
@@ -215,16 +215,6 @@ export interface PrismaClient<
   get song(): Prisma.SongDelegate<ExtArgs, { omit: OmitOpts }>;
 
   /**
-   * `prisma.roomQueue`: Exposes CRUD operations for the **RoomQueue** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more RoomQueues
-    * const roomQueues = await prisma.roomQueue.findMany()
-    * ```
-    */
-  get roomQueue(): Prisma.RoomQueueDelegate<ExtArgs, { omit: OmitOpts }>;
-
-  /**
    * `prisma.vote`: Exposes CRUD operations for the **Vote** model.
     * Example usage:
     * ```ts
@@ -233,16 +223,6 @@ export interface PrismaClient<
     * ```
     */
   get vote(): Prisma.VoteDelegate<ExtArgs, { omit: OmitOpts }>;
-
-  /**
-   * `prisma.playbackState`: Exposes CRUD operations for the **PlaybackState** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more PlaybackStates
-    * const playbackStates = await prisma.playbackState.findMany()
-    * ```
-    */
-  get playbackState(): Prisma.PlaybackStateDelegate<ExtArgs, { omit: OmitOpts }>;
 
   /**
    * `prisma.playbackHistory`: Exposes CRUD operations for the **PlaybackHistory** model.

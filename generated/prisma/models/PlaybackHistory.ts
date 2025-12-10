@@ -9,8 +9,8 @@
  * 🟢 You can import this file directly.
  */
 import type * as runtime from "@prisma/client/runtime/client"
-import type * as $Enums from "../enums.js"
-import type * as Prisma from "../internal/prismaNamespace.js"
+import type * as $Enums from "../enums"
+import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model PlaybackHistory
@@ -234,7 +234,6 @@ export type PlaybackHistoryWhereInput = {
   duration?: Prisma.IntFilter<"PlaybackHistory"> | number
   room?: Prisma.XOR<Prisma.RoomScalarRelationFilter, Prisma.RoomWhereInput>
   song?: Prisma.XOR<Prisma.SongScalarRelationFilter, Prisma.SongWhereInput>
-  queueEntry?: Prisma.XOR<Prisma.RoomQueueNullableScalarRelationFilter, Prisma.RoomQueueWhereInput> | null
   addedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }
 
@@ -248,7 +247,6 @@ export type PlaybackHistoryOrderByWithRelationInput = {
   duration?: Prisma.SortOrder
   room?: Prisma.RoomOrderByWithRelationInput
   song?: Prisma.SongOrderByWithRelationInput
-  queueEntry?: Prisma.RoomQueueOrderByWithRelationInput
   addedBy?: Prisma.UserOrderByWithRelationInput
 }
 
@@ -265,7 +263,6 @@ export type PlaybackHistoryWhereUniqueInput = Prisma.AtLeast<{
   duration?: Prisma.IntFilter<"PlaybackHistory"> | number
   room?: Prisma.XOR<Prisma.RoomScalarRelationFilter, Prisma.RoomWhereInput>
   song?: Prisma.XOR<Prisma.SongScalarRelationFilter, Prisma.SongWhereInput>
-  queueEntry?: Prisma.XOR<Prisma.RoomQueueNullableScalarRelationFilter, Prisma.RoomQueueWhereInput> | null
   addedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }, "id">
 
@@ -299,11 +296,11 @@ export type PlaybackHistoryScalarWhereWithAggregatesInput = {
 
 export type PlaybackHistoryCreateInput = {
   id?: string
+  queueEntryId?: string | null
   playedAt?: Date | string
   duration: number
   room: Prisma.RoomCreateNestedOneWithoutHistoryInput
   song: Prisma.SongCreateNestedOneWithoutHistoryInput
-  queueEntry?: Prisma.RoomQueueCreateNestedOneWithoutHistoryInput
   addedBy?: Prisma.UserCreateNestedOneWithoutAddedHistoryInput
 }
 
@@ -319,11 +316,11 @@ export type PlaybackHistoryUncheckedCreateInput = {
 
 export type PlaybackHistoryUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  queueEntryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   playedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   room?: Prisma.RoomUpdateOneRequiredWithoutHistoryNestedInput
   song?: Prisma.SongUpdateOneRequiredWithoutHistoryNestedInput
-  queueEntry?: Prisma.RoomQueueUpdateOneWithoutHistoryNestedInput
   addedBy?: Prisma.UserUpdateOneWithoutAddedHistoryNestedInput
 }
 
@@ -349,6 +346,7 @@ export type PlaybackHistoryCreateManyInput = {
 
 export type PlaybackHistoryUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  queueEntryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   playedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   duration?: Prisma.IntFieldUpdateOperationsInput | number
 }
@@ -537,55 +535,13 @@ export type PlaybackHistoryUncheckedUpdateManyWithoutSongNestedInput = {
   deleteMany?: Prisma.PlaybackHistoryScalarWhereInput | Prisma.PlaybackHistoryScalarWhereInput[]
 }
 
-export type PlaybackHistoryCreateNestedManyWithoutQueueEntryInput = {
-  create?: Prisma.XOR<Prisma.PlaybackHistoryCreateWithoutQueueEntryInput, Prisma.PlaybackHistoryUncheckedCreateWithoutQueueEntryInput> | Prisma.PlaybackHistoryCreateWithoutQueueEntryInput[] | Prisma.PlaybackHistoryUncheckedCreateWithoutQueueEntryInput[]
-  connectOrCreate?: Prisma.PlaybackHistoryCreateOrConnectWithoutQueueEntryInput | Prisma.PlaybackHistoryCreateOrConnectWithoutQueueEntryInput[]
-  createMany?: Prisma.PlaybackHistoryCreateManyQueueEntryInputEnvelope
-  connect?: Prisma.PlaybackHistoryWhereUniqueInput | Prisma.PlaybackHistoryWhereUniqueInput[]
-}
-
-export type PlaybackHistoryUncheckedCreateNestedManyWithoutQueueEntryInput = {
-  create?: Prisma.XOR<Prisma.PlaybackHistoryCreateWithoutQueueEntryInput, Prisma.PlaybackHistoryUncheckedCreateWithoutQueueEntryInput> | Prisma.PlaybackHistoryCreateWithoutQueueEntryInput[] | Prisma.PlaybackHistoryUncheckedCreateWithoutQueueEntryInput[]
-  connectOrCreate?: Prisma.PlaybackHistoryCreateOrConnectWithoutQueueEntryInput | Prisma.PlaybackHistoryCreateOrConnectWithoutQueueEntryInput[]
-  createMany?: Prisma.PlaybackHistoryCreateManyQueueEntryInputEnvelope
-  connect?: Prisma.PlaybackHistoryWhereUniqueInput | Prisma.PlaybackHistoryWhereUniqueInput[]
-}
-
-export type PlaybackHistoryUpdateManyWithoutQueueEntryNestedInput = {
-  create?: Prisma.XOR<Prisma.PlaybackHistoryCreateWithoutQueueEntryInput, Prisma.PlaybackHistoryUncheckedCreateWithoutQueueEntryInput> | Prisma.PlaybackHistoryCreateWithoutQueueEntryInput[] | Prisma.PlaybackHistoryUncheckedCreateWithoutQueueEntryInput[]
-  connectOrCreate?: Prisma.PlaybackHistoryCreateOrConnectWithoutQueueEntryInput | Prisma.PlaybackHistoryCreateOrConnectWithoutQueueEntryInput[]
-  upsert?: Prisma.PlaybackHistoryUpsertWithWhereUniqueWithoutQueueEntryInput | Prisma.PlaybackHistoryUpsertWithWhereUniqueWithoutQueueEntryInput[]
-  createMany?: Prisma.PlaybackHistoryCreateManyQueueEntryInputEnvelope
-  set?: Prisma.PlaybackHistoryWhereUniqueInput | Prisma.PlaybackHistoryWhereUniqueInput[]
-  disconnect?: Prisma.PlaybackHistoryWhereUniqueInput | Prisma.PlaybackHistoryWhereUniqueInput[]
-  delete?: Prisma.PlaybackHistoryWhereUniqueInput | Prisma.PlaybackHistoryWhereUniqueInput[]
-  connect?: Prisma.PlaybackHistoryWhereUniqueInput | Prisma.PlaybackHistoryWhereUniqueInput[]
-  update?: Prisma.PlaybackHistoryUpdateWithWhereUniqueWithoutQueueEntryInput | Prisma.PlaybackHistoryUpdateWithWhereUniqueWithoutQueueEntryInput[]
-  updateMany?: Prisma.PlaybackHistoryUpdateManyWithWhereWithoutQueueEntryInput | Prisma.PlaybackHistoryUpdateManyWithWhereWithoutQueueEntryInput[]
-  deleteMany?: Prisma.PlaybackHistoryScalarWhereInput | Prisma.PlaybackHistoryScalarWhereInput[]
-}
-
-export type PlaybackHistoryUncheckedUpdateManyWithoutQueueEntryNestedInput = {
-  create?: Prisma.XOR<Prisma.PlaybackHistoryCreateWithoutQueueEntryInput, Prisma.PlaybackHistoryUncheckedCreateWithoutQueueEntryInput> | Prisma.PlaybackHistoryCreateWithoutQueueEntryInput[] | Prisma.PlaybackHistoryUncheckedCreateWithoutQueueEntryInput[]
-  connectOrCreate?: Prisma.PlaybackHistoryCreateOrConnectWithoutQueueEntryInput | Prisma.PlaybackHistoryCreateOrConnectWithoutQueueEntryInput[]
-  upsert?: Prisma.PlaybackHistoryUpsertWithWhereUniqueWithoutQueueEntryInput | Prisma.PlaybackHistoryUpsertWithWhereUniqueWithoutQueueEntryInput[]
-  createMany?: Prisma.PlaybackHistoryCreateManyQueueEntryInputEnvelope
-  set?: Prisma.PlaybackHistoryWhereUniqueInput | Prisma.PlaybackHistoryWhereUniqueInput[]
-  disconnect?: Prisma.PlaybackHistoryWhereUniqueInput | Prisma.PlaybackHistoryWhereUniqueInput[]
-  delete?: Prisma.PlaybackHistoryWhereUniqueInput | Prisma.PlaybackHistoryWhereUniqueInput[]
-  connect?: Prisma.PlaybackHistoryWhereUniqueInput | Prisma.PlaybackHistoryWhereUniqueInput[]
-  update?: Prisma.PlaybackHistoryUpdateWithWhereUniqueWithoutQueueEntryInput | Prisma.PlaybackHistoryUpdateWithWhereUniqueWithoutQueueEntryInput[]
-  updateMany?: Prisma.PlaybackHistoryUpdateManyWithWhereWithoutQueueEntryInput | Prisma.PlaybackHistoryUpdateManyWithWhereWithoutQueueEntryInput[]
-  deleteMany?: Prisma.PlaybackHistoryScalarWhereInput | Prisma.PlaybackHistoryScalarWhereInput[]
-}
-
 export type PlaybackHistoryCreateWithoutAddedByInput = {
   id?: string
+  queueEntryId?: string | null
   playedAt?: Date | string
   duration: number
   room: Prisma.RoomCreateNestedOneWithoutHistoryInput
   song: Prisma.SongCreateNestedOneWithoutHistoryInput
-  queueEntry?: Prisma.RoomQueueCreateNestedOneWithoutHistoryInput
 }
 
 export type PlaybackHistoryUncheckedCreateWithoutAddedByInput = {
@@ -638,10 +594,10 @@ export type PlaybackHistoryScalarWhereInput = {
 
 export type PlaybackHistoryCreateWithoutRoomInput = {
   id?: string
+  queueEntryId?: string | null
   playedAt?: Date | string
   duration: number
   song: Prisma.SongCreateNestedOneWithoutHistoryInput
-  queueEntry?: Prisma.RoomQueueCreateNestedOneWithoutHistoryInput
   addedBy?: Prisma.UserCreateNestedOneWithoutAddedHistoryInput
 }
 
@@ -682,10 +638,10 @@ export type PlaybackHistoryUpdateManyWithWhereWithoutRoomInput = {
 
 export type PlaybackHistoryCreateWithoutSongInput = {
   id?: string
+  queueEntryId?: string | null
   playedAt?: Date | string
   duration: number
   room: Prisma.RoomCreateNestedOneWithoutHistoryInput
-  queueEntry?: Prisma.RoomQueueCreateNestedOneWithoutHistoryInput
   addedBy?: Prisma.UserCreateNestedOneWithoutAddedHistoryInput
 }
 
@@ -724,50 +680,6 @@ export type PlaybackHistoryUpdateManyWithWhereWithoutSongInput = {
   data: Prisma.XOR<Prisma.PlaybackHistoryUpdateManyMutationInput, Prisma.PlaybackHistoryUncheckedUpdateManyWithoutSongInput>
 }
 
-export type PlaybackHistoryCreateWithoutQueueEntryInput = {
-  id?: string
-  playedAt?: Date | string
-  duration: number
-  room: Prisma.RoomCreateNestedOneWithoutHistoryInput
-  song: Prisma.SongCreateNestedOneWithoutHistoryInput
-  addedBy?: Prisma.UserCreateNestedOneWithoutAddedHistoryInput
-}
-
-export type PlaybackHistoryUncheckedCreateWithoutQueueEntryInput = {
-  id?: string
-  roomId: string
-  songId: string
-  addedById?: string | null
-  playedAt?: Date | string
-  duration: number
-}
-
-export type PlaybackHistoryCreateOrConnectWithoutQueueEntryInput = {
-  where: Prisma.PlaybackHistoryWhereUniqueInput
-  create: Prisma.XOR<Prisma.PlaybackHistoryCreateWithoutQueueEntryInput, Prisma.PlaybackHistoryUncheckedCreateWithoutQueueEntryInput>
-}
-
-export type PlaybackHistoryCreateManyQueueEntryInputEnvelope = {
-  data: Prisma.PlaybackHistoryCreateManyQueueEntryInput | Prisma.PlaybackHistoryCreateManyQueueEntryInput[]
-  skipDuplicates?: boolean
-}
-
-export type PlaybackHistoryUpsertWithWhereUniqueWithoutQueueEntryInput = {
-  where: Prisma.PlaybackHistoryWhereUniqueInput
-  update: Prisma.XOR<Prisma.PlaybackHistoryUpdateWithoutQueueEntryInput, Prisma.PlaybackHistoryUncheckedUpdateWithoutQueueEntryInput>
-  create: Prisma.XOR<Prisma.PlaybackHistoryCreateWithoutQueueEntryInput, Prisma.PlaybackHistoryUncheckedCreateWithoutQueueEntryInput>
-}
-
-export type PlaybackHistoryUpdateWithWhereUniqueWithoutQueueEntryInput = {
-  where: Prisma.PlaybackHistoryWhereUniqueInput
-  data: Prisma.XOR<Prisma.PlaybackHistoryUpdateWithoutQueueEntryInput, Prisma.PlaybackHistoryUncheckedUpdateWithoutQueueEntryInput>
-}
-
-export type PlaybackHistoryUpdateManyWithWhereWithoutQueueEntryInput = {
-  where: Prisma.PlaybackHistoryScalarWhereInput
-  data: Prisma.XOR<Prisma.PlaybackHistoryUpdateManyMutationInput, Prisma.PlaybackHistoryUncheckedUpdateManyWithoutQueueEntryInput>
-}
-
 export type PlaybackHistoryCreateManyAddedByInput = {
   id?: string
   roomId: string
@@ -779,11 +691,11 @@ export type PlaybackHistoryCreateManyAddedByInput = {
 
 export type PlaybackHistoryUpdateWithoutAddedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  queueEntryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   playedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   room?: Prisma.RoomUpdateOneRequiredWithoutHistoryNestedInput
   song?: Prisma.SongUpdateOneRequiredWithoutHistoryNestedInput
-  queueEntry?: Prisma.RoomQueueUpdateOneWithoutHistoryNestedInput
 }
 
 export type PlaybackHistoryUncheckedUpdateWithoutAddedByInput = {
@@ -815,10 +727,10 @@ export type PlaybackHistoryCreateManyRoomInput = {
 
 export type PlaybackHistoryUpdateWithoutRoomInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  queueEntryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   playedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   song?: Prisma.SongUpdateOneRequiredWithoutHistoryNestedInput
-  queueEntry?: Prisma.RoomQueueUpdateOneWithoutHistoryNestedInput
   addedBy?: Prisma.UserUpdateOneWithoutAddedHistoryNestedInput
 }
 
@@ -851,10 +763,10 @@ export type PlaybackHistoryCreateManySongInput = {
 
 export type PlaybackHistoryUpdateWithoutSongInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  queueEntryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   playedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   duration?: Prisma.IntFieldUpdateOperationsInput | number
   room?: Prisma.RoomUpdateOneRequiredWithoutHistoryNestedInput
-  queueEntry?: Prisma.RoomQueueUpdateOneWithoutHistoryNestedInput
   addedBy?: Prisma.UserUpdateOneWithoutAddedHistoryNestedInput
 }
 
@@ -876,42 +788,6 @@ export type PlaybackHistoryUncheckedUpdateManyWithoutSongInput = {
   duration?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
-export type PlaybackHistoryCreateManyQueueEntryInput = {
-  id?: string
-  roomId: string
-  songId: string
-  addedById?: string | null
-  playedAt?: Date | string
-  duration: number
-}
-
-export type PlaybackHistoryUpdateWithoutQueueEntryInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  playedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  duration?: Prisma.IntFieldUpdateOperationsInput | number
-  room?: Prisma.RoomUpdateOneRequiredWithoutHistoryNestedInput
-  song?: Prisma.SongUpdateOneRequiredWithoutHistoryNestedInput
-  addedBy?: Prisma.UserUpdateOneWithoutAddedHistoryNestedInput
-}
-
-export type PlaybackHistoryUncheckedUpdateWithoutQueueEntryInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  roomId?: Prisma.StringFieldUpdateOperationsInput | string
-  songId?: Prisma.StringFieldUpdateOperationsInput | string
-  addedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  playedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  duration?: Prisma.IntFieldUpdateOperationsInput | number
-}
-
-export type PlaybackHistoryUncheckedUpdateManyWithoutQueueEntryInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  roomId?: Prisma.StringFieldUpdateOperationsInput | string
-  songId?: Prisma.StringFieldUpdateOperationsInput | string
-  addedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  playedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  duration?: Prisma.IntFieldUpdateOperationsInput | number
-}
-
 
 
 export type PlaybackHistorySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -924,7 +800,6 @@ export type PlaybackHistorySelect<ExtArgs extends runtime.Types.Extensions.Inter
   duration?: boolean
   room?: boolean | Prisma.RoomDefaultArgs<ExtArgs>
   song?: boolean | Prisma.SongDefaultArgs<ExtArgs>
-  queueEntry?: boolean | Prisma.PlaybackHistory$queueEntryArgs<ExtArgs>
   addedBy?: boolean | Prisma.PlaybackHistory$addedByArgs<ExtArgs>
 }, ExtArgs["result"]["playbackHistory"]>
 
@@ -938,7 +813,6 @@ export type PlaybackHistorySelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   duration?: boolean
   room?: boolean | Prisma.RoomDefaultArgs<ExtArgs>
   song?: boolean | Prisma.SongDefaultArgs<ExtArgs>
-  queueEntry?: boolean | Prisma.PlaybackHistory$queueEntryArgs<ExtArgs>
   addedBy?: boolean | Prisma.PlaybackHistory$addedByArgs<ExtArgs>
 }, ExtArgs["result"]["playbackHistory"]>
 
@@ -952,7 +826,6 @@ export type PlaybackHistorySelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   duration?: boolean
   room?: boolean | Prisma.RoomDefaultArgs<ExtArgs>
   song?: boolean | Prisma.SongDefaultArgs<ExtArgs>
-  queueEntry?: boolean | Prisma.PlaybackHistory$queueEntryArgs<ExtArgs>
   addedBy?: boolean | Prisma.PlaybackHistory$addedByArgs<ExtArgs>
 }, ExtArgs["result"]["playbackHistory"]>
 
@@ -970,19 +843,16 @@ export type PlaybackHistoryOmit<ExtArgs extends runtime.Types.Extensions.Interna
 export type PlaybackHistoryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   room?: boolean | Prisma.RoomDefaultArgs<ExtArgs>
   song?: boolean | Prisma.SongDefaultArgs<ExtArgs>
-  queueEntry?: boolean | Prisma.PlaybackHistory$queueEntryArgs<ExtArgs>
   addedBy?: boolean | Prisma.PlaybackHistory$addedByArgs<ExtArgs>
 }
 export type PlaybackHistoryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   room?: boolean | Prisma.RoomDefaultArgs<ExtArgs>
   song?: boolean | Prisma.SongDefaultArgs<ExtArgs>
-  queueEntry?: boolean | Prisma.PlaybackHistory$queueEntryArgs<ExtArgs>
   addedBy?: boolean | Prisma.PlaybackHistory$addedByArgs<ExtArgs>
 }
 export type PlaybackHistoryIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   room?: boolean | Prisma.RoomDefaultArgs<ExtArgs>
   song?: boolean | Prisma.SongDefaultArgs<ExtArgs>
-  queueEntry?: boolean | Prisma.PlaybackHistory$queueEntryArgs<ExtArgs>
   addedBy?: boolean | Prisma.PlaybackHistory$addedByArgs<ExtArgs>
 }
 
@@ -991,7 +861,6 @@ export type $PlaybackHistoryPayload<ExtArgs extends runtime.Types.Extensions.Int
   objects: {
     room: Prisma.$RoomPayload<ExtArgs>
     song: Prisma.$SongPayload<ExtArgs>
-    queueEntry: Prisma.$RoomQueuePayload<ExtArgs> | null
     addedBy: Prisma.$UserPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1398,7 +1267,6 @@ export interface Prisma__PlaybackHistoryClient<T, Null = never, ExtArgs extends 
   readonly [Symbol.toStringTag]: "PrismaPromise"
   room<T extends Prisma.RoomDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RoomDefaultArgs<ExtArgs>>): Prisma.Prisma__RoomClient<runtime.Types.Result.GetResult<Prisma.$RoomPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   song<T extends Prisma.SongDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SongDefaultArgs<ExtArgs>>): Prisma.Prisma__SongClient<runtime.Types.Result.GetResult<Prisma.$SongPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  queueEntry<T extends Prisma.PlaybackHistory$queueEntryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PlaybackHistory$queueEntryArgs<ExtArgs>>): Prisma.Prisma__RoomQueueClient<runtime.Types.Result.GetResult<Prisma.$RoomQueuePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   addedBy<T extends Prisma.PlaybackHistory$addedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PlaybackHistory$addedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1829,25 +1697,6 @@ export type PlaybackHistoryDeleteManyArgs<ExtArgs extends runtime.Types.Extensio
    * Limit how many PlaybackHistories to delete.
    */
   limit?: number
-}
-
-/**
- * PlaybackHistory.queueEntry
- */
-export type PlaybackHistory$queueEntryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the RoomQueue
-   */
-  select?: Prisma.RoomQueueSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the RoomQueue
-   */
-  omit?: Prisma.RoomQueueOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.RoomQueueInclude<ExtArgs> | null
-  where?: Prisma.RoomQueueWhereInput
 }
 
 /**

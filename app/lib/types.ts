@@ -1,12 +1,4 @@
-export interface Song {
-    id: string;
-    title: string;
-    channel: string;
-    requestedBy: string;
-    thumbnail: string;
-    votes: number;
-    duration: string;
-}
+import { GalleryThumbnails } from "lucide-react";
 
 export interface Participant {
     id: string;
@@ -15,15 +7,30 @@ export interface Participant {
     isHost: boolean;
     isActive: boolean;
 }
-
-export interface SongInput {
-    id: string;
+export interface SongMetaData {
+    videoId: string;
     title: string;
-    channel: string;
+    channelName: string;
     thumbnail: string;
     duration: string;
-    videoId: string;
 }
+
+export interface Song extends SongMetaData {
+    requestedBy?: string;
+    votes?: number;
+}
+
+/**
+ * 
+ * BASE type of the song metadata
+ * 
+ * videoId
+ * title
+ * channelName
+ * thumbnail
+ * duration
+ * 
+ */
 
 export interface ChatMessage {
     id: string;

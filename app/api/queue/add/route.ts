@@ -1,12 +1,43 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { redisClient } from "@/lib/redis";
+import { prismaClient } from "@/lib/db";
 import z from "zod";
+import type { Song, SongMetaData } from "@/lib";
 
 const AddToQueueSchema = z.object({
     roomCode: z.string().length(5),
-    songCode: z.string(),
+    videoId: z.string(),
+    title: z.string(),
+    channelName: z.string(),
+    thumbnail: z.string(),
+    duration: z.string(),
 });
+
+async function addSongMetadataToDb(receivedData: SongMetaData) {
+    try {
+        const songMetaData = await prismaClient.song.upsert({
+            where: {
+                youtubeId: receivedData.videoId,
+            },
+            update: {
+                duration: receivedData.duration,
+                image: receivedData.thumbnail,
+                channelName: receivedData.channelName,
+                title: receivedData.title,
+            },
+            create: {
+                duration: receivedData.duration,
+                image: receivedData.thumbnail,
+                channelName: receivedData.channelName,
+                title: receivedData.title,
+                youtubeId: receivedData.videoId,
+            },
+        });
+    } catch (error) {
+        console.error("Failed to upload song MetaData: ", error);
+    }
+}
 
 export async function POST(req: NextRequest) {
     try {
@@ -18,9 +49,19 @@ export async function POST(req: NextRequest) {
             });
         }
 
-        const { songCode, roomCode } = AddToQueueSchema.parse(await req.json());
+        const parsedReq = AddToQueueSchema.parse(await req.json());
         const timestamp = Date.now();
-        await redisClient.zAdd(roomCode, { score: timestamp, value: songCode });
+        const songQueueValue: Song = {
+            videoId: parsedReq.videoId,
+            title: parsedReq.title,
+            channelName: parsedReq.channelName,
+            thumbnail: parsedReq.thumbnail,
+            duration: parsedReq.duration,
+            requestedBy: session.user.name
+        }; 
+        await redisClient.zAdd(parsedReq.roomCode, { score: timestamp, value: JSON.stringify(songQueueValue) });
+        await redisClient.publish("updated_queue", parsedReq.roomCode)
+        addSongMetadataToDb(parsedReq);
 
         return NextResponse.json({
             message: "Added to queue",

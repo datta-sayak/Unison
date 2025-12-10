@@ -7,6 +7,9 @@ type UserData = {
     userAvatar: string;
 };
 
+/**
+ * @param Record<RoomId, UserData[]>
+ */
 const roomParticipants: Record<string, UserData[]> = {};
 
 export function roomEvents(io: Server, socket: Socket) {

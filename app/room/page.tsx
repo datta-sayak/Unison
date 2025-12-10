@@ -5,6 +5,7 @@ import { Music, Users, MessageCircle, Info } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { io, Socket } from "socket.io-client";
+import { clientSocket, disconnectSocket } from "@/lib/socket";
 import { toast } from "sonner";
 import axios from "axios";
 import { QueueSection } from "@/components/room/QueueSection";
@@ -13,7 +14,7 @@ import { ChatSection } from "@/components/room/ChatSection";
 import { InfoSection } from "@/components/room/InfoSection";
 import { YouTubePlayerSection } from "@/components/room/YouTubePlayerSection";
 import LoadingContext from "@/components/LoadingContext";
-import type { Song, Participant, SongInput, ChatMessage, RoomUserFromAPI } from "@/lib";
+import type { Song, Participant, ChatMessage, RoomUserFromAPI, SongMetaData } from "@/lib";
 
 function RoomPageContent() {
     const router = useRouter();
@@ -31,6 +32,7 @@ function RoomPageContent() {
     const [activeSection, setActiveSection] = useState("queue");
     const [currentSong] = useState<Song | null>(null);
 
+
     useEffect(() => {
         if (status === "loading") return;
         if (status === "unauthenticated") {
@@ -38,37 +40,50 @@ function RoomPageContent() {
         }
     }, [status, router]);
 
+    // For auto scroll to bottom of the page 
+    useEffect(() => {
+        window.scrollTo({
+            top: document.documentElement.scrollHeight,
+            behavior: "smooth",
+        });
+    }, [activeSection]);
+    
+    
     useEffect(() => {
         if (!roomId || !session?.user || hasInitializedSocket.current) return;
 
         hasInitializedSocket.current = true;
-        console.log("Connecting to socket with roomId:", roomId);
-        const socketUrl =
-            process.env.NODE_ENV === "production"
-                ? process.env.NEXT_PUBLIC_WEBSOCKET_SERVER_URL?.replace("http://", "wss://").replace(
-                      "https://",
-                      "wss://",
-                  )
-                : process.env.NEXT_PUBLIC_WEBSOCKET_SERVER_URL || "http://localhost:4000";
+        const socketInstance = clientSocket();
+        
 
-        const socketInstance = io(socketUrl, {
-            reconnection: true,
-            reconnectionDelay: 1000,
-            reconnectionAttempts: 5,
-        });
-
-        socketInstance.on("connect", () => {
+        const handleConnect = () => {
+            console.log("Connected to Socket with roomId:", roomId);
             socketInstance.emit("join_room", {
                 roomId,
-                userId: session.user.email || "",
-                userName: session.user.name || "Anonymous",
+                userId: session.user.email,
+                userName: session.user.name,
                 userAvatar: session.user.image || "",
             });
-        });
+            const fetchInitialQueue = async () => {
+                try {
+                    const response = await axios.get(`/api/queue/fetch?roomCode=${roomId}`);
+                    // console.log(response.data.data.queue)    for testing purposes
+                    if (response.data.data.queue) {
+                        const parsedQueue: Song[] = (response.data.data.queue).map( (u: string) => JSON.parse(u))
+                        setQueue(parsedQueue);
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch initial queue:", error);
+                }
+            };
 
-        socketInstance.on(
-            "room_participants",
-            (
+            // Not awaiting fetchInitialQueue() so that it can do it's task in background,
+            // and wont block the current execution
+            fetchInitialQueue();
+        }
+
+
+        const handleRoomParticipants = (
                 users: Array<{
                     socketId: string;
                     userId: string;
@@ -84,32 +99,60 @@ function RoomPageContent() {
                     isActive: true,
                 }));
                 setonlineUsers(participants);
-            },
-        );
+            };
 
-        socketInstance.on(
-            "message",
-            (data: { roomId: string; userId: string; userName: string; userAvatar: string; content: string }) => {
-                const newMessage: ChatMessage = {
-                    id: `msg_${data.roomId}_${Date.now()}_${data.userId}`,
-                    user: data.userName,
-                    avatar: data.userAvatar || data.userName.substring(0, 2).toUpperCase(),
-                    message: data.content,
-                    timestamp: new Date().toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                    }),
-                };
-                setMessages(prev => [newMessage, ...prev]);
-            },
-        );
+
+        const handleIncomingMessage = (data: { roomId: string; userEmail: string; userName: string; userAvatar: string; content: string }) => {
+            const newMessage: ChatMessage = {
+                id: `msg_${data.roomId}_${Date.now()}_${data.userEmail}`,
+                user: data.userName,
+                avatar: data.userAvatar || data.userName.substring(0, 2).toUpperCase(),
+                message: data.content,
+                timestamp: new Date().toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                }),
+            };
+            setMessages(prev => [newMessage, ...prev]);
+        };
+
+
+        const handleUpdatedQueue = (rawQueue: any) => {
+            console.log("Received updated queue:", rawQueue);
+            setQueue(rawQueue);
+        }        
+
+
+        if(socketInstance.connected){
+            handleConnect();
+        }
+
+        socketInstance.on("connect", handleConnect);
+        socketInstance.on("room_participants", handleRoomParticipants);
+        socketInstance.on("message", handleIncomingMessage);
+        socketInstance.on("updated_queue", handleUpdatedQueue);
+
         socketRef.current = socketInstance;
 
         return () => {
-            hasInitializedSocket.current = false;
-            socketInstance.disconnect();
+            socketInstance.off("connect", handleConnect);
+            socketInstance.off("room_participants", handleRoomParticipants);
+            socketInstance.off("message", handleIncomingMessage);
+            socketInstance.off("updated_queue", handleUpdatedQueue);
         };
     }, [roomId, session?.user]);
+
+
+    // cleanup when the user logouts or closes tab
+    useEffect(() => {
+        return () => {
+            hasInitializedSocket.current = false;
+            if(socketRef.current){
+                disconnectSocket();
+            }
+        }
+    }, [])
+
 
     useEffect(() => {
         if (!roomId || !session?.user) return;
@@ -136,26 +179,34 @@ function RoomPageContent() {
         fetchRoomUsers();
     }, [roomId, session?.user]);
 
-    useEffect(() => {
-        window.scrollTo({
-            top: document.documentElement.scrollHeight,
-            behavior: "smooth",
-        });
-    }, [activeSection]);
 
-    const handleAddSong = (song: SongInput) => {
+    const handleAddSong = async (song: SongMetaData) => {
         const newSong: Song = {
             ...song,
-            requestedBy: session?.user?.name,
             votes: 0,
         };
-        setQueue([...queue, newSong]);
+        console.log(newSong)
+        try {
+            const payload: any = {
+                roomCode: roomId,
+                videoId: newSong.videoId,
+                title: newSong.title,
+                channelName: newSong.channelName,
+                duration: newSong.duration,
+                thumbnail: newSong.thumbnail,
+            };
+            const res = await axios.post("/api/queue/add", payload);
+            console.log(res)
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to update Queue");
+        }
     };
 
     const handleVote = (id: string, direction: "up" | "down") => {
         setQueue(
             queue.map(song =>
-                song.id === id
+                song.videoId === id
                     ? {
                           ...song,
                           votes: direction === "up" ? song.votes + 1 : Math.max(0, song.votes - 1),
@@ -172,7 +223,7 @@ function RoomPageContent() {
 
     const handleLeaveRoom = () => {
         if (socketRef.current) {
-            socketRef.current.disconnect();
+            disconnectSocket();
         }
         router.push("/dashboard");
     };
@@ -182,12 +233,11 @@ function RoomPageContent() {
 
         socketRef.current.emit("send_message", {
             roomId,
-            userId: session.user.email,
+            userEmail: session.user.email,
             userName: session.user.name,
             userAvatar: session.user.image || session.user.name?.substring(0, 2).toUpperCase(),
             content: newMessage,
         });
-
         setNewMessage("");
     };
 

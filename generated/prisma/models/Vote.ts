@@ -9,8 +9,8 @@
  * 🟢 You can import this file directly.
  */
 import type * as runtime from "@prisma/client/runtime/client"
-import type * as $Enums from "../enums.js"
-import type * as Prisma from "../internal/prismaNamespace.js"
+import type * as $Enums from "../enums"
+import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model Vote
@@ -216,7 +216,6 @@ export type VoteWhereInput = {
   userId?: Prisma.StringFilter<"Vote"> | string
   value?: Prisma.IntFilter<"Vote"> | number
   createdAt?: Prisma.DateTimeFilter<"Vote"> | Date | string
-  entry?: Prisma.XOR<Prisma.RoomQueueScalarRelationFilter, Prisma.RoomQueueWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
@@ -226,7 +225,6 @@ export type VoteOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   value?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
-  entry?: Prisma.RoomQueueOrderByWithRelationInput
   user?: Prisma.UserOrderByWithRelationInput
 }
 
@@ -240,7 +238,6 @@ export type VoteWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.StringFilter<"Vote"> | string
   value?: Prisma.IntFilter<"Vote"> | number
   createdAt?: Prisma.DateTimeFilter<"Vote"> | Date | string
-  entry?: Prisma.XOR<Prisma.RoomQueueScalarRelationFilter, Prisma.RoomQueueWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id" | "queueEntryId_userId">
 
@@ -270,9 +267,9 @@ export type VoteScalarWhereWithAggregatesInput = {
 
 export type VoteCreateInput = {
   id?: string
+  queueEntryId: string
   value: number
   createdAt?: Date | string
-  entry: Prisma.RoomQueueCreateNestedOneWithoutVotesInput
   user: Prisma.UserCreateNestedOneWithoutVoteInput
 }
 
@@ -286,9 +283,9 @@ export type VoteUncheckedCreateInput = {
 
 export type VoteUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  queueEntryId?: Prisma.StringFieldUpdateOperationsInput | string
   value?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  entry?: Prisma.RoomQueueUpdateOneRequiredWithoutVotesNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutVoteNestedInput
 }
 
@@ -310,6 +307,7 @@ export type VoteCreateManyInput = {
 
 export type VoteUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  queueEntryId?: Prisma.StringFieldUpdateOperationsInput | string
   value?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -411,53 +409,19 @@ export type VoteUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.VoteScalarWhereInput | Prisma.VoteScalarWhereInput[]
 }
 
-export type VoteCreateNestedManyWithoutEntryInput = {
-  create?: Prisma.XOR<Prisma.VoteCreateWithoutEntryInput, Prisma.VoteUncheckedCreateWithoutEntryInput> | Prisma.VoteCreateWithoutEntryInput[] | Prisma.VoteUncheckedCreateWithoutEntryInput[]
-  connectOrCreate?: Prisma.VoteCreateOrConnectWithoutEntryInput | Prisma.VoteCreateOrConnectWithoutEntryInput[]
-  createMany?: Prisma.VoteCreateManyEntryInputEnvelope
-  connect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
-}
-
-export type VoteUncheckedCreateNestedManyWithoutEntryInput = {
-  create?: Prisma.XOR<Prisma.VoteCreateWithoutEntryInput, Prisma.VoteUncheckedCreateWithoutEntryInput> | Prisma.VoteCreateWithoutEntryInput[] | Prisma.VoteUncheckedCreateWithoutEntryInput[]
-  connectOrCreate?: Prisma.VoteCreateOrConnectWithoutEntryInput | Prisma.VoteCreateOrConnectWithoutEntryInput[]
-  createMany?: Prisma.VoteCreateManyEntryInputEnvelope
-  connect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
-}
-
-export type VoteUpdateManyWithoutEntryNestedInput = {
-  create?: Prisma.XOR<Prisma.VoteCreateWithoutEntryInput, Prisma.VoteUncheckedCreateWithoutEntryInput> | Prisma.VoteCreateWithoutEntryInput[] | Prisma.VoteUncheckedCreateWithoutEntryInput[]
-  connectOrCreate?: Prisma.VoteCreateOrConnectWithoutEntryInput | Prisma.VoteCreateOrConnectWithoutEntryInput[]
-  upsert?: Prisma.VoteUpsertWithWhereUniqueWithoutEntryInput | Prisma.VoteUpsertWithWhereUniqueWithoutEntryInput[]
-  createMany?: Prisma.VoteCreateManyEntryInputEnvelope
-  set?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
-  disconnect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
-  delete?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
-  connect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
-  update?: Prisma.VoteUpdateWithWhereUniqueWithoutEntryInput | Prisma.VoteUpdateWithWhereUniqueWithoutEntryInput[]
-  updateMany?: Prisma.VoteUpdateManyWithWhereWithoutEntryInput | Prisma.VoteUpdateManyWithWhereWithoutEntryInput[]
-  deleteMany?: Prisma.VoteScalarWhereInput | Prisma.VoteScalarWhereInput[]
-}
-
-export type VoteUncheckedUpdateManyWithoutEntryNestedInput = {
-  create?: Prisma.XOR<Prisma.VoteCreateWithoutEntryInput, Prisma.VoteUncheckedCreateWithoutEntryInput> | Prisma.VoteCreateWithoutEntryInput[] | Prisma.VoteUncheckedCreateWithoutEntryInput[]
-  connectOrCreate?: Prisma.VoteCreateOrConnectWithoutEntryInput | Prisma.VoteCreateOrConnectWithoutEntryInput[]
-  upsert?: Prisma.VoteUpsertWithWhereUniqueWithoutEntryInput | Prisma.VoteUpsertWithWhereUniqueWithoutEntryInput[]
-  createMany?: Prisma.VoteCreateManyEntryInputEnvelope
-  set?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
-  disconnect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
-  delete?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
-  connect?: Prisma.VoteWhereUniqueInput | Prisma.VoteWhereUniqueInput[]
-  update?: Prisma.VoteUpdateWithWhereUniqueWithoutEntryInput | Prisma.VoteUpdateWithWhereUniqueWithoutEntryInput[]
-  updateMany?: Prisma.VoteUpdateManyWithWhereWithoutEntryInput | Prisma.VoteUpdateManyWithWhereWithoutEntryInput[]
-  deleteMany?: Prisma.VoteScalarWhereInput | Prisma.VoteScalarWhereInput[]
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type VoteCreateWithoutUserInput = {
   id?: string
+  queueEntryId: string
   value: number
   createdAt?: Date | string
-  entry: Prisma.RoomQueueCreateNestedOneWithoutVotesInput
 }
 
 export type VoteUncheckedCreateWithoutUserInput = {
@@ -504,46 +468,6 @@ export type VoteScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Vote"> | Date | string
 }
 
-export type VoteCreateWithoutEntryInput = {
-  id?: string
-  value: number
-  createdAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutVoteInput
-}
-
-export type VoteUncheckedCreateWithoutEntryInput = {
-  id?: string
-  userId: string
-  value: number
-  createdAt?: Date | string
-}
-
-export type VoteCreateOrConnectWithoutEntryInput = {
-  where: Prisma.VoteWhereUniqueInput
-  create: Prisma.XOR<Prisma.VoteCreateWithoutEntryInput, Prisma.VoteUncheckedCreateWithoutEntryInput>
-}
-
-export type VoteCreateManyEntryInputEnvelope = {
-  data: Prisma.VoteCreateManyEntryInput | Prisma.VoteCreateManyEntryInput[]
-  skipDuplicates?: boolean
-}
-
-export type VoteUpsertWithWhereUniqueWithoutEntryInput = {
-  where: Prisma.VoteWhereUniqueInput
-  update: Prisma.XOR<Prisma.VoteUpdateWithoutEntryInput, Prisma.VoteUncheckedUpdateWithoutEntryInput>
-  create: Prisma.XOR<Prisma.VoteCreateWithoutEntryInput, Prisma.VoteUncheckedCreateWithoutEntryInput>
-}
-
-export type VoteUpdateWithWhereUniqueWithoutEntryInput = {
-  where: Prisma.VoteWhereUniqueInput
-  data: Prisma.XOR<Prisma.VoteUpdateWithoutEntryInput, Prisma.VoteUncheckedUpdateWithoutEntryInput>
-}
-
-export type VoteUpdateManyWithWhereWithoutEntryInput = {
-  where: Prisma.VoteScalarWhereInput
-  data: Prisma.XOR<Prisma.VoteUpdateManyMutationInput, Prisma.VoteUncheckedUpdateManyWithoutEntryInput>
-}
-
 export type VoteCreateManyUserInput = {
   id?: string
   queueEntryId: string
@@ -553,9 +477,9 @@ export type VoteCreateManyUserInput = {
 
 export type VoteUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  queueEntryId?: Prisma.StringFieldUpdateOperationsInput | string
   value?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  entry?: Prisma.RoomQueueUpdateOneRequiredWithoutVotesNestedInput
 }
 
 export type VoteUncheckedUpdateWithoutUserInput = {
@@ -572,34 +496,6 @@ export type VoteUncheckedUpdateManyWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type VoteCreateManyEntryInput = {
-  id?: string
-  userId: string
-  value: number
-  createdAt?: Date | string
-}
-
-export type VoteUpdateWithoutEntryInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  value?: Prisma.IntFieldUpdateOperationsInput | number
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutVoteNestedInput
-}
-
-export type VoteUncheckedUpdateWithoutEntryInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
-  value?: Prisma.IntFieldUpdateOperationsInput | number
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type VoteUncheckedUpdateManyWithoutEntryInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
-  value?: Prisma.IntFieldUpdateOperationsInput | number
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
 
 
 export type VoteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -608,7 +504,6 @@ export type VoteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   userId?: boolean
   value?: boolean
   createdAt?: boolean
-  entry?: boolean | Prisma.RoomQueueDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vote"]>
 
@@ -618,7 +513,6 @@ export type VoteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   userId?: boolean
   value?: boolean
   createdAt?: boolean
-  entry?: boolean | Prisma.RoomQueueDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vote"]>
 
@@ -628,7 +522,6 @@ export type VoteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   userId?: boolean
   value?: boolean
   createdAt?: boolean
-  entry?: boolean | Prisma.RoomQueueDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vote"]>
 
@@ -642,22 +535,18 @@ export type VoteSelectScalar = {
 
 export type VoteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "queueEntryId" | "userId" | "value" | "createdAt", ExtArgs["result"]["vote"]>
 export type VoteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  entry?: boolean | Prisma.RoomQueueDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type VoteIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  entry?: boolean | Prisma.RoomQueueDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type VoteIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  entry?: boolean | Prisma.RoomQueueDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 
 export type $VotePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Vote"
   objects: {
-    entry: Prisma.$RoomQueuePayload<ExtArgs>
     user: Prisma.$UserPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1060,7 +949,6 @@ readonly fields: VoteFieldRefs;
  */
 export interface Prisma__VoteClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  entry<T extends Prisma.RoomQueueDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RoomQueueDefaultArgs<ExtArgs>>): Prisma.Prisma__RoomQueueClient<runtime.Types.Result.GetResult<Prisma.$RoomQueuePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.

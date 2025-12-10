@@ -1,8 +1,8 @@
-import { getServerSession } from "next-auth";
+import { getCachedSession } from "./cacheSession";
 import { prismaClient } from "./db";
 
 export async function getAuthenticatedUser() {
-    const session = await getServerSession();
+    const session = await getCachedSession();
     if (!session?.user?.email) throw new Error("Unauthenticated");
 
     const user = await prismaClient.user.findUnique({
@@ -23,7 +23,7 @@ export async function getAuthenticatedUser() {
 }
 
 export async function getAuthenticatedUserWithRooms() {
-    const session = await getServerSession();
+    const session = await getCachedSession();
     if (!session?.user?.email) throw new Error("Unauthenticated");
 
     const user = await prismaClient.user.findUnique({
@@ -50,26 +50,8 @@ export async function getAuthenticatedUserWithRooms() {
                     _count: {
                         select: {
                             roomUsers: true,
-                            queueEntries: true,
                         },
                     },
-                    playbackState: {
-                        select: {
-                            currentEntry: {
-                                select: {
-                                    song: {
-                                        select: {
-                                            title: true,
-                                            smallImage: true,
-                                        },
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-                orderBy: {
-                    createdAt: "desc",
                 },
             },
             roomUsers: {
@@ -89,21 +71,6 @@ export async function getAuthenticatedUserWithRooms() {
                             _count: {
                                 select: {
                                     roomUsers: true,
-                                    queueEntries: true,
-                                },
-                            },
-                            playbackState: {
-                                select: {
-                                    currentEntry: {
-                                        select: {
-                                            song: {
-                                                select: {
-                                                    title: true,
-                                                    smallImage: true,
-                                                },
-                                            },
-                                        },
-                                    },
                                 },
                             },
                         },

@@ -61,43 +61,16 @@ export default function SignInForm() {
                         {isLoading ? "Signing in" : "Sign in with Google"}
                     </Button>
 
-                    <div className="relative">
-                        <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-border"></div>
-                        </div>
-                        <div className="relative flex justify-center text-sm">
-                            <span className="px-2 bg-card text-muted-foreground">or continue as guest</span>
-                        </div>
-                    </div>
+                    <p className="text-center text-sm text-muted-foreground">
+                        {"Already have an account?    "}
+                        <Link href="/" className="text-accent hover:underline">
+                            Go back
+                        </Link>
+                    </p>
 
-                    {/* Guest Sign-In */}
-                    <div className="space-y-3">
-                        <div>
-                            <label className="text-sm font-medium text-foreground">Guest Username</label>
-                            <Input
-                                placeholder="Enter your username"
-                                value={username}
-                                onChange={e => setUsername(e.target.value)}
-                                onKeyDown={e => e.key === "Enter" && handleGuestSignIn()}
-                                className="bg-input border-border text-foreground placeholder:text-muted-foreground h-11 rounded-lg mt-1"
-                            />
-                        </div>
-                        <Button
-                            onClick={handleGuestSignIn}
-                            disabled={!username.trim()}
-                            className="w-full bg-accent text-accent-foreground hover:opacity-90 h-11 font-medium transition-theme"
-                        >
-                            Continue as Guest
-                        </Button>
-                    </div>
                 </div>
 
-                <p className="text-center text-sm text-muted-foreground">
-                    Already have an account?{" "}
-                    <Link href="/" className="text-accent hover:underline">
-                        Go back
-                    </Link>
-                </p>
+                
             </div>
         </main>
     );

@@ -5,24 +5,15 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Plus, Loader2 } from "lucide-react";
 import Image from "next/image";
-import type { YouTubeSearchItem, YouTubeVideoDetailsItem } from "@/lib";
-
-interface SearchResult {
-    id: string;
-    title: string;
-    channel: string;
-    duration: string;
-    thumbnail: string;
-    videoId: string;
-}
+import type { YouTubeSearchItem, YouTubeVideoDetailsItem, SongMetaData } from "@/lib";
 
 interface SearchPanelProps {
-    onAddSong: (song: SearchResult) => void;
+    handleAddSong: (song: SongMetaData) => void;
 }
 
-export function SearchPanel({ onAddSong }: SearchPanelProps) {
+export function SearchPanel({ handleAddSong }: SearchPanelProps) {
     const [query, setQuery] = useState("");
-    const [results, setResults] = useState<SearchResult[]>([]);
+    const [results, setResults] = useState<SongMetaData[]>([]);
     const [hasSearched, setHasSearched] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -72,11 +63,10 @@ export function SearchPanel({ onAddSong }: SearchPanelProps) {
                 durationMap.set(item.id, item.contentDetails.duration);
             });
 
-            const searchResults: SearchResult[] = data.items.map((item: YouTubeSearchItem) => ({
-                id: item.id.videoId,
+            const searchResults: SongMetaData[] = data.items.map((item: YouTubeSearchItem) => ({
                 videoId: item.id.videoId,
                 title: item.snippet.title,
-                channel: item.snippet.channelTitle,
+                channelName: item.snippet.channelTitle,
                 duration: formatDuration(durationMap.get(item.id.videoId) || "PT0S"),
                 thumbnail: item.snippet.thumbnails.medium?.url,
             }));
@@ -137,9 +127,9 @@ export function SearchPanel({ onAddSong }: SearchPanelProps) {
                     </p>
                 )}
 
-                {results.map(song => (
+                {results.map( (song, idx) => (
                     <div
-                        key={song.id}
+                        key={idx}
                         className="flex items-center gap-3 p-3 bg-card border border-border rounded-lg hover:border-accent/30 hover:bg-accent/5 transition-all group"
                     >
                         <Image
@@ -155,11 +145,11 @@ export function SearchPanel({ onAddSong }: SearchPanelProps) {
                                 {song.title}
                             </p>
                             <p className="text-xs text-muted-foreground truncate">
-                                {song.channel} • {song.duration}
+                                {song.channelName} • {song.duration}
                             </p>
                         </div>
                         <Button
-                            onClick={() => onAddSong(song)}
+                            onClick={() => handleAddSong(song)}
                             size="icon"
                             className="bg-accent text-accent-foreground hover:bg-accent/90 h-8 w-8 flex-shrink-0 transition-colors"
                             title="Add to queue"

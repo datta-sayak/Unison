@@ -3,11 +3,11 @@
 import Image from "next/image";
 import { ChevronUp, ChevronDown } from "lucide-react";
 import { SearchPanel } from "@/components/SearchPanel";
-import type { Song, SongInput } from "@/lib";
+import type { Song, SongMetaData } from "@/lib";
 
 interface QueueSectionProps {
     queue: Song[];
-    handleAddSong: (song: SongInput) => void;
+    handleAddSong: (song: SongMetaData) => void;
     handleVote: (id: string, direction: "up" | "down") => void;
     loading?: boolean;
 }
@@ -18,7 +18,7 @@ export function QueueSection({ queue, handleAddSong, handleVote, loading = false
             {/* Search Panel */}
             <div>
                 <h3 className="text-sm font-semibold text-foreground mb-3">Search & Add Songs</h3>
-                <SearchPanel onAddSong={handleAddSong} />
+                <SearchPanel handleAddSong={handleAddSong} />
             </div>
 
             {/* Queue List */}
@@ -36,27 +36,28 @@ export function QueueSection({ queue, handleAddSong, handleVote, loading = false
                     <div className="space-y-2">
                         {queue.map((song, idx) => (
                             <div
-                                key={song.id}
+                                key={idx}
                                 className="bg-muted/30 rounded-xl p-3 flex gap-3 hover:bg-muted/50 transition-all"
                             >
                                 <span className="text-xs text-muted-foreground font-semibold pt-0.5 flex-shrink-0 w-4 text-center">
                                     {idx + 1}
                                 </span>
                                 <Image
-                                    src={song.thumbnail || "/placeholder.svg"}
+                                    src={song.thumbnail}
                                     alt={song.title}
-                                    width={44}
-                                    height={44}
+                                    width={70}
+                                    height={30}
+                                    style={{ height: "auto", width: "auto" }}
                                     className="rounded-lg object-cover flex-shrink-0"
                                 />
                                 <div className="flex-1 min-w-0">
                                     <p className="text-sm font-semibold text-foreground truncate">{song.title}</p>
-                                    <p className="text-xs text-muted-foreground truncate">{song.channel}</p>
+                                    <p className="text-xs text-muted-foreground truncate">{song.channelName}</p>
                                     <p className="text-xs text-muted-foreground mt-0.5">Added by {song.requestedBy}</p>
                                 </div>
                                 <div className="flex flex-col items-center gap-1 flex-shrink-0">
                                     <button
-                                        onClick={() => handleVote(song.id, "up")}
+                                        onClick={() => handleVote(song.videoId, "up")}
                                         className="p-1 hover:bg-muted rounded transition-colors"
                                         title="Vote up"
                                     >
@@ -64,7 +65,7 @@ export function QueueSection({ queue, handleAddSong, handleVote, loading = false
                                     </button>
                                     <span className="text-xs font-bold text-accent">{song.votes}</span>
                                     <button
-                                        onClick={() => handleVote(song.id, "down")}
+                                        onClick={() => handleVote(song.videoId, "down")}
                                         className="p-1 hover:bg-muted rounded transition-colors"
                                         title="Vote down"
                                     >

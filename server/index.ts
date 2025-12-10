@@ -2,6 +2,9 @@ import { Server } from "socket.io";
 import express from "express";
 import { roomEvents } from "./sockets/room.js";
 import { messageEvents } from "./sockets/message.js";
+import { queueEvents } from "./sockets/queue.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 
@@ -19,11 +22,12 @@ export const io = new Server(server, {
     },
 });
 
-io.on("connection", socket => {
+io.on("connection", async socket => {
     console.log("connected:", socket.id);
 
     roomEvents(io, socket);
     messageEvents(io, socket);
+    queueEvents(io, socket);
 
     socket.on("disconnect", () => {
         console.log("disconnected:", socket.id);

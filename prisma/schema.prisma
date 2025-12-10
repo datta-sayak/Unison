@@ -22,7 +22,6 @@ model User {
   roomUsers         RoomUser[]
   vote              Vote[]
   createdRooms      Room[]            @relation("RoomCreator")
-  addedQueueEntries RoomQueue[]       @relation("QueueEntryAdder")
   addedHistory      PlaybackHistory[] @relation("HistoryAdder")
 
   @@index([email])
@@ -39,8 +38,6 @@ model Room {
   createdAt     DateTime          @default(now())
   createdBy     User              @relation("RoomCreator", fields: [createdById], references: [id])
   roomUsers     RoomUser[]
-  queueEntries  RoomQueue[]
-  playbackState PlaybackState?
   history       PlaybackHistory[]
 
   @@index([createdById])
@@ -67,58 +64,22 @@ model Song {
   id           String            @id @default(cuid())
   youtubeId    String            @unique
   title        String
-  channelName  String?
-  smallImage   String?
-  bigImage     String?
-  duration     Int?
+  channelName  String
+  image        String?
+  duration     String
   tags         String[]
-  queueEntries RoomQueue[]
   history      PlaybackHistory[]
-}
-
-model RoomQueue {
-  id            String            @id @default(cuid())
-  roomId        String
-  songId        String
-  addedById     String
-  room          Room              @relation(fields: [roomId], references: [roomId])
-  song          Song              @relation(fields: [songId], references: [id])
-  addedBy       User              @relation("QueueEntryAdder", fields: [addedById], references: [id])
-  addedAt       DateTime          @default(now())
-  status        QueueStatus       @default(Queued)
-  voteScore     Int               @default(0)
-  votes         Vote[]
-  playbackState PlaybackState?    @relation("CurrentPlaybackEntry")
-  history       PlaybackHistory[]
-
-  @@index([roomId])
-  @@index([addedAt])
-  @@index([status])
-  @@index([voteScore])
 }
 
 model Vote {
   id           String    @id @default(cuid())
   queueEntryId String
   userId       String
-  entry        RoomQueue @relation(fields: [queueEntryId], references: [id])
   user         User      @relation(fields: [userId], references: [id])
   value        Int
   createdAt    DateTime  @default(now())
 
   @@unique([queueEntryId, userId])
-}
-
-model PlaybackState {
-  id             String     @id
-  roomId         String     @unique
-  room           Room       @relation(fields: [roomId], references: [roomId])
-  currentEntryId String?    @unique
-  startedAt      DateTime?
-  isPaused       Boolean    @default(true)
-  elapsedTime    Int        @default(0)
-  providerData   Json?
-  currentEntry   RoomQueue? @relation("CurrentPlaybackEntry", fields: [currentEntryId], references: [id])
 }
 
 model PlaybackHistory {
@@ -129,7 +90,6 @@ model PlaybackHistory {
   addedById    String?
   room         Room       @relation(fields: [roomId], references: [roomId])
   song         Song       @relation(fields: [songId], references: [id])
-  queueEntry   RoomQueue? @relation(fields: [queueEntryId], references: [id])
   addedBy      User?      @relation("HistoryAdder", fields: [addedById], references: [id])
   playedAt     DateTime   @default(now())
   duration     Int

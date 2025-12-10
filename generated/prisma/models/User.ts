@@ -9,8 +9,8 @@
  * 🟢 You can import this file directly.
  */
 import type * as runtime from "@prisma/client/runtime/client"
-import type * as $Enums from "../enums.js"
-import type * as Prisma from "../internal/prismaNamespace.js"
+import type * as $Enums from "../enums"
+import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model User
@@ -185,7 +185,6 @@ export type UserWhereInput = {
   roomUsers?: Prisma.RoomUserListRelationFilter
   vote?: Prisma.VoteListRelationFilter
   createdRooms?: Prisma.RoomListRelationFilter
-  addedQueueEntries?: Prisma.RoomQueueListRelationFilter
   addedHistory?: Prisma.PlaybackHistoryListRelationFilter
 }
 
@@ -198,7 +197,6 @@ export type UserOrderByWithRelationInput = {
   roomUsers?: Prisma.RoomUserOrderByRelationAggregateInput
   vote?: Prisma.VoteOrderByRelationAggregateInput
   createdRooms?: Prisma.RoomOrderByRelationAggregateInput
-  addedQueueEntries?: Prisma.RoomQueueOrderByRelationAggregateInput
   addedHistory?: Prisma.PlaybackHistoryOrderByRelationAggregateInput
 }
 
@@ -214,7 +212,6 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   roomUsers?: Prisma.RoomUserListRelationFilter
   vote?: Prisma.VoteListRelationFilter
   createdRooms?: Prisma.RoomListRelationFilter
-  addedQueueEntries?: Prisma.RoomQueueListRelationFilter
   addedHistory?: Prisma.PlaybackHistoryListRelationFilter
 }, "id" | "email">
 
@@ -249,7 +246,6 @@ export type UserCreateInput = {
   roomUsers?: Prisma.RoomUserCreateNestedManyWithoutUserInput
   vote?: Prisma.VoteCreateNestedManyWithoutUserInput
   createdRooms?: Prisma.RoomCreateNestedManyWithoutCreatedByInput
-  addedQueueEntries?: Prisma.RoomQueueCreateNestedManyWithoutAddedByInput
   addedHistory?: Prisma.PlaybackHistoryCreateNestedManyWithoutAddedByInput
 }
 
@@ -262,7 +258,6 @@ export type UserUncheckedCreateInput = {
   roomUsers?: Prisma.RoomUserUncheckedCreateNestedManyWithoutUserInput
   vote?: Prisma.VoteUncheckedCreateNestedManyWithoutUserInput
   createdRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutCreatedByInput
-  addedQueueEntries?: Prisma.RoomQueueUncheckedCreateNestedManyWithoutAddedByInput
   addedHistory?: Prisma.PlaybackHistoryUncheckedCreateNestedManyWithoutAddedByInput
 }
 
@@ -275,7 +270,6 @@ export type UserUpdateInput = {
   roomUsers?: Prisma.RoomUserUpdateManyWithoutUserNestedInput
   vote?: Prisma.VoteUpdateManyWithoutUserNestedInput
   createdRooms?: Prisma.RoomUpdateManyWithoutCreatedByNestedInput
-  addedQueueEntries?: Prisma.RoomQueueUpdateManyWithoutAddedByNestedInput
   addedHistory?: Prisma.PlaybackHistoryUpdateManyWithoutAddedByNestedInput
 }
 
@@ -288,7 +282,6 @@ export type UserUncheckedUpdateInput = {
   roomUsers?: Prisma.RoomUserUncheckedUpdateManyWithoutUserNestedInput
   vote?: Prisma.VoteUncheckedUpdateManyWithoutUserNestedInput
   createdRooms?: Prisma.RoomUncheckedUpdateManyWithoutCreatedByNestedInput
-  addedQueueEntries?: Prisma.RoomQueueUncheckedUpdateManyWithoutAddedByNestedInput
   addedHistory?: Prisma.PlaybackHistoryUncheckedUpdateManyWithoutAddedByNestedInput
 }
 
@@ -390,20 +383,6 @@ export type UserUpdateOneRequiredWithoutRoomUsersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRoomUsersInput, Prisma.UserUpdateWithoutRoomUsersInput>, Prisma.UserUncheckedUpdateWithoutRoomUsersInput>
 }
 
-export type UserCreateNestedOneWithoutAddedQueueEntriesInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutAddedQueueEntriesInput, Prisma.UserUncheckedCreateWithoutAddedQueueEntriesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAddedQueueEntriesInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutAddedQueueEntriesNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutAddedQueueEntriesInput, Prisma.UserUncheckedCreateWithoutAddedQueueEntriesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAddedQueueEntriesInput
-  upsert?: Prisma.UserUpsertWithoutAddedQueueEntriesInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAddedQueueEntriesInput, Prisma.UserUpdateWithoutAddedQueueEntriesInput>, Prisma.UserUncheckedUpdateWithoutAddedQueueEntriesInput>
-}
-
 export type UserCreateNestedOneWithoutVoteInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutVoteInput, Prisma.UserUncheckedCreateWithoutVoteInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutVoteInput
@@ -442,7 +421,6 @@ export type UserCreateWithoutCreatedRoomsInput = {
   createdAt?: Date | string
   roomUsers?: Prisma.RoomUserCreateNestedManyWithoutUserInput
   vote?: Prisma.VoteCreateNestedManyWithoutUserInput
-  addedQueueEntries?: Prisma.RoomQueueCreateNestedManyWithoutAddedByInput
   addedHistory?: Prisma.PlaybackHistoryCreateNestedManyWithoutAddedByInput
 }
 
@@ -454,7 +432,6 @@ export type UserUncheckedCreateWithoutCreatedRoomsInput = {
   createdAt?: Date | string
   roomUsers?: Prisma.RoomUserUncheckedCreateNestedManyWithoutUserInput
   vote?: Prisma.VoteUncheckedCreateNestedManyWithoutUserInput
-  addedQueueEntries?: Prisma.RoomQueueUncheckedCreateNestedManyWithoutAddedByInput
   addedHistory?: Prisma.PlaybackHistoryUncheckedCreateNestedManyWithoutAddedByInput
 }
 
@@ -482,7 +459,6 @@ export type UserUpdateWithoutCreatedRoomsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roomUsers?: Prisma.RoomUserUpdateManyWithoutUserNestedInput
   vote?: Prisma.VoteUpdateManyWithoutUserNestedInput
-  addedQueueEntries?: Prisma.RoomQueueUpdateManyWithoutAddedByNestedInput
   addedHistory?: Prisma.PlaybackHistoryUpdateManyWithoutAddedByNestedInput
 }
 
@@ -494,7 +470,6 @@ export type UserUncheckedUpdateWithoutCreatedRoomsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roomUsers?: Prisma.RoomUserUncheckedUpdateManyWithoutUserNestedInput
   vote?: Prisma.VoteUncheckedUpdateManyWithoutUserNestedInput
-  addedQueueEntries?: Prisma.RoomQueueUncheckedUpdateManyWithoutAddedByNestedInput
   addedHistory?: Prisma.PlaybackHistoryUncheckedUpdateManyWithoutAddedByNestedInput
 }
 
@@ -506,7 +481,6 @@ export type UserCreateWithoutRoomUsersInput = {
   createdAt?: Date | string
   vote?: Prisma.VoteCreateNestedManyWithoutUserInput
   createdRooms?: Prisma.RoomCreateNestedManyWithoutCreatedByInput
-  addedQueueEntries?: Prisma.RoomQueueCreateNestedManyWithoutAddedByInput
   addedHistory?: Prisma.PlaybackHistoryCreateNestedManyWithoutAddedByInput
 }
 
@@ -518,7 +492,6 @@ export type UserUncheckedCreateWithoutRoomUsersInput = {
   createdAt?: Date | string
   vote?: Prisma.VoteUncheckedCreateNestedManyWithoutUserInput
   createdRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutCreatedByInput
-  addedQueueEntries?: Prisma.RoomQueueUncheckedCreateNestedManyWithoutAddedByInput
   addedHistory?: Prisma.PlaybackHistoryUncheckedCreateNestedManyWithoutAddedByInput
 }
 
@@ -546,7 +519,6 @@ export type UserUpdateWithoutRoomUsersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vote?: Prisma.VoteUpdateManyWithoutUserNestedInput
   createdRooms?: Prisma.RoomUpdateManyWithoutCreatedByNestedInput
-  addedQueueEntries?: Prisma.RoomQueueUpdateManyWithoutAddedByNestedInput
   addedHistory?: Prisma.PlaybackHistoryUpdateManyWithoutAddedByNestedInput
 }
 
@@ -556,71 +528,6 @@ export type UserUncheckedUpdateWithoutRoomUsersInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  vote?: Prisma.VoteUncheckedUpdateManyWithoutUserNestedInput
-  createdRooms?: Prisma.RoomUncheckedUpdateManyWithoutCreatedByNestedInput
-  addedQueueEntries?: Prisma.RoomQueueUncheckedUpdateManyWithoutAddedByNestedInput
-  addedHistory?: Prisma.PlaybackHistoryUncheckedUpdateManyWithoutAddedByNestedInput
-}
-
-export type UserCreateWithoutAddedQueueEntriesInput = {
-  id?: string
-  name?: string | null
-  email: string
-  avatarUrl?: string | null
-  createdAt?: Date | string
-  roomUsers?: Prisma.RoomUserCreateNestedManyWithoutUserInput
-  vote?: Prisma.VoteCreateNestedManyWithoutUserInput
-  createdRooms?: Prisma.RoomCreateNestedManyWithoutCreatedByInput
-  addedHistory?: Prisma.PlaybackHistoryCreateNestedManyWithoutAddedByInput
-}
-
-export type UserUncheckedCreateWithoutAddedQueueEntriesInput = {
-  id?: string
-  name?: string | null
-  email: string
-  avatarUrl?: string | null
-  createdAt?: Date | string
-  roomUsers?: Prisma.RoomUserUncheckedCreateNestedManyWithoutUserInput
-  vote?: Prisma.VoteUncheckedCreateNestedManyWithoutUserInput
-  createdRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutCreatedByInput
-  addedHistory?: Prisma.PlaybackHistoryUncheckedCreateNestedManyWithoutAddedByInput
-}
-
-export type UserCreateOrConnectWithoutAddedQueueEntriesInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutAddedQueueEntriesInput, Prisma.UserUncheckedCreateWithoutAddedQueueEntriesInput>
-}
-
-export type UserUpsertWithoutAddedQueueEntriesInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutAddedQueueEntriesInput, Prisma.UserUncheckedUpdateWithoutAddedQueueEntriesInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutAddedQueueEntriesInput, Prisma.UserUncheckedCreateWithoutAddedQueueEntriesInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutAddedQueueEntriesInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutAddedQueueEntriesInput, Prisma.UserUncheckedUpdateWithoutAddedQueueEntriesInput>
-}
-
-export type UserUpdateWithoutAddedQueueEntriesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  roomUsers?: Prisma.RoomUserUpdateManyWithoutUserNestedInput
-  vote?: Prisma.VoteUpdateManyWithoutUserNestedInput
-  createdRooms?: Prisma.RoomUpdateManyWithoutCreatedByNestedInput
-  addedHistory?: Prisma.PlaybackHistoryUpdateManyWithoutAddedByNestedInput
-}
-
-export type UserUncheckedUpdateWithoutAddedQueueEntriesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  roomUsers?: Prisma.RoomUserUncheckedUpdateManyWithoutUserNestedInput
   vote?: Prisma.VoteUncheckedUpdateManyWithoutUserNestedInput
   createdRooms?: Prisma.RoomUncheckedUpdateManyWithoutCreatedByNestedInput
   addedHistory?: Prisma.PlaybackHistoryUncheckedUpdateManyWithoutAddedByNestedInput
@@ -634,7 +541,6 @@ export type UserCreateWithoutVoteInput = {
   createdAt?: Date | string
   roomUsers?: Prisma.RoomUserCreateNestedManyWithoutUserInput
   createdRooms?: Prisma.RoomCreateNestedManyWithoutCreatedByInput
-  addedQueueEntries?: Prisma.RoomQueueCreateNestedManyWithoutAddedByInput
   addedHistory?: Prisma.PlaybackHistoryCreateNestedManyWithoutAddedByInput
 }
 
@@ -646,7 +552,6 @@ export type UserUncheckedCreateWithoutVoteInput = {
   createdAt?: Date | string
   roomUsers?: Prisma.RoomUserUncheckedCreateNestedManyWithoutUserInput
   createdRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutCreatedByInput
-  addedQueueEntries?: Prisma.RoomQueueUncheckedCreateNestedManyWithoutAddedByInput
   addedHistory?: Prisma.PlaybackHistoryUncheckedCreateNestedManyWithoutAddedByInput
 }
 
@@ -674,7 +579,6 @@ export type UserUpdateWithoutVoteInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roomUsers?: Prisma.RoomUserUpdateManyWithoutUserNestedInput
   createdRooms?: Prisma.RoomUpdateManyWithoutCreatedByNestedInput
-  addedQueueEntries?: Prisma.RoomQueueUpdateManyWithoutAddedByNestedInput
   addedHistory?: Prisma.PlaybackHistoryUpdateManyWithoutAddedByNestedInput
 }
 
@@ -686,7 +590,6 @@ export type UserUncheckedUpdateWithoutVoteInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roomUsers?: Prisma.RoomUserUncheckedUpdateManyWithoutUserNestedInput
   createdRooms?: Prisma.RoomUncheckedUpdateManyWithoutCreatedByNestedInput
-  addedQueueEntries?: Prisma.RoomQueueUncheckedUpdateManyWithoutAddedByNestedInput
   addedHistory?: Prisma.PlaybackHistoryUncheckedUpdateManyWithoutAddedByNestedInput
 }
 
@@ -699,7 +602,6 @@ export type UserCreateWithoutAddedHistoryInput = {
   roomUsers?: Prisma.RoomUserCreateNestedManyWithoutUserInput
   vote?: Prisma.VoteCreateNestedManyWithoutUserInput
   createdRooms?: Prisma.RoomCreateNestedManyWithoutCreatedByInput
-  addedQueueEntries?: Prisma.RoomQueueCreateNestedManyWithoutAddedByInput
 }
 
 export type UserUncheckedCreateWithoutAddedHistoryInput = {
@@ -711,7 +613,6 @@ export type UserUncheckedCreateWithoutAddedHistoryInput = {
   roomUsers?: Prisma.RoomUserUncheckedCreateNestedManyWithoutUserInput
   vote?: Prisma.VoteUncheckedCreateNestedManyWithoutUserInput
   createdRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutCreatedByInput
-  addedQueueEntries?: Prisma.RoomQueueUncheckedCreateNestedManyWithoutAddedByInput
 }
 
 export type UserCreateOrConnectWithoutAddedHistoryInput = {
@@ -739,7 +640,6 @@ export type UserUpdateWithoutAddedHistoryInput = {
   roomUsers?: Prisma.RoomUserUpdateManyWithoutUserNestedInput
   vote?: Prisma.VoteUpdateManyWithoutUserNestedInput
   createdRooms?: Prisma.RoomUpdateManyWithoutCreatedByNestedInput
-  addedQueueEntries?: Prisma.RoomQueueUpdateManyWithoutAddedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAddedHistoryInput = {
@@ -751,7 +651,6 @@ export type UserUncheckedUpdateWithoutAddedHistoryInput = {
   roomUsers?: Prisma.RoomUserUncheckedUpdateManyWithoutUserNestedInput
   vote?: Prisma.VoteUncheckedUpdateManyWithoutUserNestedInput
   createdRooms?: Prisma.RoomUncheckedUpdateManyWithoutCreatedByNestedInput
-  addedQueueEntries?: Prisma.RoomQueueUncheckedUpdateManyWithoutAddedByNestedInput
 }
 
 
@@ -763,7 +662,6 @@ export type UserCountOutputType = {
   roomUsers: number
   vote: number
   createdRooms: number
-  addedQueueEntries: number
   addedHistory: number
 }
 
@@ -771,7 +669,6 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   roomUsers?: boolean | UserCountOutputTypeCountRoomUsersArgs
   vote?: boolean | UserCountOutputTypeCountVoteArgs
   createdRooms?: boolean | UserCountOutputTypeCountCreatedRoomsArgs
-  addedQueueEntries?: boolean | UserCountOutputTypeCountAddedQueueEntriesArgs
   addedHistory?: boolean | UserCountOutputTypeCountAddedHistoryArgs
 }
 
@@ -809,13 +706,6 @@ export type UserCountOutputTypeCountCreatedRoomsArgs<ExtArgs extends runtime.Typ
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountAddedQueueEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.RoomQueueWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
 export type UserCountOutputTypeCountAddedHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.PlaybackHistoryWhereInput
 }
@@ -830,7 +720,6 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   roomUsers?: boolean | Prisma.User$roomUsersArgs<ExtArgs>
   vote?: boolean | Prisma.User$voteArgs<ExtArgs>
   createdRooms?: boolean | Prisma.User$createdRoomsArgs<ExtArgs>
-  addedQueueEntries?: boolean | Prisma.User$addedQueueEntriesArgs<ExtArgs>
   addedHistory?: boolean | Prisma.User$addedHistoryArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
@@ -864,7 +753,6 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   roomUsers?: boolean | Prisma.User$roomUsersArgs<ExtArgs>
   vote?: boolean | Prisma.User$voteArgs<ExtArgs>
   createdRooms?: boolean | Prisma.User$createdRoomsArgs<ExtArgs>
-  addedQueueEntries?: boolean | Prisma.User$addedQueueEntriesArgs<ExtArgs>
   addedHistory?: boolean | Prisma.User$addedHistoryArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -877,7 +765,6 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     roomUsers: Prisma.$RoomUserPayload<ExtArgs>[]
     vote: Prisma.$VotePayload<ExtArgs>[]
     createdRooms: Prisma.$RoomPayload<ExtArgs>[]
-    addedQueueEntries: Prisma.$RoomQueuePayload<ExtArgs>[]
     addedHistory: Prisma.$PlaybackHistoryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1283,7 +1170,6 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   roomUsers<T extends Prisma.User$roomUsersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$roomUsersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoomUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   vote<T extends Prisma.User$voteArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$voteArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdRooms<T extends Prisma.User$createdRoomsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdRoomsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoomPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  addedQueueEntries<T extends Prisma.User$addedQueueEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$addedQueueEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoomQueuePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   addedHistory<T extends Prisma.User$addedHistoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$addedHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlaybackHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1776,30 +1662,6 @@ export type User$createdRoomsArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.RoomScalarFieldEnum | Prisma.RoomScalarFieldEnum[]
-}
-
-/**
- * User.addedQueueEntries
- */
-export type User$addedQueueEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the RoomQueue
-   */
-  select?: Prisma.RoomQueueSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the RoomQueue
-   */
-  omit?: Prisma.RoomQueueOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.RoomQueueInclude<ExtArgs> | null
-  where?: Prisma.RoomQueueWhereInput
-  orderBy?: Prisma.RoomQueueOrderByWithRelationInput | Prisma.RoomQueueOrderByWithRelationInput[]
-  cursor?: Prisma.RoomQueueWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.RoomQueueScalarFieldEnum | Prisma.RoomQueueScalarFieldEnum[]
 }
 
 /**

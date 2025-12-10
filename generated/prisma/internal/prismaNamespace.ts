@@ -16,10 +16,10 @@
  */
 
 import * as runtime from "@prisma/client/runtime/client"
-import type * as Prisma from "../models.js"
-import { type PrismaClient } from "./class.js"
+import type * as Prisma from "../models"
+import { type PrismaClient } from "./class"
 
-export type * from '../models.js'
+export type * from '../models'
 
 export type DMMF = typeof runtime.DMMF
 
@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.0.1
- * Query Engine version: f09f2815f091dbba658cdcd2264306d88bb5bda6
+ * Prisma Client JS version: 7.1.0
+ * Query Engine version: ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.0.1",
-  engine: "f09f2815f091dbba658cdcd2264306d88bb5bda6"
+  client: "7.1.0",
+  engine: "ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba"
 }
 
 /**
@@ -388,9 +388,7 @@ export const ModelName = {
   Room: 'Room',
   RoomUser: 'RoomUser',
   Song: 'Song',
-  RoomQueue: 'RoomQueue',
   Vote: 'Vote',
-  PlaybackState: 'PlaybackState',
   PlaybackHistory: 'PlaybackHistory'
 } as const
 
@@ -407,7 +405,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "room" | "roomUser" | "song" | "roomQueue" | "vote" | "playbackState" | "playbackHistory"
+    modelProps: "user" | "room" | "roomUser" | "song" | "vote" | "playbackHistory"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -707,80 +705,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    RoomQueue: {
-      payload: Prisma.$RoomQueuePayload<ExtArgs>
-      fields: Prisma.RoomQueueFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.RoomQueueFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomQueuePayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.RoomQueueFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomQueuePayload>
-        }
-        findFirst: {
-          args: Prisma.RoomQueueFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomQueuePayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.RoomQueueFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomQueuePayload>
-        }
-        findMany: {
-          args: Prisma.RoomQueueFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomQueuePayload>[]
-        }
-        create: {
-          args: Prisma.RoomQueueCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomQueuePayload>
-        }
-        createMany: {
-          args: Prisma.RoomQueueCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.RoomQueueCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomQueuePayload>[]
-        }
-        delete: {
-          args: Prisma.RoomQueueDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomQueuePayload>
-        }
-        update: {
-          args: Prisma.RoomQueueUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomQueuePayload>
-        }
-        deleteMany: {
-          args: Prisma.RoomQueueDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.RoomQueueUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.RoomQueueUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomQueuePayload>[]
-        }
-        upsert: {
-          args: Prisma.RoomQueueUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoomQueuePayload>
-        }
-        aggregate: {
-          args: Prisma.RoomQueueAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateRoomQueue>
-        }
-        groupBy: {
-          args: Prisma.RoomQueueGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.RoomQueueGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.RoomQueueCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.RoomQueueCountAggregateOutputType> | number
-        }
-      }
-    }
     Vote: {
       payload: Prisma.$VotePayload<ExtArgs>
       fields: Prisma.VoteFieldRefs
@@ -852,80 +776,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.VoteCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.VoteCountAggregateOutputType> | number
-        }
-      }
-    }
-    PlaybackState: {
-      payload: Prisma.$PlaybackStatePayload<ExtArgs>
-      fields: Prisma.PlaybackStateFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.PlaybackStateFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlaybackStatePayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.PlaybackStateFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlaybackStatePayload>
-        }
-        findFirst: {
-          args: Prisma.PlaybackStateFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlaybackStatePayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.PlaybackStateFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlaybackStatePayload>
-        }
-        findMany: {
-          args: Prisma.PlaybackStateFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlaybackStatePayload>[]
-        }
-        create: {
-          args: Prisma.PlaybackStateCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlaybackStatePayload>
-        }
-        createMany: {
-          args: Prisma.PlaybackStateCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.PlaybackStateCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlaybackStatePayload>[]
-        }
-        delete: {
-          args: Prisma.PlaybackStateDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlaybackStatePayload>
-        }
-        update: {
-          args: Prisma.PlaybackStateUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlaybackStatePayload>
-        }
-        deleteMany: {
-          args: Prisma.PlaybackStateDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.PlaybackStateUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.PlaybackStateUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlaybackStatePayload>[]
-        }
-        upsert: {
-          args: Prisma.PlaybackStateUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlaybackStatePayload>
-        }
-        aggregate: {
-          args: Prisma.PlaybackStateAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregatePlaybackState>
-        }
-        groupBy: {
-          args: Prisma.PlaybackStateGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.PlaybackStateGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.PlaybackStateCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.PlaybackStateCountAggregateOutputType> | number
         }
       }
     }
@@ -1082,26 +932,12 @@ export const SongScalarFieldEnum = {
   youtubeId: 'youtubeId',
   title: 'title',
   channelName: 'channelName',
-  smallImage: 'smallImage',
-  bigImage: 'bigImage',
+  image: 'image',
   duration: 'duration',
   tags: 'tags'
 } as const
 
 export type SongScalarFieldEnum = (typeof SongScalarFieldEnum)[keyof typeof SongScalarFieldEnum]
-
-
-export const RoomQueueScalarFieldEnum = {
-  id: 'id',
-  roomId: 'roomId',
-  songId: 'songId',
-  addedById: 'addedById',
-  addedAt: 'addedAt',
-  status: 'status',
-  voteScore: 'voteScore'
-} as const
-
-export type RoomQueueScalarFieldEnum = (typeof RoomQueueScalarFieldEnum)[keyof typeof RoomQueueScalarFieldEnum]
 
 
 export const VoteScalarFieldEnum = {
@@ -1113,19 +949,6 @@ export const VoteScalarFieldEnum = {
 } as const
 
 export type VoteScalarFieldEnum = (typeof VoteScalarFieldEnum)[keyof typeof VoteScalarFieldEnum]
-
-
-export const PlaybackStateScalarFieldEnum = {
-  id: 'id',
-  roomId: 'roomId',
-  currentEntryId: 'currentEntryId',
-  startedAt: 'startedAt',
-  isPaused: 'isPaused',
-  elapsedTime: 'elapsedTime',
-  providerData: 'providerData'
-} as const
-
-export type PlaybackStateScalarFieldEnum = (typeof PlaybackStateScalarFieldEnum)[keyof typeof PlaybackStateScalarFieldEnum]
 
 
 export const PlaybackHistoryScalarFieldEnum = {
@@ -1149,14 +972,6 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
-export const NullableJsonNullValueInput = {
-  DbNull: DbNull,
-  JsonNull: JsonNull
-} as const
-
-export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
-
-
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -1171,15 +986,6 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
-
-
-export const JsonNullValueFilter = {
-  DbNull: DbNull,
-  JsonNull: JsonNull,
-  AnyNull: AnyNull
-} as const
-
-export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 
@@ -1252,34 +1058,6 @@ export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
- * Reference to a field of type 'QueueStatus'
- */
-export type EnumQueueStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueueStatus'>
-    
-
-
-/**
- * Reference to a field of type 'QueueStatus[]'
- */
-export type ListEnumQueueStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueueStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'Json'
- */
-export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-/**
- * Reference to a field of type 'QueryMode'
- */
-export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
-    
-
-
-/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -1341,7 +1119,7 @@ export type PrismaClientOptions = ({
    *  { emit: 'stdout', level: 'error' }
    * 
    * ```
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/logging#the-log-option).
+   * Read more in our [docs](https://pris.ly/d/logging).
    */
   log?: (LogLevel | LogDefinition)[]
   /**
@@ -1369,15 +1147,29 @@ export type PrismaClientOptions = ({
    * ```
    */
   omit?: GlobalOmitConfig
+  /**
+   * SQL commenter plugins that add metadata to SQL queries as comments.
+   * Comments follow the sqlcommenter format: https://google.github.io/sqlcommenter/
+   * 
+   * @example
+   * ```
+   * const prisma = new PrismaClient({
+   *   adapter,
+   *   comments: [
+   *     traceContext(),
+   *     queryInsights(),
+   *   ],
+   * })
+   * ```
+   */
+  comments?: runtime.SqlCommenterPlugin[]
 }
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   room?: Prisma.RoomOmit
   roomUser?: Prisma.RoomUserOmit
   song?: Prisma.SongOmit
-  roomQueue?: Prisma.RoomQueueOmit
   vote?: Prisma.VoteOmit
-  playbackState?: Prisma.PlaybackStateOmit
   playbackHistory?: Prisma.PlaybackHistoryOmit
 }
 

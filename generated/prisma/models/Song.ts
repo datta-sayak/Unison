@@ -9,8 +9,8 @@
  * 🟢 You can import this file directly.
  */
 import type * as runtime from "@prisma/client/runtime/client"
-import type * as $Enums from "../enums.js"
-import type * as Prisma from "../internal/prismaNamespace.js"
+import type * as $Enums from "../enums"
+import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model Song
@@ -20,18 +20,8 @@ export type SongModel = runtime.Types.Result.DefaultSelection<Prisma.$SongPayloa
 
 export type AggregateSong = {
   _count: SongCountAggregateOutputType | null
-  _avg: SongAvgAggregateOutputType | null
-  _sum: SongSumAggregateOutputType | null
   _min: SongMinAggregateOutputType | null
   _max: SongMaxAggregateOutputType | null
-}
-
-export type SongAvgAggregateOutputType = {
-  duration: number | null
-}
-
-export type SongSumAggregateOutputType = {
-  duration: number | null
 }
 
 export type SongMinAggregateOutputType = {
@@ -39,9 +29,8 @@ export type SongMinAggregateOutputType = {
   youtubeId: string | null
   title: string | null
   channelName: string | null
-  smallImage: string | null
-  bigImage: string | null
-  duration: number | null
+  image: string | null
+  duration: string | null
 }
 
 export type SongMaxAggregateOutputType = {
@@ -49,9 +38,8 @@ export type SongMaxAggregateOutputType = {
   youtubeId: string | null
   title: string | null
   channelName: string | null
-  smallImage: string | null
-  bigImage: string | null
-  duration: number | null
+  image: string | null
+  duration: string | null
 }
 
 export type SongCountAggregateOutputType = {
@@ -59,29 +47,19 @@ export type SongCountAggregateOutputType = {
   youtubeId: number
   title: number
   channelName: number
-  smallImage: number
-  bigImage: number
+  image: number
   duration: number
   tags: number
   _all: number
 }
 
 
-export type SongAvgAggregateInputType = {
-  duration?: true
-}
-
-export type SongSumAggregateInputType = {
-  duration?: true
-}
-
 export type SongMinAggregateInputType = {
   id?: true
   youtubeId?: true
   title?: true
   channelName?: true
-  smallImage?: true
-  bigImage?: true
+  image?: true
   duration?: true
 }
 
@@ -90,8 +68,7 @@ export type SongMaxAggregateInputType = {
   youtubeId?: true
   title?: true
   channelName?: true
-  smallImage?: true
-  bigImage?: true
+  image?: true
   duration?: true
 }
 
@@ -100,8 +77,7 @@ export type SongCountAggregateInputType = {
   youtubeId?: true
   title?: true
   channelName?: true
-  smallImage?: true
-  bigImage?: true
+  image?: true
   duration?: true
   tags?: true
   _all?: true
@@ -145,18 +121,6 @@ export type SongAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: SongAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: SongSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: SongMinAggregateInputType
@@ -187,8 +151,6 @@ export type SongGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   _count?: SongCountAggregateInputType | true
-  _avg?: SongAvgAggregateInputType
-  _sum?: SongSumAggregateInputType
   _min?: SongMinAggregateInputType
   _max?: SongMaxAggregateInputType
 }
@@ -197,14 +159,11 @@ export type SongGroupByOutputType = {
   id: string
   youtubeId: string
   title: string
-  channelName: string | null
-  smallImage: string | null
-  bigImage: string | null
-  duration: number | null
+  channelName: string
+  image: string | null
+  duration: string
   tags: string[]
   _count: SongCountAggregateOutputType | null
-  _avg: SongAvgAggregateOutputType | null
-  _sum: SongSumAggregateOutputType | null
   _min: SongMinAggregateOutputType | null
   _max: SongMaxAggregateOutputType | null
 }
@@ -231,12 +190,10 @@ export type SongWhereInput = {
   id?: Prisma.StringFilter<"Song"> | string
   youtubeId?: Prisma.StringFilter<"Song"> | string
   title?: Prisma.StringFilter<"Song"> | string
-  channelName?: Prisma.StringNullableFilter<"Song"> | string | null
-  smallImage?: Prisma.StringNullableFilter<"Song"> | string | null
-  bigImage?: Prisma.StringNullableFilter<"Song"> | string | null
-  duration?: Prisma.IntNullableFilter<"Song"> | number | null
+  channelName?: Prisma.StringFilter<"Song"> | string
+  image?: Prisma.StringNullableFilter<"Song"> | string | null
+  duration?: Prisma.StringFilter<"Song"> | string
   tags?: Prisma.StringNullableListFilter<"Song">
-  queueEntries?: Prisma.RoomQueueListRelationFilter
   history?: Prisma.PlaybackHistoryListRelationFilter
 }
 
@@ -244,12 +201,10 @@ export type SongOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   youtubeId?: Prisma.SortOrder
   title?: Prisma.SortOrder
-  channelName?: Prisma.SortOrderInput | Prisma.SortOrder
-  smallImage?: Prisma.SortOrderInput | Prisma.SortOrder
-  bigImage?: Prisma.SortOrderInput | Prisma.SortOrder
-  duration?: Prisma.SortOrderInput | Prisma.SortOrder
+  channelName?: Prisma.SortOrder
+  image?: Prisma.SortOrderInput | Prisma.SortOrder
+  duration?: Prisma.SortOrder
   tags?: Prisma.SortOrder
-  queueEntries?: Prisma.RoomQueueOrderByRelationAggregateInput
   history?: Prisma.PlaybackHistoryOrderByRelationAggregateInput
 }
 
@@ -260,12 +215,10 @@ export type SongWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.SongWhereInput[]
   NOT?: Prisma.SongWhereInput | Prisma.SongWhereInput[]
   title?: Prisma.StringFilter<"Song"> | string
-  channelName?: Prisma.StringNullableFilter<"Song"> | string | null
-  smallImage?: Prisma.StringNullableFilter<"Song"> | string | null
-  bigImage?: Prisma.StringNullableFilter<"Song"> | string | null
-  duration?: Prisma.IntNullableFilter<"Song"> | number | null
+  channelName?: Prisma.StringFilter<"Song"> | string
+  image?: Prisma.StringNullableFilter<"Song"> | string | null
+  duration?: Prisma.StringFilter<"Song"> | string
   tags?: Prisma.StringNullableListFilter<"Song">
-  queueEntries?: Prisma.RoomQueueListRelationFilter
   history?: Prisma.PlaybackHistoryListRelationFilter
 }, "id" | "youtubeId">
 
@@ -273,16 +226,13 @@ export type SongOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   youtubeId?: Prisma.SortOrder
   title?: Prisma.SortOrder
-  channelName?: Prisma.SortOrderInput | Prisma.SortOrder
-  smallImage?: Prisma.SortOrderInput | Prisma.SortOrder
-  bigImage?: Prisma.SortOrderInput | Prisma.SortOrder
-  duration?: Prisma.SortOrderInput | Prisma.SortOrder
+  channelName?: Prisma.SortOrder
+  image?: Prisma.SortOrderInput | Prisma.SortOrder
+  duration?: Prisma.SortOrder
   tags?: Prisma.SortOrder
   _count?: Prisma.SongCountOrderByAggregateInput
-  _avg?: Prisma.SongAvgOrderByAggregateInput
   _max?: Prisma.SongMaxOrderByAggregateInput
   _min?: Prisma.SongMinOrderByAggregateInput
-  _sum?: Prisma.SongSumOrderByAggregateInput
 }
 
 export type SongScalarWhereWithAggregatesInput = {
@@ -292,10 +242,9 @@ export type SongScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Song"> | string
   youtubeId?: Prisma.StringWithAggregatesFilter<"Song"> | string
   title?: Prisma.StringWithAggregatesFilter<"Song"> | string
-  channelName?: Prisma.StringNullableWithAggregatesFilter<"Song"> | string | null
-  smallImage?: Prisma.StringNullableWithAggregatesFilter<"Song"> | string | null
-  bigImage?: Prisma.StringNullableWithAggregatesFilter<"Song"> | string | null
-  duration?: Prisma.IntNullableWithAggregatesFilter<"Song"> | number | null
+  channelName?: Prisma.StringWithAggregatesFilter<"Song"> | string
+  image?: Prisma.StringNullableWithAggregatesFilter<"Song"> | string | null
+  duration?: Prisma.StringWithAggregatesFilter<"Song"> | string
   tags?: Prisma.StringNullableListFilter<"Song">
 }
 
@@ -303,12 +252,10 @@ export type SongCreateInput = {
   id?: string
   youtubeId: string
   title: string
-  channelName?: string | null
-  smallImage?: string | null
-  bigImage?: string | null
-  duration?: number | null
+  channelName: string
+  image?: string | null
+  duration: string
   tags?: Prisma.SongCreatetagsInput | string[]
-  queueEntries?: Prisma.RoomQueueCreateNestedManyWithoutSongInput
   history?: Prisma.PlaybackHistoryCreateNestedManyWithoutSongInput
 }
 
@@ -316,12 +263,10 @@ export type SongUncheckedCreateInput = {
   id?: string
   youtubeId: string
   title: string
-  channelName?: string | null
-  smallImage?: string | null
-  bigImage?: string | null
-  duration?: number | null
+  channelName: string
+  image?: string | null
+  duration: string
   tags?: Prisma.SongCreatetagsInput | string[]
-  queueEntries?: Prisma.RoomQueueUncheckedCreateNestedManyWithoutSongInput
   history?: Prisma.PlaybackHistoryUncheckedCreateNestedManyWithoutSongInput
 }
 
@@ -329,12 +274,10 @@ export type SongUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   youtubeId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  channelName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  smallImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  bigImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  duration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  channelName?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  duration?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.SongUpdatetagsInput | string[]
-  queueEntries?: Prisma.RoomQueueUpdateManyWithoutSongNestedInput
   history?: Prisma.PlaybackHistoryUpdateManyWithoutSongNestedInput
 }
 
@@ -342,12 +285,10 @@ export type SongUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   youtubeId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  channelName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  smallImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  bigImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  duration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  channelName?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  duration?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.SongUpdatetagsInput | string[]
-  queueEntries?: Prisma.RoomQueueUncheckedUpdateManyWithoutSongNestedInput
   history?: Prisma.PlaybackHistoryUncheckedUpdateManyWithoutSongNestedInput
 }
 
@@ -355,10 +296,9 @@ export type SongCreateManyInput = {
   id?: string
   youtubeId: string
   title: string
-  channelName?: string | null
-  smallImage?: string | null
-  bigImage?: string | null
-  duration?: number | null
+  channelName: string
+  image?: string | null
+  duration: string
   tags?: Prisma.SongCreatetagsInput | string[]
 }
 
@@ -366,10 +306,9 @@ export type SongUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   youtubeId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  channelName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  smallImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  bigImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  duration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  channelName?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  duration?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.SongUpdatetagsInput | string[]
 }
 
@@ -377,10 +316,9 @@ export type SongUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   youtubeId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  channelName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  smallImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  bigImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  duration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  channelName?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  duration?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.SongUpdatetagsInput | string[]
 }
 
@@ -397,14 +335,9 @@ export type SongCountOrderByAggregateInput = {
   youtubeId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   channelName?: Prisma.SortOrder
-  smallImage?: Prisma.SortOrder
-  bigImage?: Prisma.SortOrder
+  image?: Prisma.SortOrder
   duration?: Prisma.SortOrder
   tags?: Prisma.SortOrder
-}
-
-export type SongAvgOrderByAggregateInput = {
-  duration?: Prisma.SortOrder
 }
 
 export type SongMaxOrderByAggregateInput = {
@@ -412,8 +345,7 @@ export type SongMaxOrderByAggregateInput = {
   youtubeId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   channelName?: Prisma.SortOrder
-  smallImage?: Prisma.SortOrder
-  bigImage?: Prisma.SortOrder
+  image?: Prisma.SortOrder
   duration?: Prisma.SortOrder
 }
 
@@ -422,12 +354,7 @@ export type SongMinOrderByAggregateInput = {
   youtubeId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   channelName?: Prisma.SortOrder
-  smallImage?: Prisma.SortOrder
-  bigImage?: Prisma.SortOrder
-  duration?: Prisma.SortOrder
-}
-
-export type SongSumOrderByAggregateInput = {
+  image?: Prisma.SortOrder
   duration?: Prisma.SortOrder
 }
 
@@ -440,31 +367,9 @@ export type SongCreatetagsInput = {
   set: string[]
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type SongUpdatetagsInput = {
   set?: string[]
   push?: string | string[]
-}
-
-export type SongCreateNestedOneWithoutQueueEntriesInput = {
-  create?: Prisma.XOR<Prisma.SongCreateWithoutQueueEntriesInput, Prisma.SongUncheckedCreateWithoutQueueEntriesInput>
-  connectOrCreate?: Prisma.SongCreateOrConnectWithoutQueueEntriesInput
-  connect?: Prisma.SongWhereUniqueInput
-}
-
-export type SongUpdateOneRequiredWithoutQueueEntriesNestedInput = {
-  create?: Prisma.XOR<Prisma.SongCreateWithoutQueueEntriesInput, Prisma.SongUncheckedCreateWithoutQueueEntriesInput>
-  connectOrCreate?: Prisma.SongCreateOrConnectWithoutQueueEntriesInput
-  upsert?: Prisma.SongUpsertWithoutQueueEntriesInput
-  connect?: Prisma.SongWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.SongUpdateToOneWithWhereWithoutQueueEntriesInput, Prisma.SongUpdateWithoutQueueEntriesInput>, Prisma.SongUncheckedUpdateWithoutQueueEntriesInput>
 }
 
 export type SongCreateNestedOneWithoutHistoryInput = {
@@ -481,92 +386,24 @@ export type SongUpdateOneRequiredWithoutHistoryNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.SongUpdateToOneWithWhereWithoutHistoryInput, Prisma.SongUpdateWithoutHistoryInput>, Prisma.SongUncheckedUpdateWithoutHistoryInput>
 }
 
-export type SongCreateWithoutQueueEntriesInput = {
-  id?: string
-  youtubeId: string
-  title: string
-  channelName?: string | null
-  smallImage?: string | null
-  bigImage?: string | null
-  duration?: number | null
-  tags?: Prisma.SongCreatetagsInput | string[]
-  history?: Prisma.PlaybackHistoryCreateNestedManyWithoutSongInput
-}
-
-export type SongUncheckedCreateWithoutQueueEntriesInput = {
-  id?: string
-  youtubeId: string
-  title: string
-  channelName?: string | null
-  smallImage?: string | null
-  bigImage?: string | null
-  duration?: number | null
-  tags?: Prisma.SongCreatetagsInput | string[]
-  history?: Prisma.PlaybackHistoryUncheckedCreateNestedManyWithoutSongInput
-}
-
-export type SongCreateOrConnectWithoutQueueEntriesInput = {
-  where: Prisma.SongWhereUniqueInput
-  create: Prisma.XOR<Prisma.SongCreateWithoutQueueEntriesInput, Prisma.SongUncheckedCreateWithoutQueueEntriesInput>
-}
-
-export type SongUpsertWithoutQueueEntriesInput = {
-  update: Prisma.XOR<Prisma.SongUpdateWithoutQueueEntriesInput, Prisma.SongUncheckedUpdateWithoutQueueEntriesInput>
-  create: Prisma.XOR<Prisma.SongCreateWithoutQueueEntriesInput, Prisma.SongUncheckedCreateWithoutQueueEntriesInput>
-  where?: Prisma.SongWhereInput
-}
-
-export type SongUpdateToOneWithWhereWithoutQueueEntriesInput = {
-  where?: Prisma.SongWhereInput
-  data: Prisma.XOR<Prisma.SongUpdateWithoutQueueEntriesInput, Prisma.SongUncheckedUpdateWithoutQueueEntriesInput>
-}
-
-export type SongUpdateWithoutQueueEntriesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  youtubeId?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  channelName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  smallImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  bigImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  duration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  tags?: Prisma.SongUpdatetagsInput | string[]
-  history?: Prisma.PlaybackHistoryUpdateManyWithoutSongNestedInput
-}
-
-export type SongUncheckedUpdateWithoutQueueEntriesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  youtubeId?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  channelName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  smallImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  bigImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  duration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  tags?: Prisma.SongUpdatetagsInput | string[]
-  history?: Prisma.PlaybackHistoryUncheckedUpdateManyWithoutSongNestedInput
-}
-
 export type SongCreateWithoutHistoryInput = {
   id?: string
   youtubeId: string
   title: string
-  channelName?: string | null
-  smallImage?: string | null
-  bigImage?: string | null
-  duration?: number | null
+  channelName: string
+  image?: string | null
+  duration: string
   tags?: Prisma.SongCreatetagsInput | string[]
-  queueEntries?: Prisma.RoomQueueCreateNestedManyWithoutSongInput
 }
 
 export type SongUncheckedCreateWithoutHistoryInput = {
   id?: string
   youtubeId: string
   title: string
-  channelName?: string | null
-  smallImage?: string | null
-  bigImage?: string | null
-  duration?: number | null
+  channelName: string
+  image?: string | null
+  duration: string
   tags?: Prisma.SongCreatetagsInput | string[]
-  queueEntries?: Prisma.RoomQueueUncheckedCreateNestedManyWithoutSongInput
 }
 
 export type SongCreateOrConnectWithoutHistoryInput = {
@@ -589,24 +426,20 @@ export type SongUpdateWithoutHistoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   youtubeId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  channelName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  smallImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  bigImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  duration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  channelName?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  duration?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.SongUpdatetagsInput | string[]
-  queueEntries?: Prisma.RoomQueueUpdateManyWithoutSongNestedInput
 }
 
 export type SongUncheckedUpdateWithoutHistoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   youtubeId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
-  channelName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  smallImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  bigImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  duration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  channelName?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  duration?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.SongUpdatetagsInput | string[]
-  queueEntries?: Prisma.RoomQueueUncheckedUpdateManyWithoutSongNestedInput
 }
 
 
@@ -615,12 +448,10 @@ export type SongUncheckedUpdateWithoutHistoryInput = {
  */
 
 export type SongCountOutputType = {
-  queueEntries: number
   history: number
 }
 
 export type SongCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  queueEntries?: boolean | SongCountOutputTypeCountQueueEntriesArgs
   history?: boolean | SongCountOutputTypeCountHistoryArgs
 }
 
@@ -637,13 +468,6 @@ export type SongCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
 /**
  * SongCountOutputType without action
  */
-export type SongCountOutputTypeCountQueueEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.RoomQueueWhereInput
-}
-
-/**
- * SongCountOutputType without action
- */
 export type SongCountOutputTypeCountHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.PlaybackHistoryWhereInput
 }
@@ -654,11 +478,9 @@ export type SongSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   youtubeId?: boolean
   title?: boolean
   channelName?: boolean
-  smallImage?: boolean
-  bigImage?: boolean
+  image?: boolean
   duration?: boolean
   tags?: boolean
-  queueEntries?: boolean | Prisma.Song$queueEntriesArgs<ExtArgs>
   history?: boolean | Prisma.Song$historyArgs<ExtArgs>
   _count?: boolean | Prisma.SongCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["song"]>
@@ -668,8 +490,7 @@ export type SongSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   youtubeId?: boolean
   title?: boolean
   channelName?: boolean
-  smallImage?: boolean
-  bigImage?: boolean
+  image?: boolean
   duration?: boolean
   tags?: boolean
 }, ExtArgs["result"]["song"]>
@@ -679,8 +500,7 @@ export type SongSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   youtubeId?: boolean
   title?: boolean
   channelName?: boolean
-  smallImage?: boolean
-  bigImage?: boolean
+  image?: boolean
   duration?: boolean
   tags?: boolean
 }, ExtArgs["result"]["song"]>
@@ -690,15 +510,13 @@ export type SongSelectScalar = {
   youtubeId?: boolean
   title?: boolean
   channelName?: boolean
-  smallImage?: boolean
-  bigImage?: boolean
+  image?: boolean
   duration?: boolean
   tags?: boolean
 }
 
-export type SongOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "youtubeId" | "title" | "channelName" | "smallImage" | "bigImage" | "duration" | "tags", ExtArgs["result"]["song"]>
+export type SongOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "youtubeId" | "title" | "channelName" | "image" | "duration" | "tags", ExtArgs["result"]["song"]>
 export type SongInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  queueEntries?: boolean | Prisma.Song$queueEntriesArgs<ExtArgs>
   history?: boolean | Prisma.Song$historyArgs<ExtArgs>
   _count?: boolean | Prisma.SongCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -708,17 +526,15 @@ export type SongIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $SongPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Song"
   objects: {
-    queueEntries: Prisma.$RoomQueuePayload<ExtArgs>[]
     history: Prisma.$PlaybackHistoryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     youtubeId: string
     title: string
-    channelName: string | null
-    smallImage: string | null
-    bigImage: string | null
-    duration: number | null
+    channelName: string
+    image: string | null
+    duration: string
     tags: string[]
   }, ExtArgs["result"]["song"]>
   composites: {}
@@ -1114,7 +930,6 @@ readonly fields: SongFieldRefs;
  */
 export interface Prisma__SongClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  queueEntries<T extends Prisma.Song$queueEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Song$queueEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoomQueuePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   history<T extends Prisma.Song$historyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Song$historyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlaybackHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1149,9 +964,8 @@ export interface SongFieldRefs {
   readonly youtubeId: Prisma.FieldRef<"Song", 'String'>
   readonly title: Prisma.FieldRef<"Song", 'String'>
   readonly channelName: Prisma.FieldRef<"Song", 'String'>
-  readonly smallImage: Prisma.FieldRef<"Song", 'String'>
-  readonly bigImage: Prisma.FieldRef<"Song", 'String'>
-  readonly duration: Prisma.FieldRef<"Song", 'Int'>
+  readonly image: Prisma.FieldRef<"Song", 'String'>
+  readonly duration: Prisma.FieldRef<"Song", 'String'>
   readonly tags: Prisma.FieldRef<"Song", 'String[]'>
 }
     
@@ -1538,30 +1352,6 @@ export type SongDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Songs to delete.
    */
   limit?: number
-}
-
-/**
- * Song.queueEntries
- */
-export type Song$queueEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the RoomQueue
-   */
-  select?: Prisma.RoomQueueSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the RoomQueue
-   */
-  omit?: Prisma.RoomQueueOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.RoomQueueInclude<ExtArgs> | null
-  where?: Prisma.RoomQueueWhereInput
-  orderBy?: Prisma.RoomQueueOrderByWithRelationInput | Prisma.RoomQueueOrderByWithRelationInput[]
-  cursor?: Prisma.RoomQueueWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.RoomQueueScalarFieldEnum | Prisma.RoomQueueScalarFieldEnum[]
 }
 
 /**

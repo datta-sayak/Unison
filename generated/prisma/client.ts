@@ -33,7 +33,7 @@ export * from "./enums"
  * const users = await prisma.user.findMany()
  * ```
  * 
- * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
+ * Read more in our [docs](https://pris.ly/d/client).
  */
 export const PrismaClient = $Class.getPrismaClientClass()
 export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts extends Prisma.PrismaClientOptions["omit"] = Prisma.PrismaClientOptions["omit"], ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = $Class.PrismaClient<LogOpts, OmitOpts, ExtArgs>
@@ -60,20 +60,10 @@ export type RoomUser = Prisma.RoomUserModel
  */
 export type Song = Prisma.SongModel
 /**
- * Model RoomQueue
- * 
- */
-export type RoomQueue = Prisma.RoomQueueModel
-/**
  * Model Vote
  * 
  */
 export type Vote = Prisma.VoteModel
-/**
- * Model PlaybackState
- * 
- */
-export type PlaybackState = Prisma.PlaybackStateModel
 /**
  * Model PlaybackHistory
  * 
