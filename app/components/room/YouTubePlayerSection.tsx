@@ -16,7 +16,7 @@ export function YouTubePlayerSection({ currentSong }: YouTubePlayerSectionProps)
                     <iframe
                         width="560"
                         height="315"
-                        src={`https://www.youtube.com/embed/${currentSong.id}`}
+                        src={`https://www.youtube.com/embed/${currentSong.videoId}`}
                         title="YouTube video player"
                         frameBorder="0"
                         allow="autoplay; encrypted-media; gyroscope; picture-in-picture; web-share"
