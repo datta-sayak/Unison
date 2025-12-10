@@ -2,17 +2,15 @@
 
 import Image from "next/image";
 import { ChevronUp, ChevronDown } from "lucide-react";
-import { SearchPanel } from "@/components/SearchPanel";
-import type { Song, SongMetaData } from "@/lib";
+import type { Song } from "@/lib";
 
 interface QueueSectionProps {
     queue: Song[];
-    handleAddSong: (song: SongMetaData) => void;
     handleVote: (id: string, direction: "up" | "down") => void;
     loading?: boolean;
 }
 
-export function QueueSection({ queue, handleAddSong, handleVote, loading = false }: QueueSectionProps) {
+export function QueueSection({ queue, handleVote, loading = false }: QueueSectionProps) {
     return (
         <div className="p-4 space-y-6 max-w-4xl mx-auto">
             {/* Queue List */}

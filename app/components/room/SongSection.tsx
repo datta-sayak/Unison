@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Plus, Loader2 } from "lucide-react";
+import { Search, Plus, Loader2, Database } from "lucide-react";
 import Image from "next/image";
-import type { YouTubeSearchItem, YouTubeVideoDetailsItem, SongMetaData } from "@/lib";
+import type { SongMetaData } from "@/lib";
+import axios from "axios";
 
 interface SearchPanelProps {
     handleAddSong: (song: SongMetaData) => void;
@@ -17,73 +18,25 @@ export function SongSection({ handleAddSong }: SearchPanelProps) {
     const [hasSearched, setHasSearched] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [source, setSource] = useState<string>("");
 
-    const formatDuration = (duration: string) => {
-        // youtube duration format ISO8601
-        const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
-        if (!match) return "0:00";
-        const hours = parseInt(match[1] || "0");
-        const minutes = parseInt(match[2] || "0");
-        const seconds = parseInt(match[3] || "0");
-        if (hours > 0) {
-            return `${hours}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-        }
-        return `${minutes}:${seconds.toString().padStart(2, "0")}`;
-    };
-
-    const searchYouTube = async (searchQuery: string) => {
-        if (!searchQuery.trim()) return;
+    const handleSearch = async () => {
+        if (!query.trim()) return;
         setIsLoading(true);
         setError(null);
 
         try {
-            const apiKey = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
-            if (!apiKey) throw new Error("YouTube API key not configured");
-
-            searchQuery = searchQuery + " songs";
-            const response = await fetch(
-                `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(searchQuery)}&type=video&maxResults=10&key=${apiKey}`,
-            );
-
-            if (!response.ok) throw new Error(`YouTube API error: ${response.status}`);
-
-            const data = await response.json();
-
-            const videoIds = data.items.map((item: YouTubeSearchItem) => item.id.videoId).join(",");
-            const detailsResponse = await fetch(
-                `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${videoIds}&key=${apiKey}`,
-            );
-
-            if (!detailsResponse.ok) throw new Error(`YouTube API error: ${detailsResponse.status}`);
-
-            const detailsData = await detailsResponse.json();
-
-            const durationMap = new Map();
-            detailsData.items.forEach((item: YouTubeVideoDetailsItem) => {
-                durationMap.set(item.id, item.contentDetails.duration);
-            });
-
-            const searchResults: SongMetaData[] = data.items.map((item: YouTubeSearchItem) => ({
-                videoId: item.id.videoId,
-                title: item.snippet.title,
-                channelName: item.snippet.channelTitle,
-                duration: formatDuration(durationMap.get(item.id.videoId) || "PT0S"),
-                thumbnail: item.snippet.thumbnails.medium?.url,
-            }));
-
-            setResults(searchResults);
+            const res = await axios.get(`/api/query?q=${encodeURIComponent(query)}`);
+            setResults(res.data.songs);
+            setSource(res.data.source);
             setHasSearched(true);
-        } catch (err) {
-            setError(err instanceof Error ? err.message : "Failed to search YouTube");
+        } catch (error) {
+            setError(error instanceof Error ? error.message : "Search failed");
             setResults([]);
             setHasSearched(true);
         } finally {
             setIsLoading(false);
         }
-    };
-
-    const handleSearch = () => {
-        searchYouTube(query);
     };
 
     return (
@@ -124,9 +77,17 @@ export function SongSection({ handleAddSong }: SearchPanelProps) {
                 {/* Search Results */}
                 <div className="space-y-2">
                     {results.length > 0 && (
-                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-1">
-                            {results.length} result{results.length !== 1 ? "s" : ""}
-                        </p>
+                        <div className="flex items-center justify-between px-1">
+                            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                                {results.length} result{results.length !== 1 ? "s" : ""}
+                            </p>
+                            {source !== "youtube" && (
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                    <Database className="h-3 w-3" />
+                                    <span>{source === "database" ? "From library" : "Library + YouTube"}</span>
+                                </div>
+                            )}
+                        </div>
                     )}
 
                     {results.map((song, idx) => (

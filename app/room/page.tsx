@@ -337,11 +337,9 @@ function RoomPageContent() {
                 </div>
 
                 {/* Queue Section */}
-                {activeSection === "queue" && (
-                    <QueueSection queue={queue} handleAddSong={handleAddSong} handleVote={handleVote} />
-                )}
+                {activeSection === "queue" && <QueueSection queue={queue} handleVote={handleVote} />}
 
-                {/* Queue Section */}
+                {/* Songs Section */}
                 {activeSection === "songs" && <SongSection handleAddSong={handleAddSong} />}
 
                 {/* Members Section */}

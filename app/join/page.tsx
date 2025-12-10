@@ -4,11 +4,11 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
 import axios from "axios";
 import type { AxiosError } from "axios";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
+import LoadingContext from "@/components/LoadingContext";
 
 function JoinRoomForm() {
     const { status } = useSession();
@@ -18,7 +18,6 @@ function JoinRoomForm() {
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [showPasswordInput, setShowPasswordInput] = useState(false);
-    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const code = searchParams.get("roomId");
@@ -36,8 +35,6 @@ function JoinRoomForm() {
 
     const handleJoinRoom = async (pwd?: string) => {
         setIsLoading(true);
-        setError(null);
-
         try {
             const response = await axios.post("/api/rooms/join", {
                 roomCode: roomCode.toUpperCase(),
@@ -60,44 +57,40 @@ function JoinRoomForm() {
     };
 
     return (
-        <main className="min-h-screen flex items-center justify-center bg-background px-4">
-            <div className="w-full max-w-md space-y-8">
-                <div className="space-y-2 text-center">
-                    <h1 className="text-3xl font-bold text-foreground">Join a Room</h1>
-                    <p className="text-muted-foreground">Enter the room code shared by your friends</p>
+        <main className="min-h-screen flex items-center justify-center bg-background p-4">
+            <div className="w-full max-w-md space-y-6">
+                <div className="text-center space-y-1">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Join a Room</h1>
+                    <p className="text-sm text-muted-foreground">Enter the room code shared by your friends</p>
                 </div>
 
-                <div className="bg-card rounded-2xl p-8 shadow-sm border border-border space-y-6">
-                    <div className="space-y-2">
+                <div className="bg-card rounded-xl p-6 shadow-sm border border-border space-y-4">
+                    <div className="space-y-1.5">
                         <label className="text-sm font-medium text-foreground">Room Code</label>
                         <Input
                             placeholder="Enter room code"
                             value={roomCode}
                             onChange={e => setRoomCode(e.target.value.toUpperCase())}
                             onKeyDown={e => e.key === "Enter" && handleJoinRoom()}
-                            className="bg-input border-border text-foreground placeholder:text-muted-foreground h-11 rounded-lg"
+                            className="bg-input border-border text-foreground placeholder:text-muted-foreground h-11 text-base rounded-lg"
                             maxLength={9}
                             disabled={showPasswordInput}
+                            autoComplete="off"
+                            autoCapitalize="characters"
                         />
                     </div>
-
-                    {error && (
-                        <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive text-sm">
-                            {error}
-                        </div>
-                    )}
 
                     {!showPasswordInput ? (
                         <Button
                             onClick={() => handleJoinRoom()}
                             disabled={isLoading || !roomCode}
-                            className="w-full bg-accent text-accent-foreground hover:opacity-90 h-11 font-medium transition-theme"
+                            className="w-full bg-accent text-accent-foreground hover:opacity-90 h-11 text-base font-medium transition-theme"
                         >
-                            {isLoading ? "Checking..." : "Continue"}
+                            {isLoading ? "Joining" : "Continue"}
                         </Button>
                     ) : (
                         <>
-                            <div className="space-y-2">
+                            <div className="space-y-1.5">
                                 <label className="text-sm font-medium text-foreground">Access Code</label>
                                 <Input
                                     type="password"
@@ -105,13 +98,14 @@ function JoinRoomForm() {
                                     value={password}
                                     onChange={e => setPassword(e.target.value)}
                                     onKeyDown={e => e.key === "Enter" && handleJoinRoom(password)}
-                                    className="bg-input border-border text-foreground placeholder:text-muted-foreground h-11 rounded-lg"
+                                    className="bg-input border-border text-foreground placeholder:text-muted-foreground h-11 text-base rounded-lg"
+                                    autoComplete="off"
                                 />
                             </div>
                             <Button
                                 onClick={() => handleJoinRoom(password)}
                                 disabled={isLoading || !password}
-                                className="w-full bg-accent text-accent-foreground hover:opacity-90 h-11 font-medium transition-theme"
+                                className="w-full bg-accent text-accent-foreground hover:opacity-90 h-11 text-base font-medium transition-theme"
                             >
                                 {isLoading ? "Joining..." : "Join Room"}
                             </Button>
@@ -119,11 +113,10 @@ function JoinRoomForm() {
                                 onClick={() => {
                                     setShowPasswordInput(false);
                                     setPassword("");
-                                    setError(null);
                                     router.push("/dashboard");
                                 }}
                                 variant="outline"
-                                className="w-full bg-transparent border-border text-foreground hover:bg-muted"
+                                className="w-full bg-transparent border-border text-foreground hover:bg-muted h-11 text-base"
                             >
                                 Back
                             </Button>
@@ -137,18 +130,7 @@ function JoinRoomForm() {
 
 export default function JoinRoomPage() {
     return (
-        <Suspense
-            fallback={
-                <main className="min-h-screen flex items-center justify-center bg-background px-4">
-                    <div className="w-full max-w-md space-y-8">
-                        <div className="space-y-2 text-center">
-                            <h1 className="text-3xl font-bold text-foreground">Join a Room</h1>
-                            <p className="text-muted-foreground">Loading...</p>
-                        </div>
-                    </div>
-                </main>
-            }
-        >
+        <Suspense fallback={<LoadingContext />}>
             <JoinRoomForm />
         </Suspense>
     );
