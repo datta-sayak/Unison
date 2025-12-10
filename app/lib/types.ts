@@ -21,15 +21,15 @@ export interface Song extends SongMetaData {
 }
 
 /**
- * 
+ *
  * BASE type of the song metadata
- * 
+ *
  * videoId
  * title
  * channelName
  * thumbnail
  * duration
- * 
+ *
  */
 
 export interface ChatMessage {

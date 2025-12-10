@@ -67,10 +67,7 @@ export default function SignInForm() {
                             Go back
                         </Link>
                     </p>
-
                 </div>
-
-                
             </div>
         </main>
     );

@@ -97,6 +97,7 @@ export default function CreateRoomPage() {
                             onKeyDown={e => e.key === "Enter" && !isLoading && handleCreateRoom()}
                             className="bg-input border-border text-foreground placeholder:text-muted-foreground h-11 rounded-lg"
                             disabled={isLoading}
+                            autoComplete="off"
                         />
                     </div>
 
@@ -128,13 +129,14 @@ export default function CreateRoomPage() {
                             </Label>
                             <Input
                                 id="roomPassword"
-                                type="password"
+                                type="text"
                                 placeholder="Choose a secret code for your room"
                                 value={password}
                                 onChange={e => setPassword(e.target.value)}
                                 onKeyDown={e => e.key === "Enter" && !isLoading && handleCreateRoom()}
                                 className="bg-input border-border text-foreground placeholder:text-muted-foreground h-11 rounded-lg"
                                 disabled={isLoading}
+                                autoComplete="off"
                             />
                         </div>
                     )}

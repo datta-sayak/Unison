@@ -32,7 +32,6 @@ function RoomPageContent() {
     const [activeSection, setActiveSection] = useState("queue");
     const [currentSong] = useState<Song | null>(null);
 
-
     useEffect(() => {
         if (status === "loading") return;
         if (status === "unauthenticated") {
@@ -40,21 +39,19 @@ function RoomPageContent() {
         }
     }, [status, router]);
 
-    // For auto scroll to bottom of the page 
+    // For auto scroll to bottom of the page
     useEffect(() => {
         window.scrollTo({
             top: document.documentElement.scrollHeight,
             behavior: "smooth",
         });
     }, [activeSection]);
-    
-    
+
     useEffect(() => {
         if (!roomId || !session?.user || hasInitializedSocket.current) return;
 
         hasInitializedSocket.current = true;
         const socketInstance = clientSocket();
-        
 
         const handleConnect = () => {
             console.log("Connected to Socket with roomId:", roomId);
@@ -69,7 +66,7 @@ function RoomPageContent() {
                     const response = await axios.get(`/api/queue/fetch?roomCode=${roomId}`);
                     // console.log(response.data.data.queue)    for testing purposes
                     if (response.data.data.queue) {
-                        const parsedQueue: Song[] = (response.data.data.queue).map( (u: string) => JSON.parse(u))
+                        const parsedQueue: Song[] = response.data.data.queue.map((u: string) => JSON.parse(u));
                         setQueue(parsedQueue);
                     }
                 } catch (error) {
@@ -80,29 +77,33 @@ function RoomPageContent() {
             // Not awaiting fetchInitialQueue() so that it can do it's task in background,
             // and wont block the current execution
             fetchInitialQueue();
-        }
-
+        };
 
         const handleRoomParticipants = (
-                users: Array<{
-                    socketId: string;
-                    userId: string;
-                    userName: string;
-                    userAvatar: string;
-                }>,
-            ) => {
-                const participants: Participant[] = users.map(user => ({
-                    id: user.socketId,
-                    name: user.userName,
-                    avatar: user.userAvatar,
-                    isHost: user.userId === session.user?.email,
-                    isActive: true,
-                }));
-                setonlineUsers(participants);
-            };
+            users: Array<{
+                socketId: string;
+                userId: string;
+                userName: string;
+                userAvatar: string;
+            }>,
+        ) => {
+            const participants: Participant[] = users.map(user => ({
+                id: user.socketId,
+                name: user.userName,
+                avatar: user.userAvatar,
+                isHost: user.userId === session.user?.email,
+                isActive: true,
+            }));
+            setonlineUsers(participants);
+        };
 
-
-        const handleIncomingMessage = (data: { roomId: string; userEmail: string; userName: string; userAvatar: string; content: string }) => {
+        const handleIncomingMessage = (data: {
+            roomId: string;
+            userEmail: string;
+            userName: string;
+            userAvatar: string;
+            content: string;
+        }) => {
             const newMessage: ChatMessage = {
                 id: `msg_${data.roomId}_${Date.now()}_${data.userEmail}`,
                 user: data.userName,
@@ -116,14 +117,12 @@ function RoomPageContent() {
             setMessages(prev => [newMessage, ...prev]);
         };
 
-
         const handleUpdatedQueue = (rawQueue: any) => {
             console.log("Received updated queue:", rawQueue);
             setQueue(rawQueue);
-        }        
+        };
 
-
-        if(socketInstance.connected){
+        if (socketInstance.connected) {
             handleConnect();
         }
 
@@ -142,17 +141,15 @@ function RoomPageContent() {
         };
     }, [roomId, session?.user]);
 
-
     // cleanup when the user logouts or closes tab
     useEffect(() => {
         return () => {
             hasInitializedSocket.current = false;
-            if(socketRef.current){
+            if (socketRef.current) {
                 disconnectSocket();
             }
-        }
-    }, [])
-
+        };
+    }, []);
 
     useEffect(() => {
         if (!roomId || !session?.user) return;
@@ -179,13 +176,12 @@ function RoomPageContent() {
         fetchRoomUsers();
     }, [roomId, session?.user]);
 
-
     const handleAddSong = async (song: SongMetaData) => {
         const newSong: Song = {
             ...song,
             votes: 0,
         };
-        console.log(newSong)
+        console.log(newSong);
         try {
             const payload: any = {
                 roomCode: roomId,
@@ -196,7 +192,7 @@ function RoomPageContent() {
                 thumbnail: newSong.thumbnail,
             };
             const res = await axios.post("/api/queue/add", payload);
-            console.log(res)
+            console.log(res);
         } catch (error) {
             console.error(error);
             toast.error("Failed to update Queue");

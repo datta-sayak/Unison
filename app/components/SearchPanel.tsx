@@ -127,7 +127,7 @@ export function SearchPanel({ handleAddSong }: SearchPanelProps) {
                     </p>
                 )}
 
-                {results.map( (song, idx) => (
+                {results.map((song, idx) => (
                     <div
                         key={idx}
                         className="flex items-center gap-3 p-3 bg-card border border-border rounded-lg hover:border-accent/30 hover:bg-accent/5 transition-all group"

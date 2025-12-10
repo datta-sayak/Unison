@@ -57,10 +57,10 @@ export async function POST(req: NextRequest) {
             channelName: parsedReq.channelName,
             thumbnail: parsedReq.thumbnail,
             duration: parsedReq.duration,
-            requestedBy: session.user.name
-        }; 
+            requestedBy: session.user.name,
+        };
         await redisClient.zAdd(parsedReq.roomCode, { score: timestamp, value: JSON.stringify(songQueueValue) });
-        await redisClient.publish("updated_queue", parsedReq.roomCode)
+        await redisClient.publish("updated_queue", parsedReq.roomCode);
         addSongMetadataToDb(parsedReq);
 
         return NextResponse.json({

@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, Share2, Play, Users, Activity, Lock, LogIn, Loader2 } from "lucide-react";
+import { Plus, Trash2, Share2, Play, Users, Activity, Lock, LogIn, Loader2, Italic } from "lucide-react";
 import { useEffect, useState } from "react";
 import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
@@ -17,17 +17,17 @@ interface UserData {
     avatarUrl?: string;
     createdAt: string;
     room: Array<{
-            roomId: string;
-            roomName: string;
-            accessMode: string;
-            createdAt: string;
-            createdBy: {
-                name: string | null;
-                avatarUrl: string | null;
-            };
-            _count: {
-                roomUsers: number;
-            };
+        roomId: string;
+        roomName: string;
+        accessMode: string;
+        createdAt: string;
+        createdBy: {
+            name: string | null;
+            avatarUrl: string | null;
+        };
+        _count: {
+            roomUsers: number;
+        };
     }>;
 }
 
@@ -61,8 +61,24 @@ export default function DashboardPage() {
         }
     }, [status, session?.user?.email]);
 
-    const handleDeleteRoom = (roomId: string) => {
-        console.log("Delete room:", roomId);
+    const handleDeleteRoom = async (roomCode: string) => {
+        try {
+            const payload: { roomCode: string } = { roomCode: roomCode };
+            const res = await axios.post("/api/rooms/delete", payload);
+            if (res.data.status === 200) {
+                toast.success(res.data.message);
+
+                // Mutate the room data list and which re-renders data component
+                setUserData(prev => ({
+                    ...prev!,
+                    room: prev!.room.filter(r => r.roomId !== roomCode),
+                }));
+            } else {
+                toast.error(res.data.message);
+            }
+        } catch (error) {
+            console.error("Failed to delete room: ", error);
+        }
     };
 
     const handleShareRoom = (roomId: string) => {
@@ -96,9 +112,6 @@ export default function DashboardPage() {
                                                 <h3 className="font-semibold text-foreground group-hover:text-accent transition-colors">
                                                     Join Room
                                                 </h3>
-                                                <p className="text-xs text-muted-foreground">
-                                                    Connect to existing rooms
-                                                </p>
                                             </div>
                                         </div>
                                     </div>
@@ -114,9 +127,6 @@ export default function DashboardPage() {
                                                 <h3 className="font-semibold text-foreground group-hover:text-accent transition-colors">
                                                     New Room
                                                 </h3>
-                                                <p className="text-xs text-muted-foreground">
-                                                    Create your own music room
-                                                </p>
                                             </div>
                                         </div>
                                     </div>
@@ -128,7 +138,7 @@ export default function DashboardPage() {
                                     <Loader2 className="w-8 h-8 animate-spin text-accent mb-3" />
                                     <p>Loading rooms...</p>
                                 </div>
-                            ) : ( userData.room.length === 0 ) ? (
+                            ) : userData.room.length === 0 ? (
                                 <>
                                     <div className="border-2 border-dashed border-border rounded-2xl p-12 text-center space-y-4">
                                         <div className="flex justify-center">
@@ -153,8 +163,7 @@ export default function DashboardPage() {
                                 <>
                                     {/* Rooms Grid */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        {
-                                            ...userData.room.map(room => (
+                                        {...userData.room.map(room => (
                                             <div
                                                 key={room.roomId}
                                                 className="group rounded-xl bg-card border border-border p-4 hover:border-accent/50 hover:shadow-lg transition-all"
@@ -186,7 +195,8 @@ export default function DashboardPage() {
                                                         </h3>
                                                         {room.createdBy && (
                                                             <p className="text-xs text-muted-foreground truncate mb-1">
-                                                                by {room.createdBy.name || "Unknown"}
+                                                                Created by: <b>{room.createdBy.name}</b> <br />
+                                                                Room ID: <b>{room.roomId}</b>
                                                             </p>
                                                         )}
                                                         <div className="flex items-center gap-2">
