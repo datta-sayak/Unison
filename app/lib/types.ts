@@ -15,6 +15,7 @@ export interface SongMetaData {
 
 export interface Song extends SongMetaData {
     requestedBy?: string;
+    userAvatar?: string;
     votes?: number;
 }
 

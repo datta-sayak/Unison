@@ -7,7 +7,7 @@ import type { Song, SongMetaData } from "@/lib";
 interface QueueSectionProps {
     queue: Song[];
     handleVote: (id: string, direction: "up" | "down") => void;
-    handleRemoveSong: ( song: SongMetaData ) => void;
+    handleRemoveSong: (song: SongMetaData) => void;
     loading?: boolean;
 }
 
@@ -66,12 +66,12 @@ export function QueueSection({ queue, handleVote, handleRemoveSong, loading = fa
                                     </button>
                                 </div>
                                 <button
-                                        onClick={() => handleRemoveSong(song)}
-                                        className="p-2 rounded-lg transition-colors hover:bg-destructive/10 active:bg-destructive/20 touch-manipulation"
-                                        title="Remove from queue"
-                                        aria-label="Remove song"
-                                    >
-                                        <X className="w-4 h-4 text-destructive" />
+                                    onClick={() => handleRemoveSong(song)}
+                                    className="p-2 rounded-lg transition-colors hover:bg-destructive/10 active:bg-destructive/20 touch-manipulation"
+                                    title="Remove from queue"
+                                    aria-label="Remove song"
+                                >
+                                    <X className="w-4 h-4 text-destructive" />
                                 </button>
                             </div>
                         ))}

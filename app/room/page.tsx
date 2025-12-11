@@ -90,7 +90,7 @@ function RoomPageContent() {
             const fetchInitialQueue = async () => {
                 try {
                     const response = await axios.get(`/api/queue/fetch?roomCode=${roomId}`);
-                    
+
                     if (response.data.data.queue) {
                         const receivedQueue: Song[] = response.data.data.queue;
                         setQueue(receivedQueue);
@@ -157,7 +157,6 @@ function RoomPageContent() {
         socketInstance.on("updated_queue", handleUpdatedQueue);
 
         socketRef.current = socketInstance;
-
     }, [roomId, session?.user, isChecking]);
 
     // Cleanup when the user logouts or closes tab
@@ -200,7 +199,7 @@ function RoomPageContent() {
             ...song,
             votes: 0,
         };
-        
+
         try {
             const payload: any = {
                 roomCode: roomId,
@@ -211,10 +210,10 @@ function RoomPageContent() {
                 thumbnail: newSong.thumbnail,
             };
             const res = await axios.post("/api/queue/add", payload);
-            if(res?.data?.status === 200){
-                toast.success(res.data.message)
-            }else{
-                toast.error(res.data.message)
+            if (res?.data?.status === 200) {
+                toast.success(res.data.message);
+            } else {
+                toast.error(res.data.message);
             }
         } catch (error) {
             console.error(error);
@@ -222,7 +221,7 @@ function RoomPageContent() {
         }
     };
 
-    const handleRemoveSong = async ( song: SongMetaData ) => {
+    const handleRemoveSong = async (song: SongMetaData) => {
         try {
             const payload: any = {
                 roomCode: roomId,
@@ -231,18 +230,18 @@ function RoomPageContent() {
                 channelName: song.channelName,
                 duration: song.duration,
                 thumbnail: song.thumbnail,
-            }; 
-            const res = await axios.post("/api/queue/remove", payload)
-            if(res?.data?.status === 200){
-                toast.success("Song Removed from queue")
-            }else{
-                toast.error(res.data.message)
-            }
+            };
+            const res = await axios.post("/api/queue/remove", payload);
 
+            if (res?.data?.status === 200) {
+                toast.success("Song Removed from queue");
+            } else {
+                toast.error(res.data.message);
+            }
         } catch (error) {
-            console.error(error)
+            console.error(error);
         }
-    }
+    };
 
     const handleVote = (id: string, direction: "up" | "down") => {
         setQueue(
@@ -357,11 +356,7 @@ function RoomPageContent() {
 
                 {/* Queue Section */}
                 {activeSection === "queue" && (
-                    <QueueSection 
-                        queue={queue} 
-                        handleVote={handleVote} 
-                        handleRemoveSong={handleRemoveSong}
-                    />
+                    <QueueSection queue={queue} handleVote={handleVote} handleRemoveSong={handleRemoveSong} />
                 )}
 
                 {/* Songs Section */}

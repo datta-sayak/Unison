@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
     }
 
     const queueItems = await redisClient.zRange(roomCode, 0, -1);
-    const parsedQueue = queueItems.map((u: string) => JSON.parse(u))
+    const parsedQueue = queueItems.map((u: string) => JSON.parse(u));
     return NextResponse.json({
         message: "Queue fetched successfully",
         status: 200,

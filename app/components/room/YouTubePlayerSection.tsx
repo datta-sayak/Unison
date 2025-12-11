@@ -147,21 +147,25 @@ export function YouTubePlayerSection({ queue, onSongEnd }: YouTubePlayerSectionP
     return (
         <div className="bg-card">
             <div className="aspect-video w-full max-w-4xl mx-auto bg-black relative">
-                        <div id="youtube-player" className="w-full h-full pointer-events-none" />
-            
+                <div id="youtube-player" className="w-full h-full pointer-events-none" />
+
                 {/* Song Info Overlay */}
-                <div className="absolute bottom-0 left-0 right-0 top-80 bg-gradient-to-t from-background/90 via-background/50 to-transparent p-6">
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background/90 via-background/70 to-transparent p-6">
                     <div className="flex items-center justify-between">
-                        <div className="flex-1 min-w-0 mt-12">
+                        <div className="flex-1 min-w-0">
                             <p className="text-foreground font-bold text-xl truncate">{currentSong.title}</p>
                             <p className="text-muted-foreground text-base truncate mt-1">{currentSong.channelName}</p>
                         </div>
-                        <div className="flex gap-3 ml-8 mt-12">
+                        <div className="flex gap-3 ml-8">
                             <Button
                                 onClick={handlePlayPause}
                                 className="w-16 h-16 rounded-full bg-card/60 hover:bg-card/90 border border-border flex items-center justify-center transition-all"
                             >
-                                {isPlaying ? <Pause className="w-8 h-8 text-accent"/> : <Play className="w-8 h-8 text-accent" />}
+                                {isPlaying ? (
+                                    <Pause className="w-8 h-8 text-accent" />
+                                ) : (
+                                    <Play className="w-8 h-8 text-accent" />
+                                )}
                             </Button>
                             <Button
                                 onClick={handleSkip}

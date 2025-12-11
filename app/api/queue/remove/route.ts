@@ -24,10 +24,11 @@ export async function POST(req: NextRequest) {
         }
 
         const { roomCode, ...res } = RemoveFromQueueSchema.parse(await req.json());
-        const data: Song = res
+        const data: Song = res;
         data.requestedBy = session.user.name;
+        data.userAvatar = session.user.image;
         const valueToDelete = JSON.stringify(data);
-        
+
         await redisClient.zRem(roomCode, valueToDelete);
         await redisClient.publish("updated_queue", roomCode);
 

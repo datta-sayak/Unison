@@ -13,7 +13,6 @@ const AddToQueueSchema = z.object({
     duration: z.string(),
 });
 
-
 export async function POST(req: NextRequest) {
     try {
         const session = await getServerSession();
@@ -33,6 +32,7 @@ export async function POST(req: NextRequest) {
             thumbnail: parsedReq.thumbnail,
             duration: parsedReq.duration,
             requestedBy: session.user.name,
+            userAvatar: session.user.image,
         };
         await redisClient.zAdd(parsedReq.roomCode, { score: timestamp, value: JSON.stringify(songQueueValue) });
         await redisClient.publish("updated_queue", parsedReq.roomCode);
