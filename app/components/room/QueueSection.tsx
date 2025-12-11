@@ -1,16 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import { ChevronUp, ChevronDown } from "lucide-react";
-import type { Song } from "@/lib";
+import { ChevronUp, ChevronDown, X } from "lucide-react";
+import type { Song, SongMetaData } from "@/lib";
 
 interface QueueSectionProps {
     queue: Song[];
     handleVote: (id: string, direction: "up" | "down") => void;
+    handleRemoveSong: ( song: SongMetaData ) => void;
     loading?: boolean;
 }
 
-export function QueueSection({ queue, handleVote, loading = false }: QueueSectionProps) {
+export function QueueSection({ queue, handleVote, handleRemoveSong, loading = false }: QueueSectionProps) {
     return (
         <div className="p-4 space-y-6 max-w-4xl mx-auto">
             {/* Queue List */}
@@ -64,6 +65,14 @@ export function QueueSection({ queue, handleVote, loading = false }: QueueSectio
                                         <ChevronDown className="w-4 h-4 text-muted-foreground" />
                                     </button>
                                 </div>
+                                <button
+                                        onClick={() => handleRemoveSong(song)}
+                                        className="p-2 rounded-lg transition-colors hover:bg-destructive/10 active:bg-destructive/20 touch-manipulation"
+                                        title="Remove from queue"
+                                        aria-label="Remove song"
+                                    >
+                                        <X className="w-4 h-4 text-destructive" />
+                                </button>
                             </div>
                         ))}
                     </div>

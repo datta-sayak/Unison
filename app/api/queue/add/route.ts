@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { redisClient } from "@/lib/redis";
-import { prismaClient } from "@/lib/db";
 import z from "zod";
-import type { Song, SongMetaData } from "@/lib";
+import type { Song } from "@/lib";
 
 const AddToQueueSchema = z.object({
     roomCode: z.string().length(5),
@@ -14,30 +13,6 @@ const AddToQueueSchema = z.object({
     duration: z.string(),
 });
 
-async function addSongMetadataToDb(receivedData: SongMetaData) {
-    try {
-        const songMetaData = await prismaClient.song.upsert({
-            where: {
-                youtubeId: receivedData.videoId,
-            },
-            update: {
-                duration: receivedData.duration,
-                image: receivedData.thumbnail,
-                channelName: receivedData.channelName,
-                title: receivedData.title,
-            },
-            create: {
-                duration: receivedData.duration,
-                image: receivedData.thumbnail,
-                channelName: receivedData.channelName,
-                title: receivedData.title,
-                youtubeId: receivedData.videoId,
-            },
-        });
-    } catch (error) {
-        console.error("Failed to upload song MetaData: ", error);
-    }
-}
 
 export async function POST(req: NextRequest) {
     try {
@@ -61,7 +36,6 @@ export async function POST(req: NextRequest) {
         };
         await redisClient.zAdd(parsedReq.roomCode, { score: timestamp, value: JSON.stringify(songQueueValue) });
         await redisClient.publish("updated_queue", parsedReq.roomCode);
-        addSongMetadataToDb(parsedReq);
 
         return NextResponse.json({
             message: "Added to queue",

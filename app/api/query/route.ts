@@ -1,4 +1,5 @@
-import { SongMetaData } from "@/lib";
+import { SongMetaData } from "@/lib"; 
+import { addSongMetadataToDb } from "@/lib/addSongMetadataToDb";
 import { prismaClient } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -18,10 +19,9 @@ const formatDuration = (duration: string) => {
 const searchYouTube = async (searchQuery: string) => {
     const apiKey = process.env.YOUTUBE_API_KEY;
     if (!apiKey) throw new Error("YouTube API key not configured");
-    searchQuery = searchQuery + " songs";
 
     const response = await fetch(
-        `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(searchQuery)}&type=video&maxResults=10&key=${apiKey}`,
+        `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(searchQuery)}&type=video&videoCategoryId=10&maxResults=10&key=${apiKey}`,
     );
 
     if (!response.ok) throw new Error(`YouTube API error: ${response.status}`);
@@ -30,11 +30,12 @@ const searchYouTube = async (searchQuery: string) => {
     const videoIds = data.items.map((item: any) => item.id.videoId).join(",");
 
     const detailsResponse = await fetch(
-        `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${videoIds}&key=${apiKey}`,
+        `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${videoIds}&key=${apiKey}`,    
     );
     if (!detailsResponse.ok) throw new Error(`YouTube API error: ${detailsResponse.status}`);
-
+    
     const detailsData = await detailsResponse.json();
+    console.log(detailsData.snippet)
     const durationMap = new Map();
     detailsData.items.forEach((item: any) => {
         durationMap.set(item.id, item.contentDetails.duration);
@@ -75,7 +76,6 @@ export async function GET(req: NextRequest) {
                     },
                 ],
             },
-            take: 20,
             orderBy: {
                 id: "desc",
             },
@@ -96,7 +96,9 @@ export async function GET(req: NextRequest) {
         const youtubeResults = await searchYouTube(query);
 
         const existingVideoIds = new Set(dbResults.map(s => s.videoId));
-        const uniqueYoutubeResults = youtubeResults.filter(s => !existingVideoIds.has(s.videoId));
+        const uniqueYoutubeResults = youtubeResults.filter((s: SongMetaData) => !existingVideoIds.has(s.videoId));
+        console.log(uniqueYoutubeResults, typeof(uniqueYoutubeResults))
+        addSongMetadataToDb(uniqueYoutubeResults)
         const combinedResults = [...dbResults, ...uniqueYoutubeResults];
 
         return NextResponse.json(

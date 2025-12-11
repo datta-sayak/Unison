@@ -1,5 +1,3 @@
-import { GalleryThumbnails } from "lucide-react";
-
 export interface Participant {
     id: string;
     name: string;
@@ -52,30 +50,4 @@ export interface RoomUserFromAPI {
         email: string;
         avatarUrl: string | null;
     };
-}
-
-export interface YouTubeSearchItem {
-    id: {
-        videoId: string;
-    };
-    snippet: {
-        title: string;
-        channelTitle: string;
-        thumbnails: {
-            medium?: {
-                url: string;
-            };
-        };
-    };
-}
-
-export interface YouTubeVideoDetailsItem {
-    id: string;
-    contentDetails: {
-        duration: string;
-    };
-}
-
-export interface YouTubeSearchResponse {
-    items: YouTubeSearchItem[];
 }

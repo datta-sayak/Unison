@@ -1,16 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { redisClient } from "@/lib/redis";
 import z from "zod";
+import { getCachedSession } from "@/lib/cacheSession";
+import type { Song } from "@/lib";
 
 const RemoveFromQueueSchema = z.object({
     roomCode: z.string().length(5),
-    songCode: z.string(),
+    videoId: z.string(),
+    title: z.string(),
+    channelName: z.string(),
+    thumbnail: z.string(),
+    duration: z.string(),
 });
 
 export async function POST(req: NextRequest) {
     try {
-        const session = await getServerSession();
+        const session = await getCachedSession();
         if (!session?.user?.email) {
             return NextResponse.json({
                 message: "Unauthenticated",
@@ -18,8 +23,13 @@ export async function POST(req: NextRequest) {
             });
         }
 
-        const { songCode, roomCode } = RemoveFromQueueSchema.parse(await req.json());
-        await redisClient.zRem(roomCode, songCode);
+        const { roomCode, ...res } = RemoveFromQueueSchema.parse(await req.json());
+        const data: Song = res
+        data.requestedBy = session.user.name;
+        const valueToDelete = JSON.stringify(data);
+        
+        await redisClient.zRem(roomCode, valueToDelete);
+        await redisClient.publish("updated_queue", roomCode);
 
         return NextResponse.json({
             message: "Removed from queue",

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Music, Play, Pause, SkipForward } from "lucide-react";
 import type { Song } from "@/lib";
+import { Button } from "../ui/button";
 
 interface YouTubePlayerSectionProps {
     queue: Song[];
@@ -146,32 +147,32 @@ export function YouTubePlayerSection({ queue, onSongEnd }: YouTubePlayerSectionP
     return (
         <div className="bg-card">
             <div className="aspect-video w-full max-w-4xl mx-auto bg-black relative">
-                <div id="youtube-player" className="w-full h-full pointer-events-none" />
-
+                        <div id="youtube-player" className="w-full h-full pointer-events-none" />
+            
                 {/* Song Info Overlay */}
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                <div className="absolute bottom-0 left-0 right-0 top-80 bg-gradient-to-t from-background/90 via-background/50 to-transparent p-6">
                     <div className="flex items-center justify-between">
-                        <div className="flex-1 min-w-0">
-                            <p className="text-white font-semibold truncate">{currentSong.title}</p>
-                            <p className="text-white/70 text-sm truncate">{currentSong.channelName}</p>
+                        <div className="flex-1 min-w-0 mt-12">
+                            <p className="text-foreground font-bold text-xl truncate">{currentSong.title}</p>
+                            <p className="text-muted-foreground text-base truncate mt-1">{currentSong.channelName}</p>
                         </div>
-                        <div className="flex gap-2 ml-4">
-                            <button
+                        <div className="flex gap-3 ml-8 mt-12">
+                            <Button
                                 onClick={handlePlayPause}
-                                className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition"
+                                className="w-16 h-16 rounded-full bg-card/60 hover:bg-card/90 border border-border flex items-center justify-center transition-all"
                             >
-                                {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
-                            </button>
-                            <button
+                                {isPlaying ? <Pause className="w-8 h-8 text-accent"/> : <Play className="w-8 h-8 text-accent" />}
+                            </Button>
+                            <Button
                                 onClick={handleSkip}
-                                className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition"
+                                className="w-16 h-16 rounded-full bg-card/60 hover:bg-card/90 border border-border flex items-center justify-center transition-all"
                                 disabled={queue.length <= 1}
                             >
-                                <SkipForward className="w-5 h-5" />
-                            </button>
+                                <SkipForward className="w-8 h-8 text-accent" strokeWidth={2.5} />
+                            </Button>
                         </div>
                     </div>
-                    <div className="mt-2 text-white/60 text-xs">
+                    <div className="mt-3 text-accent text-base font-medium">
                         Playing {currentIndex + 1} of {queue.length}
                     </div>
                 </div>
