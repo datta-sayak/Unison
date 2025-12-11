@@ -159,15 +159,9 @@ function RoomPageContent() {
 
         socketRef.current = socketInstance;
 
-        return () => {
-            socketInstance.off("connect", handleConnect);
-            socketInstance.off("room_participants", handleRoomParticipants);
-            socketInstance.off("message", handleIncomingMessage);
-            socketInstance.off("updated_queue", handleUpdatedQueue);
-        };
     }, [roomId, session?.user, isChecking]);
 
-    // cleanup when the user logouts or closes tab
+    // Cleanup when the user logouts or closes tab
     useEffect(() => {
         return () => {
             hasInitializedSocket.current = false;
