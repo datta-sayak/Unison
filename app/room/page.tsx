@@ -288,6 +288,8 @@ function RoomPageContent() {
             {/* YouTube Player Section */}
             <YouTubePlayerSection
                 queue={queue}
+                socket={socketRef.current}
+                roomId={roomId}
                 onSongEnd={videoId => {
                     console.log("Song ended:", videoId);
                 }}

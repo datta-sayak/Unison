@@ -3,6 +3,7 @@ import express from "express";
 import { roomEvents } from "./sockets/room.js";
 import { messageEvents } from "./sockets/message.js";
 import { queueEvents } from "./sockets/queue.js";
+import { playbackEvents } from "./sockets/playback.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -28,6 +29,7 @@ io.on("connection", async socket => {
     roomEvents(io, socket);
     messageEvents(io, socket);
     queueEvents(io, socket);
+    playbackEvents(io, socket);
 
     socket.on("disconnect", () => {
         console.log("disconnected:", socket.id);

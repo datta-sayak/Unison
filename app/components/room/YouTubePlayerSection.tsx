@@ -1,13 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Music, Play, Pause, SkipForward } from "lucide-react";
+import { Music, Play, Pause, SkipForward, Loader2 } from "lucide-react";
 import type { Song } from "@/lib";
 import { Button } from "../ui/button";
+import { Socket } from "socket.io-client";
 
 interface YouTubePlayerSectionProps {
     queue: Song[];
     onSongEnd?: (videoId: string) => void;
+    socket: Socket | null;
+    roomId: string;
 }
 
 declare global {
@@ -17,11 +20,13 @@ declare global {
     }
 }
 
-export function YouTubePlayerSection({ queue, onSongEnd }: YouTubePlayerSectionProps) {
+export function YouTubePlayerSection({ queue, socket, roomId, onSongEnd }: YouTubePlayerSectionProps) {
     const playerRef = useRef<any>(null);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
     const [isReady, setIsReady] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const isHostControlRef = useRef(false);
 
     const currentSong = queue[currentIndex] || null;
 
@@ -29,6 +34,7 @@ export function YouTubePlayerSection({ queue, onSongEnd }: YouTubePlayerSectionP
     useEffect(() => {
         if (window.YT) {
             setIsReady(true);
+            setIsLoading(false);
             return;
         }
 
@@ -39,8 +45,43 @@ export function YouTubePlayerSection({ queue, onSongEnd }: YouTubePlayerSectionP
 
         window.onYouTubeIframeAPIReady = () => {
             setIsReady(true);
+            setIsLoading(false);
         };
     }, []);
+
+    useEffect(() => {
+        if (!socket) return;
+
+        const handlePlayBackState = (data: { isPlaying: boolean; timestamp: number }) => {
+            if (!playerRef.current || isHostControlRef.current) {
+                isHostControlRef.current = false;
+                return;
+            }
+
+            if (data.isPlaying) {
+                playerRef.current.playVideo();
+                playerRef.current.seekTo(data.timestamp, true);
+            } else {
+                playerRef.current.pauseVideo();
+            }
+        };
+
+        const handleSongChange = (data: { currentSongIndex: number }) => {
+            if (isHostControlRef.current) {
+                isHostControlRef.current = false;
+                return;
+            }
+            setCurrentIndex(data.currentSongIndex);
+        };
+
+        socket.on("playback_controls", handlePlayBackState);
+        socket.on("change_song", handleSongChange);
+
+        return () => {
+            socket.off("playback_controls", handlePlayBackState);
+            socket.off("change_song", handleSongChange);
+        };
+    }, [socket]);
 
     // Initialize player when ready and song available
     useEffect(() => {
@@ -87,13 +128,9 @@ export function YouTubePlayerSection({ queue, onSongEnd }: YouTubePlayerSectionP
                     console.error("YouTube player error:", event.data);
                     // Error codes: 2 = invalid parameter, 5 = HTML5 error,
                     // 100 = video not found, 101/150 = embedding disabled
-                    if (event.data === 101 || event.data === 150) {
+                    if (event.data === 100 || event.data === 101 || event.data === 150) {
                         // Video embedding disabled, skip to next
-                        console.log("Video embedding disabled, skipping...");
-                        setTimeout(() => handleSongEnd(), 1000);
-                    } else if (event.data === 100) {
-                        // Video not found
-                        console.log("Video not found, skipping...");
+                        console.log("Video playback error, skipping...");
                         setTimeout(() => handleSongEnd(), 1000);
                     }
                 },
@@ -106,11 +143,15 @@ export function YouTubePlayerSection({ queue, onSongEnd }: YouTubePlayerSectionP
             onSongEnd(currentSong.videoId);
         }
 
-        // Move to next song if available
-        if (currentIndex < queue.length - 1) {
-            setCurrentIndex(prev => prev + 1);
-        } else {
-            setCurrentIndex(0); // Loop back to start
+        const nextIndex = currentIndex < queue.length - 1 ? currentIndex + 1 : 0;
+        setCurrentIndex(nextIndex);
+
+        if (socket) {
+            isHostControlRef.current = true;
+            socket.emit("change_song", {
+                roomId,
+                currentSongIndex: nextIndex,
+            });
         }
     };
 
@@ -122,11 +163,32 @@ export function YouTubePlayerSection({ queue, onSongEnd }: YouTubePlayerSectionP
         } else {
             playerRef.current.playVideo();
         }
+        const newPlayingState = !isPlaying;
+        if (socket) {
+            socket.emit("playback_controls", {
+                roomId,
+                isPlaying: newPlayingState,
+                timestamp: playerRef.current.getCurrentTime(),
+            });
+        }
     };
 
     const handleSkip = () => {
         handleSongEnd();
     };
+
+    if (isLoading) {
+        return (
+            <div className="bg-card">
+                <div className="aspect-video w-full max-w-4xl mx-auto bg-accent/20 flex items-center justify-center">
+                    <div className="text-center">
+                        <Loader2 className="w-12 h-12 mx-auto mb-4 text-accent animate-spin" />
+                        <p className="text-lg font-semibold text-foreground">Loading Player</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     if (!currentSong) {
         return (
