@@ -10,7 +10,22 @@ dotenv.config();
 const app = express();
 
 app.get("/", (_req: express.Request, res: express.Response) => {
-    res.send("Hello, Unison Server!");
+    const stats = {
+        uptime: Math.floor(process.uptime()) + " Seconds",
+        memoryUsage: {
+            // Bytes -> MegBytes
+            rss: Math.round(process.memoryUsage().rss / 1024 / 1024) + " MB",
+            heapUsed: Math.round(process.memoryUsage().heapUsed / 1024 / 1024) + " MB",
+            heapTotal: Math.round(process.memoryUsage().heapTotal / 1024 / 1024) + " MB",
+        },
+        serverTime: new Date().toISOString(),
+    };
+    res.json({
+        message: "Unison server",
+        status: 200,
+        availability: "Online",
+        ...stats,
+    });
 });
 
 const server = app.listen(process.env.PORT || 4000, () => {
@@ -19,7 +34,7 @@ const server = app.listen(process.env.PORT || 4000, () => {
 
 export const io = new Server(server, {
     cors: {
-        origin: process.env.NODE_ENV === "production" ? "https://unisonmedia.vercel.app" : "http://localhost:3000",
+        origin: process.env.NODE_ENV === "production" ? "https://unisonmedia.vercel.app" : "http://localhost:4000",
     },
 });
 
