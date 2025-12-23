@@ -4,9 +4,28 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Music, Users, Zap } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function LandingPage() {
     const { data: session } = useSession();
+    const [serverStatus, setServerStatus] = useState<"checking" | "online" | "offline">("checking");
+
+    useEffect(() => {
+        const checkServerHealth = async () => {
+            try {
+                const { data } = await axios.get("/api/health");
+                const isOnline = data?.status === 200;
+                setServerStatus(isOnline ? "online" : "offline");
+            } catch {
+                setServerStatus("offline");
+            }
+        };
+
+        checkServerHealth();
+        const interval = setInterval(checkServerHealth, 10000);
+        return () => clearInterval(interval);
+    }, []);
 
     return (
         <main className="min-h-screen flex flex-col bg-accent/5">
@@ -107,6 +126,33 @@ export default function LandingPage() {
                     </div>
                 </div>
             </section>
+
+            {/* Footer */}
+            <footer className="py-4 border-t">
+                <div className="max-w-4xl mx-auto flex items-center justify-between">
+                    <div className="text-sm">
+                        &copy; {new Date().getFullYear()} <span className="font-semibold">Unison</span> by Sayak Datta.
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <div
+                            className={`h-2 w-2 rounded-full ${
+                                serverStatus === "online"
+                                    ? "bg-green-500"
+                                    : serverStatus === "offline"
+                                      ? "bg-red-500"
+                                      : "bg-yellow-500 animate-pulse"
+                            }`}
+                        />
+                        <span className="text-sm">
+                            {serverStatus === "online"
+                                ? "Server: Online"
+                                : serverStatus === "offline"
+                                  ? "Server: Offline"
+                                  : "Checking..."}
+                        </span>
+                    </div>
+                </div>
+            </footer>
         </main>
     );
 }

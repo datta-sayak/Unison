@@ -34,7 +34,7 @@ const server = app.listen(process.env.PORT || 4000, () => {
 
 export const io = new Server(server, {
     cors: {
-        origin: process.env.NODE_ENV === "production" ? "https://unisonmedia.vercel.app" : "http://localhost:4000",
+        origin: process.env.NODE_ENV || "http://localhost:3000",
     },
 });
 

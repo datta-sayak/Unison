@@ -33,11 +33,41 @@ function RoomPageContent() {
     const [activeSection, setActiveSection] = useState("queue");
     const [isChecking, setIsChecking] = useState(true);
     const isMemberRef = useRef(false);
+    const [serverOnline, setServerOnline] = useState(false);
+    const [checkingServer, setCheckingServer] = useState(true);
     const [userVotes, setUserVotes] = useState<Record<string, "upvote" | "downvote" | null>>(() => {
         if (!roomId || !session?.user?.email) return {};
         const storedVotes = localStorage.getItem(`votes:${roomId}:${session.user.email}`);
         return storedVotes ? JSON.parse(storedVotes) : {};
     });
+
+    useEffect(() => {
+        const checkServerHealth = async () => {
+            try {
+                const response = await fetch("/api/health", {
+                    method: "GET",
+                    cache: "no-store",
+                });
+                const data = await response.json();
+                if (data?.status === 200) {
+                    setServerOnline(true);
+                } else {
+                    setServerOnline(false);
+                    toast.info("Server spinning up");
+                }
+            } catch (error) {
+                console.error("Server health check failed:", error);
+                setServerOnline(false);
+                toast.error("Cannot connect to server");
+            } finally {
+                setCheckingServer(false);
+            }
+        };
+
+        checkServerHealth();
+        const interval = setInterval(checkServerHealth, 10000);
+        return () => clearInterval(interval);
+    }, []);
 
     useEffect(() => {
         if (status === "loading") return;
@@ -317,7 +347,7 @@ function RoomPageContent() {
         setNewMessage("");
     };
 
-    if (!roomId || isChecking) return <LoadingContext />;
+    if (!roomId || isChecking || checkingServer || !serverOnline) return <LoadingContext />;
 
     return (
         <main className="min-h-screen bg-background flex flex-col">
