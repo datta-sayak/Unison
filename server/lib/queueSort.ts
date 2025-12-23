@@ -12,6 +12,7 @@ export interface Song extends SongMetaData {
     votes: number;
     addedAt: number;
     sequence?: number;
+    upvotedBy?: string[];
 }
 
 export function QueueSort(data: Song[]) {

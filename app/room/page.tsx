@@ -33,6 +33,11 @@ function RoomPageContent() {
     const [activeSection, setActiveSection] = useState("queue");
     const [isChecking, setIsChecking] = useState(true);
     const isMemberRef = useRef(false);
+    const [userVotes, setUserVotes] = useState<Record<string, "upvote" | "downvote" | null>>(() => {
+        if (!roomId || !session?.user?.email) return {};
+        const storedVotes = localStorage.getItem(`votes:${roomId}:${session.user.email}`);
+        return storedVotes ? JSON.parse(storedVotes) : {};
+    });
 
     useEffect(() => {
         if (status === "loading") return;
@@ -147,7 +152,7 @@ function RoomPageContent() {
             setMessages(prev => [newMessage, ...prev]);
         };
 
-        const handleUpdatedQueue = (rawQueue: any) => {
+        const handleUpdatedQueue = (rawQueue: Song[]) => {
             setQueue(rawQueue);
         };
 
@@ -199,13 +204,13 @@ function RoomPageContent() {
     }, [roomId, session?.user, isChecking]);
 
     const handleAddSong = async (song: SongMetaData) => {
-        const newSong: Song = {
+        const newSong = {
             ...song,
             votes: 0,
         };
 
         try {
-            const payload: any = {
+            const payload = {
                 roomCode: roomId,
                 videoId: newSong.videoId,
                 title: newSong.title,
@@ -227,7 +232,7 @@ function RoomPageContent() {
 
     const handleRemoveSong = async (song: SongMetaData) => {
         try {
-            const payload: any = {
+            const payload = {
                 roomCode: roomId,
                 videoId: song.videoId,
                 title: song.title,
@@ -254,11 +259,18 @@ function RoomPageContent() {
             return;
         }
 
+        const voteType = direction === "up" ? "upvote" : "downvote";
+
+        // Update local vote state
+        const newVotes = { ...userVotes, [id]: voteType as "upvote" | "downvote" };
+        setUserVotes(newVotes);
+        localStorage.setItem(`votes:${roomId}:${session.user.email}`, JSON.stringify(newVotes));
+
         try {
             const payload = {
                 roomCode: roomId,
                 videoId: song.videoId,
-                voteState: direction === "up" ? "upvote" : "downvote",
+                voteState: voteType,
             };
 
             const res = await axios.post("/api/queue/vote", payload);
@@ -267,10 +279,16 @@ function RoomPageContent() {
                 toast.success(direction === "up" ? "Upvoted!" : "Downvoted!");
             } else {
                 toast.error(res.data.message || "Failed to vote");
+                // Revert on failure
+                setUserVotes(userVotes);
+                localStorage.setItem(`votes:${roomId}:${session.user.email}`, JSON.stringify(userVotes));
             }
         } catch (error) {
             console.error("Failed to vote:", error);
             toast.error("Failed to vote");
+            // Revert on failure
+            setUserVotes(userVotes);
+            localStorage.setItem(`votes:${roomId}:${session.user.email}`, JSON.stringify(userVotes));
         }
     };
 
@@ -289,7 +307,7 @@ function RoomPageContent() {
     const handleSendMessage = () => {
         if (!newMessage.trim()) return;
 
-        socketRef.current.emit("send_message", {
+        socketRef.current?.emit("send_message", {
             roomId,
             userEmail: session.user.email,
             userName: session.user.name,
@@ -376,7 +394,12 @@ function RoomPageContent() {
 
                 {/* Queue Section */}
                 {activeSection === "queue" && (
-                    <QueueSection queue={queue} handleVote={handleVote} handleRemoveSong={handleRemoveSong} />
+                    <QueueSection
+                        queue={queue}
+                        handleVote={handleVote}
+                        handleRemoveSong={handleRemoveSong}
+                        userVotes={userVotes}
+                    />
                 )}
 
                 {/* Songs Section */}

@@ -27,6 +27,7 @@ export function YouTubePlayerSection({ queue, socket, roomId, onSongEnd }: YouTu
     const [isReady, setIsReady] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const isHostControlRef = useRef(false);
+    const currentVideoIdRef = useRef<string | null>(null);
 
     const currentSong = queue[currentIndex] || null;
 
@@ -83,61 +84,6 @@ export function YouTubePlayerSection({ queue, socket, roomId, onSongEnd }: YouTu
         };
     }, [socket]);
 
-    // Initialize player when ready and song available
-    useEffect(() => {
-        if (!isReady || !currentSong) return;
-
-        if (playerRef.current) {
-            playerRef.current.loadVideoById(currentSong.videoId);
-            return;
-        }
-
-        playerRef.current = new window.YT.Player("youtube-player", {
-            height: "100%",
-            width: "100%",
-            videoId: currentSong.videoId,
-            playerVars: {
-                autoplay: 1,
-                controls: 0, // Disable all YouTube controls
-                rel: 0, // Don't show related videos
-                modestbranding: 1, // Hide YouTube logo
-                enablejsapi: 1,
-                origin: window.location.origin,
-                disablekb: 1, // Disable keyboard controls
-                fs: 0, // Disable fullscreen button
-                iv_load_policy: 3, // Hide video annotations
-                cc_load_policy: 0, // Hide closed captions
-                playsinline: 1, // Play inline on mobile
-            },
-            events: {
-                onReady: (event: any) => {
-                    event.target.playVideo();
-                    setIsPlaying(true);
-                },
-                onStateChange: (event: any) => {
-                    // 0 = ended, 1 = playing, 2 = paused
-                    if (event.data === 0) {
-                        handleSongEnd();
-                    } else if (event.data === 1) {
-                        setIsPlaying(true);
-                    } else if (event.data === 2) {
-                        setIsPlaying(false);
-                    }
-                },
-                onError: (event: any) => {
-                    console.error("YouTube player error:", event.data);
-                    // Error codes: 2 = invalid parameter, 5 = HTML5 error,
-                    // 100 = video not found, 101/150 = embedding disabled
-                    if (event.data === 100 || event.data === 101 || event.data === 150) {
-                        // Video embedding disabled, skip to next
-                        console.log("Video playback error, skipping...");
-                        setTimeout(() => handleSongEnd(), 1000);
-                    }
-                },
-            },
-        });
-    }, [isReady, currentSong]);
-
     const handleSongEnd = () => {
         if (currentSong && onSongEnd) {
             onSongEnd(currentSong.videoId);
@@ -154,6 +100,79 @@ export function YouTubePlayerSection({ queue, socket, roomId, onSongEnd }: YouTu
             });
         }
     };
+
+    // Initialize player when ready and song available
+    useEffect(() => {
+        if (!isReady) return;
+
+        // Clear player when all songs have been deleted
+        if (!currentSong) {
+            if (playerRef.current && typeof playerRef.current.destroy === "function") {
+                playerRef.current.destroy();
+                playerRef.current = null;
+                currentVideoIdRef.current = null;
+            }
+            return;
+        }
+
+        // If player doesn't exist, initialize it
+        if (!playerRef.current) {
+            playerRef.current = new window.YT.Player("youtube-player", {
+                height: "100%",
+                width: "100%",
+                videoId: currentSong.videoId,
+                playerVars: {
+                    autoplay: 1,
+                    controls: 0, // Disable all YouTube controls
+                    rel: 0, // Don't show related videos
+                    modestbranding: 1, // Hide YouTube logo
+                    enablejsapi: 1,
+                    origin: window.location.origin,
+                    disablekb: 1, // Disable keyboard controls
+                    fs: 0, // Disable fullscreen button
+                    iv_load_policy: 3, // Hide video annotations
+                    cc_load_policy: 0, // Hide closed captions
+                    playsinline: 1, // Play inline on mobile
+                },
+                events: {
+                    onReady: (event: any) => {
+                        event.target.playVideo();
+                        setIsPlaying(true);
+                    },
+                    onStateChange: (event: any) => {
+                        // 0 = ended, 1 = playing, 2 = paused
+                        if (event.data === 0) {
+                            handleSongEnd();
+                        } else if (event.data === 1) {
+                            setIsPlaying(true);
+                        } else if (event.data === 2) {
+                            setIsPlaying(false);
+                        }
+                    },
+                    onError: (event: any) => {
+                        console.error("YouTube player error:", event.data);
+                        // Error codes: 2 = invalid parameter, 5 = HTML5 error,
+                        // 100 = video not found, 101/150 = embedding disabled
+                        if (event.data === 100 || event.data === 101 || event.data === 150) {
+                            // Video embedding disabled, skip to next
+                            console.log("Video playback error, skipping...");
+                            setTimeout(() => handleSongEnd(), 1000);
+                        }
+                    },
+                },
+            });
+            currentVideoIdRef.current = currentSong.videoId;
+            return;
+        }
+
+        // Only load new video if the video ID has actually changed
+        if (currentSong.videoId !== currentVideoIdRef.current) {
+            if (playerRef.current && typeof playerRef.current.loadVideoById === "function") {
+                playerRef.current.loadVideoById(currentSong.videoId);
+                currentVideoIdRef.current = currentSong.videoId;
+            }
+        }
+    }, [isReady, currentSong]);
 
     const handlePlayPause = () => {
         if (!playerRef.current) return;

@@ -22,11 +22,11 @@ export async function GET(req: NextRequest) {
         }
 
         const hashKey = `roomId:${roomCode}`;
-        const queue = await redisClient.hVals(hashKey);
+        const queue = await redisClient.hGetAll(hashKey);
         const parsedQueue: Song[] = Object.values(queue)
             .map(song => {
                 try {
-                    if (typeof song === "string") return JSON.parse(song) as Song;
+                    return JSON.parse(song);
                 } catch {
                     return null;
                 }
