@@ -14,9 +14,17 @@ export interface SongMetaData {
 }
 
 export interface Song extends SongMetaData {
-    requestedBy?: string;
-    userAvatar?: string;
-    votes?: number;
+    requestedBy: string;
+    userAvatar: string;
+    votes: number;
+    addedAt: number;
+    sequence?: number;
+}
+
+export interface SongQueue {
+    videoId: string;
+    timestamp: number;
+    votes: number;
 }
 
 /**

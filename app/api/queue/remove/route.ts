@@ -2,15 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { redisClient } from "@/lib/redis";
 import z from "zod";
 import { getCachedSession } from "@/lib/cacheSession";
-import type { Song } from "@/lib";
 
 const RemoveFromQueueSchema = z.object({
     roomCode: z.string().length(5),
     videoId: z.string(),
-    title: z.string(),
-    channelName: z.string(),
-    thumbnail: z.string(),
-    duration: z.string(),
 });
 
 export async function POST(req: NextRequest) {
@@ -23,13 +18,9 @@ export async function POST(req: NextRequest) {
             });
         }
 
-        const { roomCode, ...res } = RemoveFromQueueSchema.parse(await req.json());
-        const data: Song = res;
-        data.requestedBy = session.user.name;
-        data.userAvatar = session.user.image;
-        const valueToDelete = JSON.stringify(data);
+        const { roomCode, videoId } = RemoveFromQueueSchema.parse(await req.json());
 
-        await redisClient.zRem(roomCode, valueToDelete);
+        await redisClient.hDel(`roomId:${roomCode}`, videoId);
         await redisClient.publish("updated_queue", roomCode);
 
         return NextResponse.json({

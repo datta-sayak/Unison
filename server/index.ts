@@ -28,7 +28,7 @@ io.on("connection", async socket => {
 
     roomEvents(io, socket);
     messageEvents(io, socket);
-    queueEvents(io, socket);
+    queueEvents(io);
     playbackEvents(io, socket);
 
     socket.on("disconnect", () => {

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { redisClient } from "@/lib/redis";
 import z from "zod";
 import type { Song } from "@/lib";
+import { getCachedSession } from "@/lib/cacheSession";
 
 const AddToQueueSchema = z.object({
     roomCode: z.string().length(5),
@@ -15,7 +15,7 @@ const AddToQueueSchema = z.object({
 
 export async function POST(req: NextRequest) {
     try {
-        const session = await getServerSession();
+        const session = await getCachedSession();
         if (!session?.user?.email) {
             return NextResponse.json({
                 message: "Unauthenticated",
@@ -24,8 +24,9 @@ export async function POST(req: NextRequest) {
         }
 
         const parsedReq = AddToQueueSchema.parse(await req.json());
-        const timestamp = Date.now();
         const songQueueValue: Song = {
+            votes: 0,
+            addedAt: Date.now(),
             videoId: parsedReq.videoId,
             title: parsedReq.title,
             channelName: parsedReq.channelName,
@@ -34,7 +35,10 @@ export async function POST(req: NextRequest) {
             requestedBy: session.user.name,
             userAvatar: session.user.image,
         };
-        await redisClient.zAdd(parsedReq.roomCode, { score: timestamp, value: JSON.stringify(songQueueValue) });
+
+        const hashKey = `roomId:${parsedReq.roomCode}`;
+
+        await redisClient.hSet(hashKey, { [parsedReq.videoId]: JSON.stringify(songQueueValue) });
         await redisClient.publish("updated_queue", parsedReq.roomCode);
 
         return NextResponse.json({

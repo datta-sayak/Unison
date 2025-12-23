@@ -32,6 +32,7 @@ function RoomPageContent() {
     const [newMessage, setNewMessage] = useState("");
     const [activeSection, setActiveSection] = useState("queue");
     const [isChecking, setIsChecking] = useState(true);
+    const isMemberRef = useRef(false);
 
     useEffect(() => {
         if (status === "loading") return;
@@ -41,7 +42,7 @@ function RoomPageContent() {
     }, [status, router]);
 
     useEffect(() => {
-        if (!roomId || !session?.user || status === "loading") return;
+        if (!roomId || !session?.user || status === "loading" || isMemberRef.current) return;
 
         const checkUserPresentInRoom = async () => {
             try {
@@ -53,6 +54,8 @@ function RoomPageContent() {
                     toast.info("You need to join this room");
                     router.push(`/join?roomId=${roomId}`);
                     return;
+                } else {
+                    isMemberRef.current = true;
                 }
                 setIsChecking(false);
             } catch (error) {
@@ -63,7 +66,7 @@ function RoomPageContent() {
         };
 
         checkUserPresentInRoom();
-    }, [roomId, session?.user, status, router]);
+    }, [roomId, session?.user, status, router, isMemberRef]);
 
     // For auto scroll to bottom of the page
     useEffect(() => {
@@ -91,7 +94,8 @@ function RoomPageContent() {
                 try {
                     const response = await axios.get(`/api/queue/fetch?roomCode=${roomId}`);
 
-                    if (response.data.data.queue) {
+                    if (!response.data.data) return;
+                    else {
                         const receivedQueue: Song[] = response.data.data.queue;
                         setQueue(receivedQueue);
                     }
@@ -243,17 +247,31 @@ function RoomPageContent() {
         }
     };
 
-    const handleVote = (id: string, direction: "up" | "down") => {
-        setQueue(
-            queue.map(song =>
-                song.videoId === id
-                    ? {
-                          ...song,
-                          votes: direction === "up" ? song.votes + 1 : Math.max(0, song.votes - 1),
-                      }
-                    : song,
-            ),
-        );
+    const handleVote = async (id: string, direction: "up" | "down") => {
+        const song = queue.find(s => s.videoId === id);
+        if (!song) {
+            toast.error("Song not found in queue");
+            return;
+        }
+
+        try {
+            const payload = {
+                roomCode: roomId,
+                videoId: song.videoId,
+                voteState: direction === "up" ? "upvote" : "downvote",
+            };
+
+            const res = await axios.post("/api/queue/vote", payload);
+
+            if (res?.data?.status === 200) {
+                toast.success(direction === "up" ? "Upvoted!" : "Downvoted!");
+            } else {
+                toast.error(res.data.message || "Failed to vote");
+            }
+        } catch (error) {
+            console.error("Failed to vote:", error);
+            toast.error("Failed to vote");
+        }
     };
 
     const handleCopyLink = () => {

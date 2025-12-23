@@ -44,6 +44,7 @@ export async function POST(req: NextRequest) {
 
         // Also delete the redis roomQueue key value store
         await redisClient.del(roomToDelete.roomId);
+        await redisClient.del(`roomId:${roomCode}`);
         await prismaClient.roomUser.deleteMany({
             where: {
                 roomId: roomToDelete.roomId,

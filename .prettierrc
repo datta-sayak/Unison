@@ -6,5 +6,6 @@
     "printWidth": 120,
     "bracketSpacing": true,
     "arrowParens": "avoid",
-    "quoteProps": "as-needed"
+    "quoteProps": "as-needed",
+    "endOfLine": "lf"
 }

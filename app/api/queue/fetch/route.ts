@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { redisClient } from "@/lib/redis";
+import { QueueSort } from "@/lib/queueSort";
+import { Song } from "@/lib";
 
 export async function GET(req: NextRequest) {
     const session = await getServerSession();
@@ -11,20 +13,41 @@ export async function GET(req: NextRequest) {
         });
     }
 
-    const { searchParams } = new URL(req.url);
-    const roomCode = searchParams.get("roomCode");
+    try {
+        const { searchParams } = new URL(req.url);
+        const roomCode = searchParams.get("roomCode");
 
-    if (!roomCode || roomCode.length !== 5) {
-        return NextResponse.json({ message: "Room code is required" }, { status: 400 });
+        if (!roomCode || roomCode.length !== 5) {
+            return NextResponse.json({ message: "Room code is required" }, { status: 400 });
+        }
+
+        const hashKey = `roomId:${roomCode}`;
+        const queue = await redisClient.hVals(hashKey);
+        const parsedQueue: Song[] = Object.values(queue)
+            .map(song => {
+                try {
+                    if (typeof song === "string") return JSON.parse(song) as Song;
+                } catch {
+                    return null;
+                }
+            })
+            .filter(Boolean);
+
+        // Sort Queue using custom logic
+        const sortedQueue: Song[] = QueueSort(parsedQueue);
+
+        return NextResponse.json({
+            message: "Queue fetched successfully",
+            status: 200,
+            data: {
+                queue: sortedQueue,
+            },
+        });
+    } catch (error) {
+        console.error("Failed to fetch queue: ", error);
+        return NextResponse.json({
+            message: "Failed to fetch queue",
+            status: 500,
+        });
     }
-
-    const queueItems = await redisClient.zRange(roomCode, 0, -1);
-    const parsedQueue = queueItems.map((u: string) => JSON.parse(u));
-    return NextResponse.json({
-        message: "Queue fetched successfully",
-        status: 200,
-        data: {
-            queue: parsedQueue,
-        },
-    });
 }
