@@ -22,10 +22,6 @@ export function UserAvatar() {
 
     return (
         <div className="flex items-center gap-3">
-            <div className="flex flex-col items-end">
-                <p className="text-sm font-medium text-foreground">{session.user.name}</p>
-            </div>
-
             {/* Avatar with image*/}
             <div className="relative">
                 <Button

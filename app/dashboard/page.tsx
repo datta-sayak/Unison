@@ -88,7 +88,7 @@ export default function DashboardPage() {
     };
 
     return (
-        <main className="min-h-screen bg-accent/5 transition-theme">
+        <main className="min-h-screen bg-background">
             {/* Main Content */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 rounded-t-3xl">
                 <div className="flex justify-center">
@@ -103,30 +103,26 @@ export default function DashboardPage() {
                             {/* Join Room and New Room Cards - Above Empty State */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <Link href="/join" className="block">
-                                    <div className="bg-gradient-to-br from-accent/5 to-accent/10 border-2 border-accent rounded-2xl p-4 hover:border-accent hover:shadow-xl hover:shadow-accent/20 hover:from-accent/10 hover:to-accent/15 transition-all cursor-pointer group active:scale-95">
+                                    <div className="bg-card border-2 border-border rounded-2xl p-4 hover:border-primary hover:shadow-lg transition-all cursor-pointer group active:scale-95">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-lg bg-accent group-hover:bg-accent/90 transition-colors flex items-center justify-center shadow-lg">
-                                                <LogIn className="h-5 w-5 text-accent-foreground" />
+                                            <div className="w-10 h-10 rounded-lg bg-primary text-primary-foreground flex items-center justify-center shadow-lg">
+                                                <LogIn className="h-5 w-5" />
                                             </div>
                                             <div className="flex-1">
-                                                <h3 className="font-semibold text-foreground group-hover:text-accent transition-colors">
-                                                    Join Room
-                                                </h3>
+                                                <h3 className="font-semibold text-foreground">Join Room</h3>
                                             </div>
                                         </div>
                                     </div>
                                 </Link>
 
                                 <Link href="/create" className="block">
-                                    <div className="bg-gradient-to-br from-accent/5 to-accent/10 border-2 border-accent rounded-2xl p-4 hover:border-accent hover:shadow-xl hover:shadow-accent/20 hover:from-accent/10 hover:to-accent/15 transition-all cursor-pointer group active:scale-95">
+                                    <div className="bg-card border-2 border-border rounded-2xl p-4 hover:border-primary hover:shadow-lg transition-all cursor-pointer group active:scale-95">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-lg bg-accent group-hover:bg-accent/90 transition-colors flex items-center justify-center shadow-lg">
-                                                <Plus className="h-5 w-5 text-accent-foreground" />
+                                            <div className="w-10 h-10 rounded-lg bg-primary text-primary-foreground flex items-center justify-center shadow-lg">
+                                                <Plus className="h-5 w-5" />
                                             </div>
                                             <div className="flex-1">
-                                                <h3 className="font-semibold text-foreground group-hover:text-accent transition-colors">
-                                                    New Room
-                                                </h3>
+                                                <h3 className="font-semibold text-foreground">New Room</h3>
                                             </div>
                                         </div>
                                     </div>
@@ -135,15 +131,15 @@ export default function DashboardPage() {
                             {/* Rooms Grid */}
                             {loading ? (
                                 <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
-                                    <Loader2 className="w-8 h-8 animate-spin text-accent mb-3" />
+                                    <Loader2 className="w-8 h-8 animate-spin text-primary mb-3" />
                                     <p>Loading rooms...</p>
                                 </div>
                             ) : userData.room.length === 0 ? (
                                 <>
                                     <div className="border-2 border-dashed border-border rounded-2xl p-12 text-center space-y-4">
                                         <div className="flex justify-center">
-                                            <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center">
-                                                <Play className="h-8 w-8 text-accent" />
+                                            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                                                <Play className="h-8 w-8 text-primary" />
                                             </div>
                                         </div>
                                         <div>
@@ -153,7 +149,7 @@ export default function DashboardPage() {
                                             </p>
                                         </div>
                                         <Link href="/create">
-                                            <Button className="bg-accent text-accent-foreground hover:opacity-90 transition-theme">
+                                            <Button className="bg-primary text-primary-foreground hover:opacity-90">
                                                 Create Your First Room
                                             </Button>
                                         </Link>
@@ -166,12 +162,12 @@ export default function DashboardPage() {
                                         {...userData.room.map(room => (
                                             <div
                                                 key={room.roomId}
-                                                className="group rounded-xl bg-card border border-border p-4 hover:border-accent/50 hover:shadow-lg transition-all"
+                                                className="group rounded-xl bg-card border border-border p-4 hover:border-primary/50 hover:shadow-lg transition-all"
                                             >
                                                 {/* Room Header */}
                                                 <div className="flex items-start gap-3 mb-3">
                                                     {room.createdBy && (
-                                                        <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
+                                                        <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
                                                             {room.createdBy.avatarUrl ? (
                                                                 <Image
                                                                     src={room.createdBy.avatarUrl}
@@ -181,7 +177,7 @@ export default function DashboardPage() {
                                                                     className="w-10 h-10 rounded-full object-cover"
                                                                 />
                                                             ) : (
-                                                                <span className="text-sm font-bold text-accent">
+                                                                <span className="text-sm font-bold text-primary">
                                                                     {(room.createdBy.name || "H")
                                                                         .charAt(0)
                                                                         .toUpperCase()}
@@ -222,7 +218,7 @@ export default function DashboardPage() {
                                                 {/* Action Buttons */}
                                                 <div className="flex gap-2">
                                                     <Link href={`/room?id=${room.roomId}`} className="flex-1">
-                                                        <button className="w-full px-3 py-2 rounded-lg bg-accent text-accent-foreground font-medium text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+                                                        <button className="w-full px-3 py-2 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
                                                             <Play className="h-4 w-4" />
                                                             Enter
                                                         </button>

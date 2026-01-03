@@ -112,12 +112,7 @@ export default function CreateRoomPage() {
                                     {isPrivate ? "Password required to join" : "Open to everyone"}
                                 </p>
                             </div>
-                            <Switch
-                                checked={isPrivate}
-                                onCheckedChange={setIsPrivate}
-                                disabled={isLoading}
-                                className="data-[state=checked]:bg-accent"
-                            />
+                            <Switch checked={isPrivate} onCheckedChange={setIsPrivate} disabled={isLoading} />
                         </div>
                     </div>
 
@@ -145,7 +140,7 @@ export default function CreateRoomPage() {
                     <Button
                         onClick={handleCreateRoom}
                         disabled={isLoading}
-                        className="w-full bg-accent text-accent-foreground hover:opacity-90 h-12 font-medium transition-theme rounded-lg"
+                        className="w-full bg-primary text-primary-foreground hover:opacity-90 h-12 font-medium rounded-lg"
                     >
                         {isLoading ? (
                             <span className="flex items-center gap-2">

@@ -243,9 +243,9 @@ export function YouTubePlayerSection({ queue, socket, roomId, onSongEnd }: YouTu
                                 className="w-16 h-16 rounded-full bg-card/60 hover:bg-card/90 border border-border flex items-center justify-center transition-all"
                             >
                                 {isPlaying ? (
-                                    <Pause className="w-8 h-8 text-accent" />
+                                    <Pause className="w-8 h-8 text-primary" />
                                 ) : (
-                                    <Play className="w-8 h-8 text-accent" />
+                                    <Play className="w-8 h-8 text-primary" />
                                 )}
                             </Button>
                             <Button
@@ -253,11 +253,11 @@ export function YouTubePlayerSection({ queue, socket, roomId, onSongEnd }: YouTu
                                 className="w-16 h-16 rounded-full bg-card/60 hover:bg-card/90 border border-border flex items-center justify-center transition-all"
                                 disabled={queue.length <= 1}
                             >
-                                <SkipForward className="w-8 h-8 text-accent" strokeWidth={2.5} />
+                                <SkipForward className="w-8 h-8 text-primary" strokeWidth={2.5} />
                             </Button>
                         </div>
                     </div>
-                    <div className="mt-3 text-accent text-base font-medium">
+                    <div className="mt-3 text-primary text-base font-medium">
                         Playing {currentIndex + 1} of {queue.length}
                     </div>
                 </div>

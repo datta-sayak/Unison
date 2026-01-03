@@ -183,9 +183,7 @@ export type UserWhereInput = {
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   roomUsers?: Prisma.RoomUserListRelationFilter
-  vote?: Prisma.VoteListRelationFilter
   createdRooms?: Prisma.RoomListRelationFilter
-  addedHistory?: Prisma.PlaybackHistoryListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -195,9 +193,7 @@ export type UserOrderByWithRelationInput = {
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   roomUsers?: Prisma.RoomUserOrderByRelationAggregateInput
-  vote?: Prisma.VoteOrderByRelationAggregateInput
   createdRooms?: Prisma.RoomOrderByRelationAggregateInput
-  addedHistory?: Prisma.PlaybackHistoryOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -210,9 +206,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   roomUsers?: Prisma.RoomUserListRelationFilter
-  vote?: Prisma.VoteListRelationFilter
   createdRooms?: Prisma.RoomListRelationFilter
-  addedHistory?: Prisma.PlaybackHistoryListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -244,9 +238,7 @@ export type UserCreateInput = {
   avatarUrl?: string | null
   createdAt?: Date | string
   roomUsers?: Prisma.RoomUserCreateNestedManyWithoutUserInput
-  vote?: Prisma.VoteCreateNestedManyWithoutUserInput
   createdRooms?: Prisma.RoomCreateNestedManyWithoutCreatedByInput
-  addedHistory?: Prisma.PlaybackHistoryCreateNestedManyWithoutAddedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -256,9 +248,7 @@ export type UserUncheckedCreateInput = {
   avatarUrl?: string | null
   createdAt?: Date | string
   roomUsers?: Prisma.RoomUserUncheckedCreateNestedManyWithoutUserInput
-  vote?: Prisma.VoteUncheckedCreateNestedManyWithoutUserInput
   createdRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutCreatedByInput
-  addedHistory?: Prisma.PlaybackHistoryUncheckedCreateNestedManyWithoutAddedByInput
 }
 
 export type UserUpdateInput = {
@@ -268,9 +258,7 @@ export type UserUpdateInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roomUsers?: Prisma.RoomUserUpdateManyWithoutUserNestedInput
-  vote?: Prisma.VoteUpdateManyWithoutUserNestedInput
   createdRooms?: Prisma.RoomUpdateManyWithoutCreatedByNestedInput
-  addedHistory?: Prisma.PlaybackHistoryUpdateManyWithoutAddedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -280,9 +268,7 @@ export type UserUncheckedUpdateInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roomUsers?: Prisma.RoomUserUncheckedUpdateManyWithoutUserNestedInput
-  vote?: Prisma.VoteUncheckedUpdateManyWithoutUserNestedInput
   createdRooms?: Prisma.RoomUncheckedUpdateManyWithoutCreatedByNestedInput
-  addedHistory?: Prisma.PlaybackHistoryUncheckedUpdateManyWithoutAddedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -338,11 +324,6 @@ export type UserScalarRelationFilter = {
   isNot?: Prisma.UserWhereInput
 }
 
-export type UserNullableScalarRelationFilter = {
-  is?: Prisma.UserWhereInput | null
-  isNot?: Prisma.UserWhereInput | null
-}
-
 export type StringFieldUpdateOperationsInput = {
   set?: string
 }
@@ -383,36 +364,6 @@ export type UserUpdateOneRequiredWithoutRoomUsersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRoomUsersInput, Prisma.UserUpdateWithoutRoomUsersInput>, Prisma.UserUncheckedUpdateWithoutRoomUsersInput>
 }
 
-export type UserCreateNestedOneWithoutVoteInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutVoteInput, Prisma.UserUncheckedCreateWithoutVoteInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVoteInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutVoteNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutVoteInput, Prisma.UserUncheckedCreateWithoutVoteInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVoteInput
-  upsert?: Prisma.UserUpsertWithoutVoteInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutVoteInput, Prisma.UserUpdateWithoutVoteInput>, Prisma.UserUncheckedUpdateWithoutVoteInput>
-}
-
-export type UserCreateNestedOneWithoutAddedHistoryInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutAddedHistoryInput, Prisma.UserUncheckedCreateWithoutAddedHistoryInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAddedHistoryInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneWithoutAddedHistoryNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutAddedHistoryInput, Prisma.UserUncheckedCreateWithoutAddedHistoryInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAddedHistoryInput
-  upsert?: Prisma.UserUpsertWithoutAddedHistoryInput
-  disconnect?: Prisma.UserWhereInput | boolean
-  delete?: Prisma.UserWhereInput | boolean
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAddedHistoryInput, Prisma.UserUpdateWithoutAddedHistoryInput>, Prisma.UserUncheckedUpdateWithoutAddedHistoryInput>
-}
-
 export type UserCreateWithoutCreatedRoomsInput = {
   id?: string
   name?: string | null
@@ -420,8 +371,6 @@ export type UserCreateWithoutCreatedRoomsInput = {
   avatarUrl?: string | null
   createdAt?: Date | string
   roomUsers?: Prisma.RoomUserCreateNestedManyWithoutUserInput
-  vote?: Prisma.VoteCreateNestedManyWithoutUserInput
-  addedHistory?: Prisma.PlaybackHistoryCreateNestedManyWithoutAddedByInput
 }
 
 export type UserUncheckedCreateWithoutCreatedRoomsInput = {
@@ -431,8 +380,6 @@ export type UserUncheckedCreateWithoutCreatedRoomsInput = {
   avatarUrl?: string | null
   createdAt?: Date | string
   roomUsers?: Prisma.RoomUserUncheckedCreateNestedManyWithoutUserInput
-  vote?: Prisma.VoteUncheckedCreateNestedManyWithoutUserInput
-  addedHistory?: Prisma.PlaybackHistoryUncheckedCreateNestedManyWithoutAddedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedRoomsInput = {
@@ -458,8 +405,6 @@ export type UserUpdateWithoutCreatedRoomsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roomUsers?: Prisma.RoomUserUpdateManyWithoutUserNestedInput
-  vote?: Prisma.VoteUpdateManyWithoutUserNestedInput
-  addedHistory?: Prisma.PlaybackHistoryUpdateManyWithoutAddedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedRoomsInput = {
@@ -469,8 +414,6 @@ export type UserUncheckedUpdateWithoutCreatedRoomsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roomUsers?: Prisma.RoomUserUncheckedUpdateManyWithoutUserNestedInput
-  vote?: Prisma.VoteUncheckedUpdateManyWithoutUserNestedInput
-  addedHistory?: Prisma.PlaybackHistoryUncheckedUpdateManyWithoutAddedByNestedInput
 }
 
 export type UserCreateWithoutRoomUsersInput = {
@@ -479,9 +422,7 @@ export type UserCreateWithoutRoomUsersInput = {
   email: string
   avatarUrl?: string | null
   createdAt?: Date | string
-  vote?: Prisma.VoteCreateNestedManyWithoutUserInput
   createdRooms?: Prisma.RoomCreateNestedManyWithoutCreatedByInput
-  addedHistory?: Prisma.PlaybackHistoryCreateNestedManyWithoutAddedByInput
 }
 
 export type UserUncheckedCreateWithoutRoomUsersInput = {
@@ -490,9 +431,7 @@ export type UserUncheckedCreateWithoutRoomUsersInput = {
   email: string
   avatarUrl?: string | null
   createdAt?: Date | string
-  vote?: Prisma.VoteUncheckedCreateNestedManyWithoutUserInput
   createdRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutCreatedByInput
-  addedHistory?: Prisma.PlaybackHistoryUncheckedCreateNestedManyWithoutAddedByInput
 }
 
 export type UserCreateOrConnectWithoutRoomUsersInput = {
@@ -517,9 +456,7 @@ export type UserUpdateWithoutRoomUsersInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  vote?: Prisma.VoteUpdateManyWithoutUserNestedInput
   createdRooms?: Prisma.RoomUpdateManyWithoutCreatedByNestedInput
-  addedHistory?: Prisma.PlaybackHistoryUpdateManyWithoutAddedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRoomUsersInput = {
@@ -528,128 +465,6 @@ export type UserUncheckedUpdateWithoutRoomUsersInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  vote?: Prisma.VoteUncheckedUpdateManyWithoutUserNestedInput
-  createdRooms?: Prisma.RoomUncheckedUpdateManyWithoutCreatedByNestedInput
-  addedHistory?: Prisma.PlaybackHistoryUncheckedUpdateManyWithoutAddedByNestedInput
-}
-
-export type UserCreateWithoutVoteInput = {
-  id?: string
-  name?: string | null
-  email: string
-  avatarUrl?: string | null
-  createdAt?: Date | string
-  roomUsers?: Prisma.RoomUserCreateNestedManyWithoutUserInput
-  createdRooms?: Prisma.RoomCreateNestedManyWithoutCreatedByInput
-  addedHistory?: Prisma.PlaybackHistoryCreateNestedManyWithoutAddedByInput
-}
-
-export type UserUncheckedCreateWithoutVoteInput = {
-  id?: string
-  name?: string | null
-  email: string
-  avatarUrl?: string | null
-  createdAt?: Date | string
-  roomUsers?: Prisma.RoomUserUncheckedCreateNestedManyWithoutUserInput
-  createdRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutCreatedByInput
-  addedHistory?: Prisma.PlaybackHistoryUncheckedCreateNestedManyWithoutAddedByInput
-}
-
-export type UserCreateOrConnectWithoutVoteInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutVoteInput, Prisma.UserUncheckedCreateWithoutVoteInput>
-}
-
-export type UserUpsertWithoutVoteInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutVoteInput, Prisma.UserUncheckedUpdateWithoutVoteInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutVoteInput, Prisma.UserUncheckedCreateWithoutVoteInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutVoteInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutVoteInput, Prisma.UserUncheckedUpdateWithoutVoteInput>
-}
-
-export type UserUpdateWithoutVoteInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  roomUsers?: Prisma.RoomUserUpdateManyWithoutUserNestedInput
-  createdRooms?: Prisma.RoomUpdateManyWithoutCreatedByNestedInput
-  addedHistory?: Prisma.PlaybackHistoryUpdateManyWithoutAddedByNestedInput
-}
-
-export type UserUncheckedUpdateWithoutVoteInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  roomUsers?: Prisma.RoomUserUncheckedUpdateManyWithoutUserNestedInput
-  createdRooms?: Prisma.RoomUncheckedUpdateManyWithoutCreatedByNestedInput
-  addedHistory?: Prisma.PlaybackHistoryUncheckedUpdateManyWithoutAddedByNestedInput
-}
-
-export type UserCreateWithoutAddedHistoryInput = {
-  id?: string
-  name?: string | null
-  email: string
-  avatarUrl?: string | null
-  createdAt?: Date | string
-  roomUsers?: Prisma.RoomUserCreateNestedManyWithoutUserInput
-  vote?: Prisma.VoteCreateNestedManyWithoutUserInput
-  createdRooms?: Prisma.RoomCreateNestedManyWithoutCreatedByInput
-}
-
-export type UserUncheckedCreateWithoutAddedHistoryInput = {
-  id?: string
-  name?: string | null
-  email: string
-  avatarUrl?: string | null
-  createdAt?: Date | string
-  roomUsers?: Prisma.RoomUserUncheckedCreateNestedManyWithoutUserInput
-  vote?: Prisma.VoteUncheckedCreateNestedManyWithoutUserInput
-  createdRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutCreatedByInput
-}
-
-export type UserCreateOrConnectWithoutAddedHistoryInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutAddedHistoryInput, Prisma.UserUncheckedCreateWithoutAddedHistoryInput>
-}
-
-export type UserUpsertWithoutAddedHistoryInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutAddedHistoryInput, Prisma.UserUncheckedUpdateWithoutAddedHistoryInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutAddedHistoryInput, Prisma.UserUncheckedCreateWithoutAddedHistoryInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutAddedHistoryInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutAddedHistoryInput, Prisma.UserUncheckedUpdateWithoutAddedHistoryInput>
-}
-
-export type UserUpdateWithoutAddedHistoryInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  roomUsers?: Prisma.RoomUserUpdateManyWithoutUserNestedInput
-  vote?: Prisma.VoteUpdateManyWithoutUserNestedInput
-  createdRooms?: Prisma.RoomUpdateManyWithoutCreatedByNestedInput
-}
-
-export type UserUncheckedUpdateWithoutAddedHistoryInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  roomUsers?: Prisma.RoomUserUncheckedUpdateManyWithoutUserNestedInput
-  vote?: Prisma.VoteUncheckedUpdateManyWithoutUserNestedInput
   createdRooms?: Prisma.RoomUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
@@ -660,16 +475,12 @@ export type UserUncheckedUpdateWithoutAddedHistoryInput = {
 
 export type UserCountOutputType = {
   roomUsers: number
-  vote: number
   createdRooms: number
-  addedHistory: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   roomUsers?: boolean | UserCountOutputTypeCountRoomUsersArgs
-  vote?: boolean | UserCountOutputTypeCountVoteArgs
   createdRooms?: boolean | UserCountOutputTypeCountCreatedRoomsArgs
-  addedHistory?: boolean | UserCountOutputTypeCountAddedHistoryArgs
 }
 
 /**
@@ -692,22 +503,8 @@ export type UserCountOutputTypeCountRoomUsersArgs<ExtArgs extends runtime.Types.
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountVoteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.VoteWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
 export type UserCountOutputTypeCountCreatedRoomsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.RoomWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeCountAddedHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.PlaybackHistoryWhereInput
 }
 
 
@@ -718,9 +515,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   avatarUrl?: boolean
   createdAt?: boolean
   roomUsers?: boolean | Prisma.User$roomUsersArgs<ExtArgs>
-  vote?: boolean | Prisma.User$voteArgs<ExtArgs>
   createdRooms?: boolean | Prisma.User$createdRoomsArgs<ExtArgs>
-  addedHistory?: boolean | Prisma.User$addedHistoryArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -751,9 +546,7 @@ export type UserSelectScalar = {
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "avatarUrl" | "createdAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   roomUsers?: boolean | Prisma.User$roomUsersArgs<ExtArgs>
-  vote?: boolean | Prisma.User$voteArgs<ExtArgs>
   createdRooms?: boolean | Prisma.User$createdRoomsArgs<ExtArgs>
-  addedHistory?: boolean | Prisma.User$addedHistoryArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -763,9 +556,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   name: "User"
   objects: {
     roomUsers: Prisma.$RoomUserPayload<ExtArgs>[]
-    vote: Prisma.$VotePayload<ExtArgs>[]
     createdRooms: Prisma.$RoomPayload<ExtArgs>[]
-    addedHistory: Prisma.$PlaybackHistoryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1168,9 +959,7 @@ readonly fields: UserFieldRefs;
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   roomUsers<T extends Prisma.User$roomUsersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$roomUsersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoomUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  vote<T extends Prisma.User$voteArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$voteArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdRooms<T extends Prisma.User$createdRoomsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdRoomsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoomPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  addedHistory<T extends Prisma.User$addedHistoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$addedHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlaybackHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1617,30 +1406,6 @@ export type User$roomUsersArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
- * User.vote
- */
-export type User$voteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Vote
-   */
-  select?: Prisma.VoteSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Vote
-   */
-  omit?: Prisma.VoteOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.VoteInclude<ExtArgs> | null
-  where?: Prisma.VoteWhereInput
-  orderBy?: Prisma.VoteOrderByWithRelationInput | Prisma.VoteOrderByWithRelationInput[]
-  cursor?: Prisma.VoteWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.VoteScalarFieldEnum | Prisma.VoteScalarFieldEnum[]
-}
-
-/**
  * User.createdRooms
  */
 export type User$createdRoomsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1662,30 +1427,6 @@ export type User$createdRoomsArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.RoomScalarFieldEnum | Prisma.RoomScalarFieldEnum[]
-}
-
-/**
- * User.addedHistory
- */
-export type User$addedHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the PlaybackHistory
-   */
-  select?: Prisma.PlaybackHistorySelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the PlaybackHistory
-   */
-  omit?: Prisma.PlaybackHistoryOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.PlaybackHistoryInclude<ExtArgs> | null
-  where?: Prisma.PlaybackHistoryWhereInput
-  orderBy?: Prisma.PlaybackHistoryOrderByWithRelationInput | Prisma.PlaybackHistoryOrderByWithRelationInput[]
-  cursor?: Prisma.PlaybackHistoryWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.PlaybackHistoryScalarFieldEnum | Prisma.PlaybackHistoryScalarFieldEnum[]
 }
 
 /**

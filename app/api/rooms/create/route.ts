@@ -8,7 +8,6 @@ const createRoomSchema = z.object({
     isPrivate: z.boolean().default(false),
     password: z.string().optional(),
     roomName: z.string().optional(),
-    themeId: z.string().optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -44,7 +43,6 @@ export async function POST(req: NextRequest) {
                 createdById: user.id,
                 accessMode: data.isPrivate ? "Private" : "Public",
                 passwordHash: data.isPrivate ? data.password : null,
-                themeId: data.themeId || null,
             },
         });
 

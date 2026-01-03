@@ -30,7 +30,6 @@ export type RoomMinAggregateOutputType = {
   createdById: string | null
   accessMode: $Enums.AccessMode | null
   passwordHash: string | null
-  themeId: string | null
   createdAt: Date | null
 }
 
@@ -40,7 +39,6 @@ export type RoomMaxAggregateOutputType = {
   createdById: string | null
   accessMode: $Enums.AccessMode | null
   passwordHash: string | null
-  themeId: string | null
   createdAt: Date | null
 }
 
@@ -50,7 +48,6 @@ export type RoomCountAggregateOutputType = {
   createdById: number
   accessMode: number
   passwordHash: number
-  themeId: number
   createdAt: number
   _all: number
 }
@@ -62,7 +59,6 @@ export type RoomMinAggregateInputType = {
   createdById?: true
   accessMode?: true
   passwordHash?: true
-  themeId?: true
   createdAt?: true
 }
 
@@ -72,7 +68,6 @@ export type RoomMaxAggregateInputType = {
   createdById?: true
   accessMode?: true
   passwordHash?: true
-  themeId?: true
   createdAt?: true
 }
 
@@ -82,7 +77,6 @@ export type RoomCountAggregateInputType = {
   createdById?: true
   accessMode?: true
   passwordHash?: true
-  themeId?: true
   createdAt?: true
   _all?: true
 }
@@ -165,7 +159,6 @@ export type RoomGroupByOutputType = {
   createdById: string
   accessMode: $Enums.AccessMode
   passwordHash: string | null
-  themeId: string | null
   createdAt: Date
   _count: RoomCountAggregateOutputType | null
   _min: RoomMinAggregateOutputType | null
@@ -196,11 +189,9 @@ export type RoomWhereInput = {
   createdById?: Prisma.StringFilter<"Room"> | string
   accessMode?: Prisma.EnumAccessModeFilter<"Room"> | $Enums.AccessMode
   passwordHash?: Prisma.StringNullableFilter<"Room"> | string | null
-  themeId?: Prisma.StringNullableFilter<"Room"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Room"> | Date | string
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   roomUsers?: Prisma.RoomUserListRelationFilter
-  history?: Prisma.PlaybackHistoryListRelationFilter
 }
 
 export type RoomOrderByWithRelationInput = {
@@ -209,11 +200,9 @@ export type RoomOrderByWithRelationInput = {
   createdById?: Prisma.SortOrder
   accessMode?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrderInput | Prisma.SortOrder
-  themeId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   createdBy?: Prisma.UserOrderByWithRelationInput
   roomUsers?: Prisma.RoomUserOrderByRelationAggregateInput
-  history?: Prisma.PlaybackHistoryOrderByRelationAggregateInput
 }
 
 export type RoomWhereUniqueInput = Prisma.AtLeast<{
@@ -225,11 +214,9 @@ export type RoomWhereUniqueInput = Prisma.AtLeast<{
   createdById?: Prisma.StringFilter<"Room"> | string
   accessMode?: Prisma.EnumAccessModeFilter<"Room"> | $Enums.AccessMode
   passwordHash?: Prisma.StringNullableFilter<"Room"> | string | null
-  themeId?: Prisma.StringNullableFilter<"Room"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Room"> | Date | string
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   roomUsers?: Prisma.RoomUserListRelationFilter
-  history?: Prisma.PlaybackHistoryListRelationFilter
 }, "roomId">
 
 export type RoomOrderByWithAggregationInput = {
@@ -238,7 +225,6 @@ export type RoomOrderByWithAggregationInput = {
   createdById?: Prisma.SortOrder
   accessMode?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrderInput | Prisma.SortOrder
-  themeId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.RoomCountOrderByAggregateInput
   _max?: Prisma.RoomMaxOrderByAggregateInput
@@ -254,7 +240,6 @@ export type RoomScalarWhereWithAggregatesInput = {
   createdById?: Prisma.StringWithAggregatesFilter<"Room"> | string
   accessMode?: Prisma.EnumAccessModeWithAggregatesFilter<"Room"> | $Enums.AccessMode
   passwordHash?: Prisma.StringNullableWithAggregatesFilter<"Room"> | string | null
-  themeId?: Prisma.StringNullableWithAggregatesFilter<"Room"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Room"> | Date | string
 }
 
@@ -263,11 +248,9 @@ export type RoomCreateInput = {
   roomName: string
   accessMode?: $Enums.AccessMode
   passwordHash?: string | null
-  themeId?: string | null
   createdAt?: Date | string
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedRoomsInput
   roomUsers?: Prisma.RoomUserCreateNestedManyWithoutRoomInput
-  history?: Prisma.PlaybackHistoryCreateNestedManyWithoutRoomInput
 }
 
 export type RoomUncheckedCreateInput = {
@@ -276,10 +259,8 @@ export type RoomUncheckedCreateInput = {
   createdById: string
   accessMode?: $Enums.AccessMode
   passwordHash?: string | null
-  themeId?: string | null
   createdAt?: Date | string
   roomUsers?: Prisma.RoomUserUncheckedCreateNestedManyWithoutRoomInput
-  history?: Prisma.PlaybackHistoryUncheckedCreateNestedManyWithoutRoomInput
 }
 
 export type RoomUpdateInput = {
@@ -287,11 +268,9 @@ export type RoomUpdateInput = {
   roomName?: Prisma.StringFieldUpdateOperationsInput | string
   accessMode?: Prisma.EnumAccessModeFieldUpdateOperationsInput | $Enums.AccessMode
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedRoomsNestedInput
   roomUsers?: Prisma.RoomUserUpdateManyWithoutRoomNestedInput
-  history?: Prisma.PlaybackHistoryUpdateManyWithoutRoomNestedInput
 }
 
 export type RoomUncheckedUpdateInput = {
@@ -300,10 +279,8 @@ export type RoomUncheckedUpdateInput = {
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   accessMode?: Prisma.EnumAccessModeFieldUpdateOperationsInput | $Enums.AccessMode
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roomUsers?: Prisma.RoomUserUncheckedUpdateManyWithoutRoomNestedInput
-  history?: Prisma.PlaybackHistoryUncheckedUpdateManyWithoutRoomNestedInput
 }
 
 export type RoomCreateManyInput = {
@@ -312,7 +289,6 @@ export type RoomCreateManyInput = {
   createdById: string
   accessMode?: $Enums.AccessMode
   passwordHash?: string | null
-  themeId?: string | null
   createdAt?: Date | string
 }
 
@@ -321,7 +297,6 @@ export type RoomUpdateManyMutationInput = {
   roomName?: Prisma.StringFieldUpdateOperationsInput | string
   accessMode?: Prisma.EnumAccessModeFieldUpdateOperationsInput | $Enums.AccessMode
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -331,7 +306,6 @@ export type RoomUncheckedUpdateManyInput = {
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   accessMode?: Prisma.EnumAccessModeFieldUpdateOperationsInput | $Enums.AccessMode
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -351,7 +325,6 @@ export type RoomCountOrderByAggregateInput = {
   createdById?: Prisma.SortOrder
   accessMode?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
-  themeId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -361,7 +334,6 @@ export type RoomMaxOrderByAggregateInput = {
   createdById?: Prisma.SortOrder
   accessMode?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
-  themeId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -371,7 +343,6 @@ export type RoomMinOrderByAggregateInput = {
   createdById?: Prisma.SortOrder
   accessMode?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
-  themeId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -440,29 +411,13 @@ export type RoomUpdateOneRequiredWithoutRoomUsersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.RoomUpdateToOneWithWhereWithoutRoomUsersInput, Prisma.RoomUpdateWithoutRoomUsersInput>, Prisma.RoomUncheckedUpdateWithoutRoomUsersInput>
 }
 
-export type RoomCreateNestedOneWithoutHistoryInput = {
-  create?: Prisma.XOR<Prisma.RoomCreateWithoutHistoryInput, Prisma.RoomUncheckedCreateWithoutHistoryInput>
-  connectOrCreate?: Prisma.RoomCreateOrConnectWithoutHistoryInput
-  connect?: Prisma.RoomWhereUniqueInput
-}
-
-export type RoomUpdateOneRequiredWithoutHistoryNestedInput = {
-  create?: Prisma.XOR<Prisma.RoomCreateWithoutHistoryInput, Prisma.RoomUncheckedCreateWithoutHistoryInput>
-  connectOrCreate?: Prisma.RoomCreateOrConnectWithoutHistoryInput
-  upsert?: Prisma.RoomUpsertWithoutHistoryInput
-  connect?: Prisma.RoomWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.RoomUpdateToOneWithWhereWithoutHistoryInput, Prisma.RoomUpdateWithoutHistoryInput>, Prisma.RoomUncheckedUpdateWithoutHistoryInput>
-}
-
 export type RoomCreateWithoutCreatedByInput = {
   roomId: string
   roomName: string
   accessMode?: $Enums.AccessMode
   passwordHash?: string | null
-  themeId?: string | null
   createdAt?: Date | string
   roomUsers?: Prisma.RoomUserCreateNestedManyWithoutRoomInput
-  history?: Prisma.PlaybackHistoryCreateNestedManyWithoutRoomInput
 }
 
 export type RoomUncheckedCreateWithoutCreatedByInput = {
@@ -470,10 +425,8 @@ export type RoomUncheckedCreateWithoutCreatedByInput = {
   roomName: string
   accessMode?: $Enums.AccessMode
   passwordHash?: string | null
-  themeId?: string | null
   createdAt?: Date | string
   roomUsers?: Prisma.RoomUserUncheckedCreateNestedManyWithoutRoomInput
-  history?: Prisma.PlaybackHistoryUncheckedCreateNestedManyWithoutRoomInput
 }
 
 export type RoomCreateOrConnectWithoutCreatedByInput = {
@@ -511,7 +464,6 @@ export type RoomScalarWhereInput = {
   createdById?: Prisma.StringFilter<"Room"> | string
   accessMode?: Prisma.EnumAccessModeFilter<"Room"> | $Enums.AccessMode
   passwordHash?: Prisma.StringNullableFilter<"Room"> | string | null
-  themeId?: Prisma.StringNullableFilter<"Room"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Room"> | Date | string
 }
 
@@ -520,10 +472,8 @@ export type RoomCreateWithoutRoomUsersInput = {
   roomName: string
   accessMode?: $Enums.AccessMode
   passwordHash?: string | null
-  themeId?: string | null
   createdAt?: Date | string
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedRoomsInput
-  history?: Prisma.PlaybackHistoryCreateNestedManyWithoutRoomInput
 }
 
 export type RoomUncheckedCreateWithoutRoomUsersInput = {
@@ -532,9 +482,7 @@ export type RoomUncheckedCreateWithoutRoomUsersInput = {
   createdById: string
   accessMode?: $Enums.AccessMode
   passwordHash?: string | null
-  themeId?: string | null
   createdAt?: Date | string
-  history?: Prisma.PlaybackHistoryUncheckedCreateNestedManyWithoutRoomInput
 }
 
 export type RoomCreateOrConnectWithoutRoomUsersInput = {
@@ -558,10 +506,8 @@ export type RoomUpdateWithoutRoomUsersInput = {
   roomName?: Prisma.StringFieldUpdateOperationsInput | string
   accessMode?: Prisma.EnumAccessModeFieldUpdateOperationsInput | $Enums.AccessMode
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedRoomsNestedInput
-  history?: Prisma.PlaybackHistoryUpdateManyWithoutRoomNestedInput
 }
 
 export type RoomUncheckedUpdateWithoutRoomUsersInput = {
@@ -570,69 +516,7 @@ export type RoomUncheckedUpdateWithoutRoomUsersInput = {
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   accessMode?: Prisma.EnumAccessModeFieldUpdateOperationsInput | $Enums.AccessMode
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  history?: Prisma.PlaybackHistoryUncheckedUpdateManyWithoutRoomNestedInput
-}
-
-export type RoomCreateWithoutHistoryInput = {
-  roomId: string
-  roomName: string
-  accessMode?: $Enums.AccessMode
-  passwordHash?: string | null
-  themeId?: string | null
-  createdAt?: Date | string
-  createdBy: Prisma.UserCreateNestedOneWithoutCreatedRoomsInput
-  roomUsers?: Prisma.RoomUserCreateNestedManyWithoutRoomInput
-}
-
-export type RoomUncheckedCreateWithoutHistoryInput = {
-  roomId: string
-  roomName: string
-  createdById: string
-  accessMode?: $Enums.AccessMode
-  passwordHash?: string | null
-  themeId?: string | null
-  createdAt?: Date | string
-  roomUsers?: Prisma.RoomUserUncheckedCreateNestedManyWithoutRoomInput
-}
-
-export type RoomCreateOrConnectWithoutHistoryInput = {
-  where: Prisma.RoomWhereUniqueInput
-  create: Prisma.XOR<Prisma.RoomCreateWithoutHistoryInput, Prisma.RoomUncheckedCreateWithoutHistoryInput>
-}
-
-export type RoomUpsertWithoutHistoryInput = {
-  update: Prisma.XOR<Prisma.RoomUpdateWithoutHistoryInput, Prisma.RoomUncheckedUpdateWithoutHistoryInput>
-  create: Prisma.XOR<Prisma.RoomCreateWithoutHistoryInput, Prisma.RoomUncheckedCreateWithoutHistoryInput>
-  where?: Prisma.RoomWhereInput
-}
-
-export type RoomUpdateToOneWithWhereWithoutHistoryInput = {
-  where?: Prisma.RoomWhereInput
-  data: Prisma.XOR<Prisma.RoomUpdateWithoutHistoryInput, Prisma.RoomUncheckedUpdateWithoutHistoryInput>
-}
-
-export type RoomUpdateWithoutHistoryInput = {
-  roomId?: Prisma.StringFieldUpdateOperationsInput | string
-  roomName?: Prisma.StringFieldUpdateOperationsInput | string
-  accessMode?: Prisma.EnumAccessModeFieldUpdateOperationsInput | $Enums.AccessMode
-  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedRoomsNestedInput
-  roomUsers?: Prisma.RoomUserUpdateManyWithoutRoomNestedInput
-}
-
-export type RoomUncheckedUpdateWithoutHistoryInput = {
-  roomId?: Prisma.StringFieldUpdateOperationsInput | string
-  roomName?: Prisma.StringFieldUpdateOperationsInput | string
-  createdById?: Prisma.StringFieldUpdateOperationsInput | string
-  accessMode?: Prisma.EnumAccessModeFieldUpdateOperationsInput | $Enums.AccessMode
-  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  roomUsers?: Prisma.RoomUserUncheckedUpdateManyWithoutRoomNestedInput
 }
 
 export type RoomCreateManyCreatedByInput = {
@@ -640,7 +524,6 @@ export type RoomCreateManyCreatedByInput = {
   roomName: string
   accessMode?: $Enums.AccessMode
   passwordHash?: string | null
-  themeId?: string | null
   createdAt?: Date | string
 }
 
@@ -649,10 +532,8 @@ export type RoomUpdateWithoutCreatedByInput = {
   roomName?: Prisma.StringFieldUpdateOperationsInput | string
   accessMode?: Prisma.EnumAccessModeFieldUpdateOperationsInput | $Enums.AccessMode
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roomUsers?: Prisma.RoomUserUpdateManyWithoutRoomNestedInput
-  history?: Prisma.PlaybackHistoryUpdateManyWithoutRoomNestedInput
 }
 
 export type RoomUncheckedUpdateWithoutCreatedByInput = {
@@ -660,10 +541,8 @@ export type RoomUncheckedUpdateWithoutCreatedByInput = {
   roomName?: Prisma.StringFieldUpdateOperationsInput | string
   accessMode?: Prisma.EnumAccessModeFieldUpdateOperationsInput | $Enums.AccessMode
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roomUsers?: Prisma.RoomUserUncheckedUpdateManyWithoutRoomNestedInput
-  history?: Prisma.PlaybackHistoryUncheckedUpdateManyWithoutRoomNestedInput
 }
 
 export type RoomUncheckedUpdateManyWithoutCreatedByInput = {
@@ -671,7 +550,6 @@ export type RoomUncheckedUpdateManyWithoutCreatedByInput = {
   roomName?: Prisma.StringFieldUpdateOperationsInput | string
   accessMode?: Prisma.EnumAccessModeFieldUpdateOperationsInput | $Enums.AccessMode
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -682,12 +560,10 @@ export type RoomUncheckedUpdateManyWithoutCreatedByInput = {
 
 export type RoomCountOutputType = {
   roomUsers: number
-  history: number
 }
 
 export type RoomCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   roomUsers?: boolean | RoomCountOutputTypeCountRoomUsersArgs
-  history?: boolean | RoomCountOutputTypeCountHistoryArgs
 }
 
 /**
@@ -707,13 +583,6 @@ export type RoomCountOutputTypeCountRoomUsersArgs<ExtArgs extends runtime.Types.
   where?: Prisma.RoomUserWhereInput
 }
 
-/**
- * RoomCountOutputType without action
- */
-export type RoomCountOutputTypeCountHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.PlaybackHistoryWhereInput
-}
-
 
 export type RoomSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   roomId?: boolean
@@ -721,11 +590,9 @@ export type RoomSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdById?: boolean
   accessMode?: boolean
   passwordHash?: boolean
-  themeId?: boolean
   createdAt?: boolean
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   roomUsers?: boolean | Prisma.Room$roomUsersArgs<ExtArgs>
-  history?: boolean | Prisma.Room$historyArgs<ExtArgs>
   _count?: boolean | Prisma.RoomCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["room"]>
 
@@ -735,7 +602,6 @@ export type RoomSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdById?: boolean
   accessMode?: boolean
   passwordHash?: boolean
-  themeId?: boolean
   createdAt?: boolean
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["room"]>
@@ -746,7 +612,6 @@ export type RoomSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdById?: boolean
   accessMode?: boolean
   passwordHash?: boolean
-  themeId?: boolean
   createdAt?: boolean
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["room"]>
@@ -757,15 +622,13 @@ export type RoomSelectScalar = {
   createdById?: boolean
   accessMode?: boolean
   passwordHash?: boolean
-  themeId?: boolean
   createdAt?: boolean
 }
 
-export type RoomOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"roomId" | "roomName" | "createdById" | "accessMode" | "passwordHash" | "themeId" | "createdAt", ExtArgs["result"]["room"]>
+export type RoomOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"roomId" | "roomName" | "createdById" | "accessMode" | "passwordHash" | "createdAt", ExtArgs["result"]["room"]>
 export type RoomInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   roomUsers?: boolean | Prisma.Room$roomUsersArgs<ExtArgs>
-  history?: boolean | Prisma.Room$historyArgs<ExtArgs>
   _count?: boolean | Prisma.RoomCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type RoomIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -780,7 +643,6 @@ export type $RoomPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     createdBy: Prisma.$UserPayload<ExtArgs>
     roomUsers: Prisma.$RoomUserPayload<ExtArgs>[]
-    history: Prisma.$PlaybackHistoryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     roomId: string
@@ -788,7 +650,6 @@ export type $RoomPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     createdById: string
     accessMode: $Enums.AccessMode
     passwordHash: string | null
-    themeId: string | null
     createdAt: Date
   }, ExtArgs["result"]["room"]>
   composites: {}
@@ -1186,7 +1047,6 @@ export interface Prisma__RoomClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   createdBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   roomUsers<T extends Prisma.Room$roomUsersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Room$roomUsersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoomUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  history<T extends Prisma.Room$historyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Room$historyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlaybackHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1221,7 +1081,6 @@ export interface RoomFieldRefs {
   readonly createdById: Prisma.FieldRef<"Room", 'String'>
   readonly accessMode: Prisma.FieldRef<"Room", 'AccessMode'>
   readonly passwordHash: Prisma.FieldRef<"Room", 'String'>
-  readonly themeId: Prisma.FieldRef<"Room", 'String'>
   readonly createdAt: Prisma.FieldRef<"Room", 'DateTime'>
 }
     
@@ -1640,30 +1499,6 @@ export type Room$roomUsersArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.RoomUserScalarFieldEnum | Prisma.RoomUserScalarFieldEnum[]
-}
-
-/**
- * Room.history
- */
-export type Room$historyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the PlaybackHistory
-   */
-  select?: Prisma.PlaybackHistorySelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the PlaybackHistory
-   */
-  omit?: Prisma.PlaybackHistoryOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.PlaybackHistoryInclude<ExtArgs> | null
-  where?: Prisma.PlaybackHistoryWhereInput
-  orderBy?: Prisma.PlaybackHistoryOrderByWithRelationInput | Prisma.PlaybackHistoryOrderByWithRelationInput[]
-  cursor?: Prisma.PlaybackHistoryWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.PlaybackHistoryScalarFieldEnum | Prisma.PlaybackHistoryScalarFieldEnum[]
 }
 
 /**

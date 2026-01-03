@@ -59,7 +59,7 @@ export function SongSection({ handleAddSong }: SearchPanelProps) {
                         <Button
                             onClick={handleSearch}
                             disabled={isLoading || !query.trim()}
-                            className="bg-accent text-accent-foreground hover:bg-accent/90 px-6 rounded-xl transition-colors font-medium disabled:opacity-50"
+                            className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 rounded-xl transition-colors font-medium disabled:opacity-50"
                         >
                             {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Search"}
                         </Button>
@@ -93,7 +93,7 @@ export function SongSection({ handleAddSong }: SearchPanelProps) {
                     {results.map((song, idx) => (
                         <div
                             key={idx}
-                            className="flex items-center gap-3 p-3 bg-card border border-border rounded-lg hover:border-accent/30 hover:bg-accent/5 transition-all group"
+                            className="flex items-center gap-3 p-3 bg-card border border-border rounded-lg hover:border-primary/30 hover:bg-muted/50 transition-all group"
                         >
                             <Image
                                 src={song.thumbnail}
@@ -104,7 +104,7 @@ export function SongSection({ handleAddSong }: SearchPanelProps) {
                             />
 
                             <div className="flex-1 min-w-0">
-                                <p className="font-medium text-foreground text-sm truncate group-hover:text-accent transition-colors">
+                                <p className="font-medium text-foreground text-sm truncate group-hover:text-primary transition-colors">
                                     {song.title}
                                 </p>
                                 <p className="text-xs text-muted-foreground truncate">
@@ -114,7 +114,7 @@ export function SongSection({ handleAddSong }: SearchPanelProps) {
                             <Button
                                 onClick={() => handleAddSong(song)}
                                 size="icon"
-                                className="bg-accent text-accent-foreground hover:bg-accent/90 h-8 w-8 flex-shrink-0 transition-colors"
+                                className="bg-primary text-primary-foreground hover:bg-primary/90 h-8 w-8 flex-shrink-0 transition-colors"
                                 title="Add to queue"
                             >
                                 <Plus className="h-4 w-4" />

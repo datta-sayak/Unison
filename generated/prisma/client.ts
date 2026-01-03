@@ -59,13 +59,3 @@ export type RoomUser = Prisma.RoomUserModel
  * 
  */
 export type Song = Prisma.SongModel
-/**
- * Model Vote
- * 
- */
-export type Vote = Prisma.VoteModel
-/**
- * Model PlaybackHistory
- * 
- */
-export type PlaybackHistory = Prisma.PlaybackHistoryModel

@@ -54,9 +54,7 @@ export const ModelName = {
   User: 'User',
   Room: 'Room',
   RoomUser: 'RoomUser',
-  Song: 'Song',
-  Vote: 'Vote',
-  PlaybackHistory: 'PlaybackHistory'
+  Song: 'Song'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -92,7 +90,6 @@ export const RoomScalarFieldEnum = {
   createdById: 'createdById',
   accessMode: 'accessMode',
   passwordHash: 'passwordHash',
-  themeId: 'themeId',
   createdAt: 'createdAt'
 } as const
 
@@ -121,30 +118,6 @@ export const SongScalarFieldEnum = {
 } as const
 
 export type SongScalarFieldEnum = (typeof SongScalarFieldEnum)[keyof typeof SongScalarFieldEnum]
-
-
-export const VoteScalarFieldEnum = {
-  id: 'id',
-  queueEntryId: 'queueEntryId',
-  userId: 'userId',
-  value: 'value',
-  createdAt: 'createdAt'
-} as const
-
-export type VoteScalarFieldEnum = (typeof VoteScalarFieldEnum)[keyof typeof VoteScalarFieldEnum]
-
-
-export const PlaybackHistoryScalarFieldEnum = {
-  id: 'id',
-  roomId: 'roomId',
-  songId: 'songId',
-  queueEntryId: 'queueEntryId',
-  addedById: 'addedById',
-  playedAt: 'playedAt',
-  duration: 'duration'
-} as const
-
-export type PlaybackHistoryScalarFieldEnum = (typeof PlaybackHistoryScalarFieldEnum)[keyof typeof PlaybackHistoryScalarFieldEnum]
 
 
 export const SortOrder = {

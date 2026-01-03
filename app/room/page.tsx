@@ -369,7 +369,7 @@ function RoomPageContent() {
                         onClick={() => setActiveSection("queue")}
                         className={`flex-1 px-3 py-2.5 text-sm font-medium transition-all rounded-lg flex flex-col items-center gap-1.5 ${
                             activeSection === "queue"
-                                ? "bg-accent text-accent-foreground shadow-md"
+                                ? "bg-primary text-primary-foreground shadow-md"
                                 : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                         }`}
                     >
@@ -380,7 +380,7 @@ function RoomPageContent() {
                         onClick={() => setActiveSection("songs")}
                         className={`flex-1 px-3 py-2.5 text-sm font-medium transition-all rounded-lg flex flex-col items-center gap-1.5 ${
                             activeSection === "songs"
-                                ? "bg-accent text-accent-foreground shadow-md"
+                                ? "bg-primary text-primary-foreground shadow-md"
                                 : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                         }`}
                     >
@@ -391,7 +391,7 @@ function RoomPageContent() {
                         onClick={() => setActiveSection("members")}
                         className={`flex-1 px-3 py-2.5 text-sm font-medium transition-all rounded-lg flex flex-col items-center gap-1.5 ${
                             activeSection === "members"
-                                ? "bg-accent text-accent-foreground shadow-md"
+                                ? "bg-primary text-primary-foreground shadow-md"
                                 : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                         }`}
                     >
@@ -402,7 +402,7 @@ function RoomPageContent() {
                         onClick={() => setActiveSection("chat")}
                         className={`flex-1 px-3 py-2.5 text-sm font-medium transition-all rounded-lg flex flex-col items-center gap-1.5 ${
                             activeSection === "chat"
-                                ? "bg-accent text-accent-foreground shadow-md"
+                                ? "bg-primary text-primary-foreground shadow-md"
                                 : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                         }`}
                     >
@@ -413,7 +413,7 @@ function RoomPageContent() {
                         onClick={() => setActiveSection("info")}
                         className={`flex-1 px-3 py-2.5 text-sm font-medium transition-all rounded-lg flex flex-col items-center gap-1.5 ${
                             activeSection === "info"
-                                ? "bg-accent text-accent-foreground shadow-md"
+                                ? "bg-primary text-primary-foreground shadow-md"
                                 : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                         }`}
                     >

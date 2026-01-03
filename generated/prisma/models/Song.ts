@@ -194,7 +194,6 @@ export type SongWhereInput = {
   image?: Prisma.StringNullableFilter<"Song"> | string | null
   duration?: Prisma.StringFilter<"Song"> | string
   tags?: Prisma.StringNullableListFilter<"Song">
-  history?: Prisma.PlaybackHistoryListRelationFilter
 }
 
 export type SongOrderByWithRelationInput = {
@@ -205,7 +204,6 @@ export type SongOrderByWithRelationInput = {
   image?: Prisma.SortOrderInput | Prisma.SortOrder
   duration?: Prisma.SortOrder
   tags?: Prisma.SortOrder
-  history?: Prisma.PlaybackHistoryOrderByRelationAggregateInput
 }
 
 export type SongWhereUniqueInput = Prisma.AtLeast<{
@@ -219,7 +217,6 @@ export type SongWhereUniqueInput = Prisma.AtLeast<{
   image?: Prisma.StringNullableFilter<"Song"> | string | null
   duration?: Prisma.StringFilter<"Song"> | string
   tags?: Prisma.StringNullableListFilter<"Song">
-  history?: Prisma.PlaybackHistoryListRelationFilter
 }, "id" | "youtubeId">
 
 export type SongOrderByWithAggregationInput = {
@@ -256,7 +253,6 @@ export type SongCreateInput = {
   image?: string | null
   duration: string
   tags?: Prisma.SongCreatetagsInput | string[]
-  history?: Prisma.PlaybackHistoryCreateNestedManyWithoutSongInput
 }
 
 export type SongUncheckedCreateInput = {
@@ -267,7 +263,6 @@ export type SongUncheckedCreateInput = {
   image?: string | null
   duration: string
   tags?: Prisma.SongCreatetagsInput | string[]
-  history?: Prisma.PlaybackHistoryUncheckedCreateNestedManyWithoutSongInput
 }
 
 export type SongUpdateInput = {
@@ -278,7 +273,6 @@ export type SongUpdateInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   duration?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.SongUpdatetagsInput | string[]
-  history?: Prisma.PlaybackHistoryUpdateManyWithoutSongNestedInput
 }
 
 export type SongUncheckedUpdateInput = {
@@ -289,7 +283,6 @@ export type SongUncheckedUpdateInput = {
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   duration?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.SongUpdatetagsInput | string[]
-  history?: Prisma.PlaybackHistoryUncheckedUpdateManyWithoutSongNestedInput
 }
 
 export type SongCreateManyInput = {
@@ -358,11 +351,6 @@ export type SongMinOrderByAggregateInput = {
   duration?: Prisma.SortOrder
 }
 
-export type SongScalarRelationFilter = {
-  is?: Prisma.SongWhereInput
-  isNot?: Prisma.SongWhereInput
-}
-
 export type SongCreatetagsInput = {
   set: string[]
 }
@@ -372,105 +360,6 @@ export type SongUpdatetagsInput = {
   push?: string | string[]
 }
 
-export type SongCreateNestedOneWithoutHistoryInput = {
-  create?: Prisma.XOR<Prisma.SongCreateWithoutHistoryInput, Prisma.SongUncheckedCreateWithoutHistoryInput>
-  connectOrCreate?: Prisma.SongCreateOrConnectWithoutHistoryInput
-  connect?: Prisma.SongWhereUniqueInput
-}
-
-export type SongUpdateOneRequiredWithoutHistoryNestedInput = {
-  create?: Prisma.XOR<Prisma.SongCreateWithoutHistoryInput, Prisma.SongUncheckedCreateWithoutHistoryInput>
-  connectOrCreate?: Prisma.SongCreateOrConnectWithoutHistoryInput
-  upsert?: Prisma.SongUpsertWithoutHistoryInput
-  connect?: Prisma.SongWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.SongUpdateToOneWithWhereWithoutHistoryInput, Prisma.SongUpdateWithoutHistoryInput>, Prisma.SongUncheckedUpdateWithoutHistoryInput>
-}
-
-export type SongCreateWithoutHistoryInput = {
-  id?: string
-  youtubeId: string
-  title: string
-  channelName: string
-  image?: string | null
-  duration: string
-  tags?: Prisma.SongCreatetagsInput | string[]
-}
-
-export type SongUncheckedCreateWithoutHistoryInput = {
-  id?: string
-  youtubeId: string
-  title: string
-  channelName: string
-  image?: string | null
-  duration: string
-  tags?: Prisma.SongCreatetagsInput | string[]
-}
-
-export type SongCreateOrConnectWithoutHistoryInput = {
-  where: Prisma.SongWhereUniqueInput
-  create: Prisma.XOR<Prisma.SongCreateWithoutHistoryInput, Prisma.SongUncheckedCreateWithoutHistoryInput>
-}
-
-export type SongUpsertWithoutHistoryInput = {
-  update: Prisma.XOR<Prisma.SongUpdateWithoutHistoryInput, Prisma.SongUncheckedUpdateWithoutHistoryInput>
-  create: Prisma.XOR<Prisma.SongCreateWithoutHistoryInput, Prisma.SongUncheckedCreateWithoutHistoryInput>
-  where?: Prisma.SongWhereInput
-}
-
-export type SongUpdateToOneWithWhereWithoutHistoryInput = {
-  where?: Prisma.SongWhereInput
-  data: Prisma.XOR<Prisma.SongUpdateWithoutHistoryInput, Prisma.SongUncheckedUpdateWithoutHistoryInput>
-}
-
-export type SongUpdateWithoutHistoryInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  youtubeId?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  channelName?: Prisma.StringFieldUpdateOperationsInput | string
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  duration?: Prisma.StringFieldUpdateOperationsInput | string
-  tags?: Prisma.SongUpdatetagsInput | string[]
-}
-
-export type SongUncheckedUpdateWithoutHistoryInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  youtubeId?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  channelName?: Prisma.StringFieldUpdateOperationsInput | string
-  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  duration?: Prisma.StringFieldUpdateOperationsInput | string
-  tags?: Prisma.SongUpdatetagsInput | string[]
-}
-
-
-/**
- * Count Type SongCountOutputType
- */
-
-export type SongCountOutputType = {
-  history: number
-}
-
-export type SongCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  history?: boolean | SongCountOutputTypeCountHistoryArgs
-}
-
-/**
- * SongCountOutputType without action
- */
-export type SongCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the SongCountOutputType
-   */
-  select?: Prisma.SongCountOutputTypeSelect<ExtArgs> | null
-}
-
-/**
- * SongCountOutputType without action
- */
-export type SongCountOutputTypeCountHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.PlaybackHistoryWhereInput
-}
 
 
 export type SongSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -481,8 +370,6 @@ export type SongSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   image?: boolean
   duration?: boolean
   tags?: boolean
-  history?: boolean | Prisma.Song$historyArgs<ExtArgs>
-  _count?: boolean | Prisma.SongCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["song"]>
 
 export type SongSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -516,18 +403,10 @@ export type SongSelectScalar = {
 }
 
 export type SongOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "youtubeId" | "title" | "channelName" | "image" | "duration" | "tags", ExtArgs["result"]["song"]>
-export type SongInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  history?: boolean | Prisma.Song$historyArgs<ExtArgs>
-  _count?: boolean | Prisma.SongCountOutputTypeDefaultArgs<ExtArgs>
-}
-export type SongIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type SongIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $SongPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Song"
-  objects: {
-    history: Prisma.$PlaybackHistoryPayload<ExtArgs>[]
-  }
+  objects: {}
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     youtubeId: string
@@ -930,7 +809,6 @@ readonly fields: SongFieldRefs;
  */
 export interface Prisma__SongClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  history<T extends Prisma.Song$historyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Song$historyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlaybackHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -984,10 +862,6 @@ export type SongFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   omit?: Prisma.SongOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.SongInclude<ExtArgs> | null
-  /**
    * Filter, which Song to fetch.
    */
   where: Prisma.SongWhereUniqueInput
@@ -1006,10 +880,6 @@ export type SongFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   omit?: Prisma.SongOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.SongInclude<ExtArgs> | null
-  /**
    * Filter, which Song to fetch.
    */
   where: Prisma.SongWhereUniqueInput
@@ -1027,10 +897,6 @@ export type SongFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the Song
    */
   omit?: Prisma.SongOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.SongInclude<ExtArgs> | null
   /**
    * Filter, which Song to fetch.
    */
@@ -1080,10 +946,6 @@ export type SongFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.In
    */
   omit?: Prisma.SongOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.SongInclude<ExtArgs> | null
-  /**
    * Filter, which Song to fetch.
    */
   where?: Prisma.SongWhereInput
@@ -1132,10 +994,6 @@ export type SongFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    */
   omit?: Prisma.SongOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.SongInclude<ExtArgs> | null
-  /**
    * Filter, which Songs to fetch.
    */
   where?: Prisma.SongWhereInput
@@ -1178,10 +1036,6 @@ export type SongCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
    * Omit specific fields from the Song
    */
   omit?: Prisma.SongOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.SongInclude<ExtArgs> | null
   /**
    * The data needed to create a Song.
    */
@@ -1230,10 +1084,6 @@ export type SongUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
    * Omit specific fields from the Song
    */
   omit?: Prisma.SongOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.SongInclude<ExtArgs> | null
   /**
    * The data needed to update a Song.
    */
@@ -1301,10 +1151,6 @@ export type SongUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
    */
   omit?: Prisma.SongOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.SongInclude<ExtArgs> | null
-  /**
    * The filter to search for the Song to update in case it exists.
    */
   where: Prisma.SongWhereUniqueInput
@@ -1331,10 +1177,6 @@ export type SongDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
    */
   omit?: Prisma.SongOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.SongInclude<ExtArgs> | null
-  /**
    * Filter which Song to delete.
    */
   where: Prisma.SongWhereUniqueInput
@@ -1355,30 +1197,6 @@ export type SongDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
- * Song.history
- */
-export type Song$historyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the PlaybackHistory
-   */
-  select?: Prisma.PlaybackHistorySelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the PlaybackHistory
-   */
-  omit?: Prisma.PlaybackHistoryOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.PlaybackHistoryInclude<ExtArgs> | null
-  where?: Prisma.PlaybackHistoryWhereInput
-  orderBy?: Prisma.PlaybackHistoryOrderByWithRelationInput | Prisma.PlaybackHistoryOrderByWithRelationInput[]
-  cursor?: Prisma.PlaybackHistoryWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.PlaybackHistoryScalarFieldEnum | Prisma.PlaybackHistoryScalarFieldEnum[]
-}
-
-/**
  * Song without action
  */
 export type SongDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1390,8 +1208,4 @@ export type SongDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
    * Omit specific fields from the Song
    */
   omit?: Prisma.SongOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.SongInclude<ExtArgs> | null
 }

@@ -53,7 +53,7 @@ export default function SignInForm() {
 
                     <p className="text-center text-sm text-muted-foreground">
                         {"Already have an account?    "}
-                        <Link href="/" className="text-accent hover:underline">
+                        <Link href="/" className="text-primary hover:underline">
                             Go back
                         </Link>
                     </p>

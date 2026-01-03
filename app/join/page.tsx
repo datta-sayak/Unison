@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
-import type { AxiosError } from "axios";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import LoadingContext from "@/components/LoadingContext";
@@ -36,21 +35,20 @@ function JoinRoomForm() {
     const handleJoinRoom = async (pwd?: string) => {
         setIsLoading(true);
         try {
-            const response = await axios.post("/api/rooms/join", {
+            const payload: { roomCode: string; password?: string } = {
                 roomCode: roomCode.toUpperCase(),
-                ...(pwd && { password: pwd }),
-            });
+            };
+            if (pwd) payload.password = pwd;
 
-            router.push(`/room?id=${response.data.roomId}`);
+            const { data } = await axios.post("/api/rooms/join", payload);
+            router.push(`/room?id=${data.roomId}`);
         } catch (err) {
-            const axiosError = err as AxiosError<{ message?: string }>;
-            const errorMessage = axiosError.response?.data?.message || "Failed to join room";
-
-            if (!pwd && errorMessage.includes("requires an access code")) {
+            const error = err.response?.data;
+            if (error?.isPvt === true) {
                 setShowPasswordInput(true);
-            } else {
-                toast.error(errorMessage);
+                return;
             }
+            toast.error(error?.message);
         } finally {
             setIsLoading(false);
         }
@@ -84,7 +82,7 @@ function JoinRoomForm() {
                         <Button
                             onClick={() => handleJoinRoom()}
                             disabled={isLoading || !roomCode}
-                            className="w-full bg-accent text-accent-foreground hover:opacity-90 h-11 text-base font-medium transition-theme"
+                            className="w-full bg-primary text-primary-foreground hover:opacity-90 h-11 text-base font-medium"
                         >
                             {isLoading ? "Joining" : "Continue"}
                         </Button>
@@ -105,7 +103,7 @@ function JoinRoomForm() {
                             <Button
                                 onClick={() => handleJoinRoom(password)}
                                 disabled={isLoading || !password}
-                                className="w-full bg-accent text-accent-foreground hover:opacity-90 h-11 text-base font-medium transition-theme"
+                                className="w-full bg-primary text-primary-foreground hover:opacity-90 h-11 text-base font-medium"
                             >
                                 {isLoading ? "Joining..." : "Join Room"}
                             </Button>

@@ -28,7 +28,7 @@ export default function LandingPage() {
     }, []);
 
     return (
-        <main className="min-h-screen flex flex-col bg-accent/5">
+        <main className="min-h-screen flex flex-col bg-background">
             {/* Hero Section */}
             <div className="flex-1 flex flex-col items-center justify-center px-4 py-12">
                 <div className="max-w-3xl text-center space-y-8">
@@ -50,7 +50,7 @@ export default function LandingPage() {
                                 <Link href="/api/auth/signin">
                                     <Button
                                         size="lg"
-                                        className="min-w-48 bg-foreground text-background hover:bg-muted-foreground transition-theme"
+                                        className="min-w-48 bg-foreground text-background hover:bg-muted-foreground"
                                     >
                                         Get Started
                                     </Button>
@@ -59,7 +59,7 @@ export default function LandingPage() {
                                     <Button
                                         size="lg"
                                         variant="outline"
-                                        className="min-w-48 border-2 border-muted-foreground text-foreground hover:bg-muted transition-theme bg-transparent"
+                                        className="min-w-48 border-2 border-muted-foreground text-foreground hover:bg-muted bg-transparent"
                                     >
                                         Learn More
                                     </Button>
@@ -69,7 +69,7 @@ export default function LandingPage() {
                             <Link href="/dashboard">
                                 <Button
                                     size="lg"
-                                    className="min-w-48 bg-foreground text-background hover:bg-muted-foreground transition-theme"
+                                    className="min-w-48 bg-foreground text-background hover:bg-muted-foreground"
                                 >
                                     Go to Dashboard
                                 </Button>
@@ -88,8 +88,8 @@ export default function LandingPage() {
                         {/* Feature 1 */}
                         <div className="space-y-4 text-center">
                             <div className="flex justify-center">
-                                <div className="p-3 bg-accent/10 rounded-lg">
-                                    <Zap className="h-6 w-6 text-accent" />
+                                <div className="p-3 bg-primary/10 rounded-lg">
+                                    <Zap className="h-6 w-6 text-primary" />
                                 </div>
                             </div>
                             <h3 className="text-lg font-semibold text-foreground">Create a Room</h3>
@@ -101,8 +101,8 @@ export default function LandingPage() {
                         {/* Feature 2 */}
                         <div className="space-y-4 text-center">
                             <div className="flex justify-center">
-                                <div className="p-3 bg-accent/10 rounded-lg">
-                                    <Music className="h-6 w-6 text-accent" />
+                                <div className="p-3 bg-primary/10 rounded-lg">
+                                    <Music className="h-6 w-6 text-primary" />
                                 </div>
                             </div>
                             <h3 className="text-lg font-semibold text-foreground">Search & Queue</h3>
@@ -114,8 +114,8 @@ export default function LandingPage() {
                         {/* Feature 3 */}
                         <div className="space-y-4 text-center">
                             <div className="flex justify-center">
-                                <div className="p-3 bg-accent/10 rounded-lg">
-                                    <Users className="h-6 w-6 text-accent" />
+                                <div className="p-3 bg-primary/10 rounded-lg">
+                                    <Users className="h-6 w-6 text-primary" />
                                 </div>
                             </div>
                             <h3 className="text-lg font-semibold text-foreground">Vote & Sync</h3>
@@ -129,8 +129,8 @@ export default function LandingPage() {
 
             {/* Footer */}
             <footer className="py-4 border-t">
-                <div className="max-w-4xl mx-auto flex items-center justify-between">
-                    <div className="text-sm">
+                <div className="max-w-4xl mx-auto px-4 md:px-0 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-0">
+                    <div className="text-sm text-center md:text-left">
                         &copy; {new Date().getFullYear()} <span className="font-semibold">Unison</span> by Sayak Datta.
                     </div>
                     <div className="flex items-center space-x-2">
@@ -145,10 +145,10 @@ export default function LandingPage() {
                         />
                         <span className="text-sm">
                             {serverStatus === "online"
-                                ? "Server: Online"
+                                ? "All systems online"
                                 : serverStatus === "offline"
-                                  ? "Server: Offline"
-                                  : "Checking..."}
+                                  ? "System offline"
+                                  : "Checking status..."}
                         </span>
                     </div>
                 </div>

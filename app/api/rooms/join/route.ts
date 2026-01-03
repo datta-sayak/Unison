@@ -48,7 +48,10 @@ export async function POST(req: NextRequest) {
         }
         if (roomWithUserStatus.accessMode === "Private" && roomWithUserStatus.passwordHash) {
             if (!data.password) {
-                return NextResponse.json({ message: "This room requires an access code" }, { status: 403 });
+                return NextResponse.json(
+                    { message: "This room requires an access code", isPvt: true },
+                    { status: 403 },
+                );
             }
             if (roomWithUserStatus.passwordHash !== data.password) {
                 return NextResponse.json({ message: "Invalid access code" }, { status: 403 });

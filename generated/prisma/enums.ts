@@ -9,15 +9,6 @@
 * 🟢 You can import this file directly.
 */
 
-export const QueueStatus = {
-  Queued: 'Queued',
-  Playing: 'Playing',
-  Skipped: 'Skipped'
-} as const
-
-export type QueueStatus = (typeof QueueStatus)[keyof typeof QueueStatus]
-
-
 export const AccessMode = {
   Public: 'Public',
   Private: 'Private'
