@@ -199,7 +199,10 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
 
             if (currentSong.videoId !== currentVideoIdRef.current) {
                 if (playerRef.current && typeof playerRef.current.loadVideoById === "function") {
-                    playerRef.current.loadVideoById(currentSong.videoId);
+                    playerRef.current.loadVideoById({
+                        videoId: currentSong.videoId,
+                        startSeconds: loadingSongRef.current.timestamp,
+                    });
                     currentVideoIdRef.current = currentSong.videoId;
                 }
             }
