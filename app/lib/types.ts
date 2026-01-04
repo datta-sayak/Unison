@@ -51,8 +51,6 @@ export interface RoomUserFromAPI {
     id: string;
     roomId: string;
     userId: string;
-    lastSeen: string;
-    muted: boolean;
     user: {
         id: string;
         name: string | null;

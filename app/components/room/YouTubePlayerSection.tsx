@@ -11,6 +11,7 @@ interface YouTubePlayerSectionProps {
     onSongEnd?: (videoId: string) => void;
     socket: Socket | null;
     roomId: string;
+    userEmail: string;
 }
 
 declare global {
@@ -20,13 +21,12 @@ declare global {
     }
 }
 
-export function YouTubePlayerSection({ queue, socket, roomId, onSongEnd }: YouTubePlayerSectionProps) {
+export function YouTubePlayerSection({ queue, socket, roomId, onSongEnd, userEmail }: YouTubePlayerSectionProps) {
     const playerRef = useRef<any>(null);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
     const [isReady, setIsReady] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
-    const isHostControlRef = useRef(false);
     const currentVideoIdRef = useRef<string | null>(null);
 
     const currentSong = queue[currentIndex] || null;
@@ -53,25 +53,21 @@ export function YouTubePlayerSection({ queue, socket, roomId, onSongEnd }: YouTu
     useEffect(() => {
         if (!socket) return;
 
-        const handlePlayBackState = (data: { isPlaying: boolean; timestamp: number }) => {
-            if (!playerRef.current || isHostControlRef.current) {
-                isHostControlRef.current = false;
-                return;
-            }
+        const handlePlayBackState = (data: { isPlaying: boolean; timestamp: number; senderId: string }) => {
+            if (data.senderId === userEmail || !playerRef.current) return;
 
             if (data.isPlaying) {
-                playerRef.current.playVideo();
                 playerRef.current.seekTo(data.timestamp, true);
+                playerRef.current.playVideo();
+                setIsPlaying(true);
             } else {
                 playerRef.current.pauseVideo();
+                setIsPlaying(false);
             }
         };
 
-        const handleSongChange = (data: { currentSongIndex: number }) => {
-            if (isHostControlRef.current) {
-                isHostControlRef.current = false;
-                return;
-            }
+        const handleSongChange = (data: { currentSongIndex: number; senderId: string }) => {
+            if (data.senderId === userEmail) return;
             setCurrentIndex(data.currentSongIndex);
         };
 
@@ -82,7 +78,7 @@ export function YouTubePlayerSection({ queue, socket, roomId, onSongEnd }: YouTu
             socket.off("playback_controls", handlePlayBackState);
             socket.off("change_song", handleSongChange);
         };
-    }, [socket]);
+    }, [socket, userEmail]);
 
     const handleSongEnd = () => {
         if (currentSong && onSongEnd) {
@@ -92,20 +88,17 @@ export function YouTubePlayerSection({ queue, socket, roomId, onSongEnd }: YouTu
         const nextIndex = currentIndex < queue.length - 1 ? currentIndex + 1 : 0;
         setCurrentIndex(nextIndex);
 
-        if (socket) {
-            isHostControlRef.current = true;
-            socket.emit("change_song", {
-                roomId,
-                currentSongIndex: nextIndex,
-            });
-        }
+        socket?.emit("change_song", {
+            roomId,
+            currentSongIndex: nextIndex,
+            senderId: userEmail,
+        });
     };
 
-    // Initialize player when ready and song available
     useEffect(() => {
         if (!isReady) return;
 
-        // Clear player when all songs have been deleted
+        // Clear the player when queue is empty
         if (!currentSong) {
             if (playerRef.current && typeof playerRef.current.destroy === "function") {
                 playerRef.current.destroy();
@@ -115,7 +108,7 @@ export function YouTubePlayerSection({ queue, socket, roomId, onSongEnd }: YouTu
             return;
         }
 
-        // If player doesn't exist, initialize it
+        // Initialize player if dosnt exist
         if (!playerRef.current) {
             playerRef.current = new window.YT.Player("youtube-player", {
                 height: "100%",
@@ -150,12 +143,7 @@ export function YouTubePlayerSection({ queue, socket, roomId, onSongEnd }: YouTu
                         }
                     },
                     onError: (event: any) => {
-                        console.error("YouTube player error:", event.data);
-                        // Error codes: 2 = invalid parameter, 5 = HTML5 error,
-                        // 100 = video not found, 101/150 = embedding disabled
                         if (event.data === 100 || event.data === 101 || event.data === 150) {
-                            // Video embedding disabled, skip to next
-                            console.log("Video playback error, skipping...");
                             setTimeout(() => handleSongEnd(), 1000);
                         }
                     },
@@ -165,7 +153,6 @@ export function YouTubePlayerSection({ queue, socket, roomId, onSongEnd }: YouTu
             return;
         }
 
-        // Only load new video if the video ID has actually changed
         if (currentSong.videoId !== currentVideoIdRef.current) {
             if (playerRef.current && typeof playerRef.current.loadVideoById === "function") {
                 playerRef.current.loadVideoById(currentSong.videoId);
@@ -177,19 +164,22 @@ export function YouTubePlayerSection({ queue, socket, roomId, onSongEnd }: YouTu
     const handlePlayPause = () => {
         if (!playerRef.current) return;
 
-        if (isPlaying) {
-            playerRef.current.pauseVideo();
-        } else {
-            playerRef.current.playVideo();
-        }
         const newPlayingState = !isPlaying;
-        if (socket) {
-            socket.emit("playback_controls", {
-                roomId,
-                isPlaying: newPlayingState,
-                timestamp: playerRef.current.getCurrentTime(),
-            });
+
+        if (newPlayingState) {
+            playerRef.current.playVideo();
+        } else {
+            playerRef.current.pauseVideo();
         }
+
+        setIsPlaying(newPlayingState);
+
+        socket?.emit("playback_controls", {
+            roomId,
+            isPlaying: newPlayingState,
+            timestamp: playerRef.current.getCurrentTime(),
+            senderId: userEmail,
+        });
     };
 
     const handleSkip = () => {

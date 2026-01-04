@@ -4,11 +4,13 @@ interface Playback {
     roomId: string;
     isPlaying: boolean;
     timestamp: number;
+    senderId: string;
 }
 
 interface ChangeSong {
     roomId: string;
     currentSongIndex: number;
+    senderId: string;
 }
 
 interface Sync extends Playback, ChangeSong {
@@ -20,12 +22,14 @@ export function playbackEvents(io: Server, socket: Socket) {
         socket.to(data.roomId).emit("playback_controls", {
             isPlaying: data.isPlaying,
             timestamp: data.timestamp,
+            senderId: data.senderId,
         });
     });
 
     socket.on("change_song", (data: ChangeSong) => {
         socket.to(data.roomId).emit("change_song", {
             currentSongIndex: data.currentSongIndex,
+            senderId: data.senderId,
         });
     });
 

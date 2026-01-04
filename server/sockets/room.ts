@@ -13,20 +13,25 @@ type UserData = {
 const roomParticipants: Record<string, UserData[]> = {};
 
 export function roomEvents(io: Server, socket: Socket) {
-    socket.on("join_room", (data: { roomId: string; userId: string; userName: string; userAvatar: string }) => {
-        socket.join(data.roomId);
-        if (!roomParticipants[data.roomId]) roomParticipants[data.roomId] = [];
+    socket.on(
+        "join_room",
+        (data: { roomId: string; userId: string; userName: string; userAvatar: string }, callback?: () => void) => {
+            socket.join(data.roomId);
+            if (!roomParticipants[data.roomId]) roomParticipants[data.roomId] = [];
 
-        roomParticipants[data.roomId]!.push({
-            socketId: socket.id,
-            userId: data.userId,
-            userName: data.userName,
-            userAvatar: data.userAvatar,
-        });
+            roomParticipants[data.roomId]!.push({
+                socketId: socket.id,
+                userId: data.userId,
+                userName: data.userName,
+                userAvatar: data.userAvatar,
+            });
 
-        io.to(data.roomId).emit("room_participants", roomParticipants[data.roomId]!);
-        console.log(`User ${data.userId} joined room ${data.roomId}`);
-    });
+            io.to(data.roomId).emit("room_participants", roomParticipants[data.roomId]!);
+            console.log(`User ${data.userId} joined room ${data.roomId}`);
+
+            if (callback) callback();
+        },
+    );
 
     socket.on("disconnect", () => {
         for (const roomId in roomParticipants) {

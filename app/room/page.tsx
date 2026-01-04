@@ -119,12 +119,19 @@ function RoomPageContent() {
 
         const handleConnect = () => {
             console.log("Connected to Socket with roomId:", roomId);
-            socketInstance.emit("join_room", {
-                roomId,
-                userId: session.user.email,
-                userName: session.user.name,
-                userAvatar: session.user.image || "",
-            });
+            socketInstance.emit(
+                "join_room",
+                {
+                    roomId,
+                    userId: session.user.email,
+                    userName: session.user.name,
+                    userAvatar: session.user.image || "",
+                },
+                () => {
+                    socketInstance.emit("request_sync", roomId);
+                },
+            );
+
             const fetchInitialQueue = async () => {
                 try {
                     const response = await axios.get(`/api/queue/fetch?roomCode=${roomId}`);
@@ -186,6 +193,14 @@ function RoomPageContent() {
             setQueue(rawQueue);
         };
 
+        const handleProvideSync = (data: { requesterId: string }) => {
+            // TODO: Implement sync response
+        };
+
+        const handleReceiveSync = (data: { isPlaying: boolean; timestamp: number; currentSongIndex: number }) => {
+            // TODO: Handle received sync data
+        };
+
         if (socketInstance.connected) {
             handleConnect();
         }
@@ -194,6 +209,8 @@ function RoomPageContent() {
         socketInstance.on("room_participants", handleRoomParticipants);
         socketInstance.on("message", handleIncomingMessage);
         socketInstance.on("updated_queue", handleUpdatedQueue);
+        socketInstance.on("provide_sync", handleProvideSync);
+        socketInstance.on("receive_sync", handleReceiveSync);
 
         socketRef.current = socketInstance;
     }, [roomId, session?.user, isChecking]);
@@ -220,8 +237,6 @@ function RoomPageContent() {
                     id: roomUser.userId,
                     name: roomUser.user.name || roomUser.user.email,
                     avatar: roomUser.user.avatarUrl || roomUser.user.name?.substring(0, 2).toUpperCase(),
-                    isHost: false, // You might want to determine this from the room creator
-                    isActive: true, // Assume active for now, could be enhanced with lastSeen logic
                 }));
 
                 setAllUsers(users);
@@ -356,6 +371,7 @@ function RoomPageContent() {
                 queue={queue}
                 socket={socketRef.current}
                 roomId={roomId}
+                userEmail={session.user.email}
                 onSongEnd={videoId => {
                     console.log("Song ended:", videoId);
                 }}
