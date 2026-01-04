@@ -36,6 +36,7 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
         const currentVideoIdRef = useRef<string | null>(null);
 
         const currentSong = queue[currentIndex] || null;
+        const loadingSongRef = useRef<{ isPlaying: boolean; timestamp: number } | null>(null);
 
         useImperativeHandle(ref, () => ({
             getPlayerState: () => {
@@ -50,21 +51,11 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                 }
             },
             applySync: (data: { isPlaying: boolean; timestamp: number; currentSongIndex: number }) => {
+                loadingSongRef.current = {
+                    isPlaying: data.isPlaying,
+                    timestamp: data.timestamp,
+                };
                 setCurrentIndex(data.currentSongIndex);
-                if (playerRef.current) {
-                    try {
-                        playerRef.current.seekTo(data.timestamp, true);
-                        if (data.isPlaying) {
-                            playerRef.current.playVideo();
-                            setIsPlaying(true);
-                        } else {
-                            playerRef.current.pauseVideo();
-                            setIsPlaying(false);
-                        }
-                    } catch (error) {
-                        console.error(error);
-                    }
-                }
             },
         }));
 
@@ -94,7 +85,11 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                 if (data.senderId === userEmail || !playerRef.current) return;
 
                 if (data.isPlaying) {
+                    // The main seek 2 sync is done with the help of "loadingSongRef"
+                    // The purpose of seekTo over here is to reduce the cumulative network delay over succesive play/pauses
+                    // Hence improving the sync efficiency
                     playerRef.current.seekTo(data.timestamp, true);
+
                     playerRef.current.playVideo();
                     setIsPlaying(true);
                 } else {
@@ -166,8 +161,20 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                     },
                     events: {
                         onReady: (event: any) => {
-                            event.target.playVideo();
-                            setIsPlaying(true);
+                            if (loadingSongRef.current) {
+                                event.target.seekTo(loadingSongRef.current.timestamp, true);
+                                if (loadingSongRef.current.isPlaying) {
+                                    event.target.playVideo();
+                                    setIsPlaying(true);
+                                } else {
+                                    event.target.pauseVideo();
+                                    setIsPlaying(false);
+                                }
+                                loadingSongRef.current = null;
+                            } else {
+                                event.target.playVideo();
+                                setIsPlaying(true);
+                            }
                         },
                         onStateChange: (event: any) => {
                             // 0 = ended, 1 = playing, 2 = paused
