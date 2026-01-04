@@ -182,6 +182,13 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                                 handleSongEnd();
                             } else if (event.data === 1) {
                                 setIsPlaying(true);
+                                if (loadingSongRef.current) {
+                                    if (!loadingSongRef.current.isPlaying) {
+                                        event.target.playVideo();
+                                        setIsPlaying(true);
+                                    }
+                                    loadingSongRef.current = null;
+                                }
                             } else if (event.data === 2) {
                                 setIsPlaying(false);
                             }
@@ -199,7 +206,14 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
 
             if (currentSong.videoId !== currentVideoIdRef.current) {
                 if (playerRef.current && typeof playerRef.current.loadVideoById === "function") {
-                    playerRef.current.loadVideoById(currentSong.videoId);
+                    if (loadingSongRef.current) {
+                        playerRef.current.loadVideoById({
+                            videoId: currentSong.videoId,
+                            startSeconds: loadingSongRef.current.timestamp,
+                        });
+                    } else {
+                        playerRef.current.loadVideoById(currentSong.videoId);
+                    }
                     currentVideoIdRef.current = currentSong.videoId;
                 }
             }
