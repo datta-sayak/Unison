@@ -4,7 +4,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Providers } from "./providers";
 import "./globals.css";
-import { AppHeader } from "@/components/AppHeader";
 
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
@@ -23,9 +22,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en" suppressHydrationWarning>
-            <body className={`font-sans antialiased bg-background text-foreground transition-colors duration-300`}>
+            <body
+                className={`font-sans antialiased bg-background text-foreground transition-colors duration-300 overflow-x-hidden`}
+            >
                 <Providers>
-                    <AppHeader />
                     {children}
                     <Analytics />
                 </Providers>

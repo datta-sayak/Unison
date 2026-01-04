@@ -79,12 +79,11 @@ export default function CreateRoomPage() {
     return (
         <main className="min-h-screen flex items-center justify-center bg-background px-4">
             <div className="w-full max-w-md space-y-8">
+                <div className="space-y-2 text-center">
+                    <h1 className="text-3xl font-bold text-foreground">Create Your Room</h1>
+                </div>
                 <div className="bg-card rounded-2xl p-8 shadow-sm border border-border space-y-6">
                     {/* Room Name Section */}
-                    <div className="space-y-2 text-center">
-                        <h1 className="text-3xl font-bold text-foreground">Create Your Room</h1>
-                        <p className="text-muted-foreground">Set up your space</p>
-                    </div>
                     <div className="space-y-2">
                         <Label htmlFor="roomName" className="text-sm font-medium text-foreground">
                             Room Name
@@ -151,19 +150,6 @@ export default function CreateRoomPage() {
                             <span className="flex items-center gap-2">Create Room</span>
                         )}
                     </Button>
-
-                    {/* Back to Dashboard */}
-                    <div className="pt-2 border-t border-border">
-                        <Link href="/dashboard">
-                            <Button
-                                variant="ghost"
-                                className="w-full text-muted-foreground hover:text-foreground hover:bg-muted/50 h-10"
-                                disabled={isLoading}
-                            >
-                                ← Back to Dashboard
-                            </Button>
-                        </Link>
-                    </div>
                 </div>
             </div>
         </main>

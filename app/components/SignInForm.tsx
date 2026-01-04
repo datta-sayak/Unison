@@ -17,7 +17,7 @@ export default function SignInForm() {
     };
 
     return (
-        <main className="h-screen flex items-center justify-center bg-background px-4 overflow-hidden">
+        <main className="h-screen flex items-center justify-center bg-background px-4">
             <div className="w-full max-w-md space-y-8">
                 <div className="bg-card rounded-2xl p-8 shadow-sm border border-border space-y-6">
                     {/* Tagline */}

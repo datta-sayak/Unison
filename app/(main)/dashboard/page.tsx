@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, Share2, Play, Users, Activity, Lock, LogIn, Loader2, Italic } from "lucide-react";
+import { Plus, Trash2, Share2, Play, Users, Lock, LogIn, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";

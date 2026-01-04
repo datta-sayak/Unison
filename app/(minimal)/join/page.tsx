@@ -55,22 +55,21 @@ function JoinRoomForm() {
     };
 
     return (
-        <main className="min-h-screen flex items-center justify-center bg-background p-4">
-            <div className="w-full max-w-md space-y-6">
+        <main className="min-h-screen flex items-center justify-center bg-background px-4">
+            <div className="w-full max-w-md space-y-8">
                 <div className="text-center space-y-1">
                     <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Join a Room</h1>
-                    <p className="text-sm text-muted-foreground">Enter the room code shared by your friends</p>
                 </div>
 
-                <div className="bg-card rounded-xl p-6 shadow-sm border border-border space-y-4">
-                    <div className="space-y-1.5">
-                        <label className="text-sm font-medium text-foreground">Room Code</label>
+                <div className="bg-card rounded-2xl p-8 shadow-sm border border-border space-y-6">
+                    <div>
+                        <label className="text-sm font-medium text-foreground mb-2 block">Room Code</label>
                         <Input
                             placeholder="Enter room code"
                             value={roomCode}
                             onChange={e => setRoomCode(e.target.value.toUpperCase())}
                             onKeyDown={e => e.key === "Enter" && handleJoinRoom()}
-                            className="bg-input border-border text-foreground placeholder:text-muted-foreground h-11 text-base rounded-lg"
+                            className="bg-input border-border text-foreground placeholder:text-muted-foreground h-11 rounded-lg"
                             maxLength={9}
                             disabled={showPasswordInput}
                             autoComplete="off"

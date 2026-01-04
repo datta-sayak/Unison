@@ -6,6 +6,7 @@ import { Music, Users, Zap } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { AppHeader } from "./components/AppHeader";
 
 export default function LandingPage() {
     const { data: session } = useSession();
@@ -29,6 +30,7 @@ export default function LandingPage() {
 
     return (
         <main className="min-h-screen flex flex-col bg-background">
+            <AppHeader />
             {/* Hero Section */}
             <div className="flex-1 flex flex-col items-center justify-center px-4 py-12">
                 <div className="max-w-3xl text-center space-y-8">
@@ -129,8 +131,8 @@ export default function LandingPage() {
 
             {/* Footer */}
             <footer className="py-4 border-t">
-                <div className="max-w-4xl mx-auto px-4 md:px-0 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-0">
-                    <div className="text-sm text-center md:text-left">
+                <div className="max-w-4xl mx-auto px-4 flex flex-row items-center justify-between gap-4">
+                    <div className="text-sm text-left">
                         &copy; {new Date().getFullYear()} <span className="font-semibold">Unison</span> by Sayak Datta.
                     </div>
                     <div className="flex items-center space-x-2">
