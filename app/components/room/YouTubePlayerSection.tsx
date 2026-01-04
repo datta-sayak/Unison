@@ -85,7 +85,7 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                 if (data.senderId === userEmail || !playerRef.current) return;
 
                 if (data.isPlaying) {
-                    // The main seek 2 sync is done with the help of "loadingSongRef"
+                    // The main initial seek 2 sync is done with the help of "loadingSongRef"
                     // The purpose of seekTo over here is to reduce the cumulative network delay over succesive play/pauses
                     // Hence improving the sync efficiency
                     playerRef.current.seekTo(data.timestamp, true);
@@ -199,14 +199,7 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
 
             if (currentSong.videoId !== currentVideoIdRef.current) {
                 if (playerRef.current && typeof playerRef.current.loadVideoById === "function") {
-                    if(loadingSongRef.current){
-                        playerRef.current.loadVideoById({
-                            videoId: currentSong.videoId,
-                            startSeconds: loadingSongRef.current.timestamp,
-                        });
-                    } else {
-                        playerRef.current.loadVideoById(currentSong.videoId);
-                    }
+                    playerRef.current.loadVideoById(currentSong.videoId);
                     currentVideoIdRef.current = currentSong.videoId;
                 }
             }
