@@ -182,15 +182,19 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                                 handleSongEnd();
                             } else if (event.data === 1) {
                                 setIsPlaying(true);
+                            } else if (event.data === 2) {
+                                setIsPlaying(false);
+                            } else if (event.data === 5) {
                                 if (loadingSongRef.current) {
-                                    if (!loadingSongRef.current.isPlaying) {
+                                    if (loadingSongRef.current.isPlaying) {
                                         event.target.playVideo();
                                         setIsPlaying(true);
+                                    } else {
+                                        event.target.pauseVideo();
+                                        setIsPlaying(false);
                                     }
                                     loadingSongRef.current = null;
                                 }
-                            } else if (event.data === 2) {
-                                setIsPlaying(false);
                             }
                         },
                         onError: (event: any) => {
