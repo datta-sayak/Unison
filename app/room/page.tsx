@@ -4,8 +4,7 @@ import { useState, Suspense, useEffect, useRef } from "react";
 import { Music, Users, MessageCircle, Info, List } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Socket } from "socket.io-client";
-import { clientSocket, disconnectSocket } from "@/lib/socket";
+import { disconnectSocket } from "@/lib/socket";
 import { toast } from "sonner";
 import axios from "axios";
 import { QueueSection } from "@/components/room/QueueSection";
@@ -13,61 +12,31 @@ import { SongSection } from "@/components/room/SongSection";
 import { MembersSection } from "@/components/room/MembersSection";
 import { ChatSection } from "@/components/room/ChatSection";
 import { InfoSection } from "@/components/room/InfoSection";
-import { YouTubePlayerSection } from "@/components/room/YouTubePlayerSection";
+import { YouTubePlayerSection, YouTubePlayerHandle } from "@/components/room/YouTubePlayerSection";
 import LoadingContext from "@/components/LoadingContext";
-import type { Song, Participant, ChatMessage, RoomUserFromAPI, SongMetaData } from "@/lib";
+import type { SongMetaData } from "@/lib";
+
+import { useRoomMembership } from "@/hooks/useRoomMembership";
+import { useServerHealth } from "@/hooks/useServerHealth";
+import { useRoomSocket } from "@/hooks/useRoomSocket";
+import { useInitialFetch } from "@/hooks/useInitialFetch";
 
 function RoomPageContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const roomId = searchParams.get("id");
     const { data: session, status } = useSession();
-    const socketRef = useRef<Socket | null>(null);
     const contentRef = useRef<HTMLDivElement | null>(null);
-    const hasInitializedSocket = useRef(false);
-    const [messages, setMessages] = useState<ChatMessage[]>([]);
-    const [onlineUsers, setonlineUsers] = useState<Participant[]>([]);
-    const [allUsers, setAllUsers] = useState<Participant[]>([]);
-    const [queue, setQueue] = useState<Song[]>([]);
+    const playerRef = useRef<YouTubePlayerHandle>(null);
     const [newMessage, setNewMessage] = useState("");
     const [activeSection, setActiveSection] = useState("queue");
-    const [isChecking, setIsChecking] = useState(true);
-    const isMemberRef = useRef(false);
-    const [serverOnline, setServerOnline] = useState(false);
-    const [checkingServer, setCheckingServer] = useState(true);
     const [userVotes, setUserVotes] = useState<Record<string, "upvote" | "downvote" | null>>(() => {
         if (!roomId || !session?.user?.email) return {};
         const storedVotes = localStorage.getItem(`votes:${roomId}:${session.user.email}`);
         return storedVotes ? JSON.parse(storedVotes) : {};
     });
 
-    useEffect(() => {
-        const checkServerHealth = async () => {
-            try {
-                const response = await fetch("/api/health", {
-                    method: "GET",
-                    cache: "no-store",
-                });
-                const data = await response.json();
-                if (data?.status === 200) {
-                    setServerOnline(true);
-                } else {
-                    setServerOnline(false);
-                    toast.info("Server spinning up");
-                }
-            } catch (error) {
-                console.error("Server health check failed:", error);
-                setServerOnline(false);
-                toast.error("Cannot connect to server");
-            } finally {
-                setCheckingServer(false);
-            }
-        };
-
-        checkServerHealth();
-        const interval = setInterval(checkServerHealth, 10000);
-        return () => clearInterval(interval);
-    }, []);
+    const { serverOnline, checkingServer } = useServerHealth();
 
     useEffect(() => {
         if (status === "loading") return;
@@ -76,32 +45,9 @@ function RoomPageContent() {
         }
     }, [status, router]);
 
-    useEffect(() => {
-        if (!roomId || !session?.user || status === "loading" || isMemberRef.current) return;
-
-        const checkUserPresentInRoom = async () => {
-            try {
-                setIsChecking(true);
-                const { data } = await axios.get(`/api/roomusers?roomCode=${roomId}`);
-                const isMember = data.some((roomUsers: RoomUserFromAPI) => roomUsers.user.email === session.user.email);
-
-                if (!isMember) {
-                    toast.info("You need to join this room");
-                    router.push(`/join?roomId=${roomId}`);
-                    return;
-                } else {
-                    isMemberRef.current = true;
-                }
-                setIsChecking(false);
-            } catch (error) {
-                console.error("Failed to check room membership:", error);
-                toast.error("Failed to join room");
-                router.push("/dashboard");
-            }
-        };
-
-        checkUserPresentInRoom();
-    }, [roomId, session?.user, status, router, isMemberRef]);
+    const { isChecking } = useRoomMembership({ roomId, session, status });
+    const { socket, queue, messages, onlineUsers } = useRoomSocket({ isChecking, roomId, session, playerRef });
+    const { allUsers } = useInitialFetch({ session, isChecking, roomId });
 
     // For auto scroll to bottom of the page
     useEffect(() => {
@@ -110,143 +56,6 @@ function RoomPageContent() {
             behavior: "smooth",
         });
     }, [activeSection]);
-
-    useEffect(() => {
-        if (!roomId || !session?.user || hasInitializedSocket.current || isChecking) return;
-
-        hasInitializedSocket.current = true;
-        const socketInstance = clientSocket();
-
-        const handleConnect = () => {
-            console.log("Connected to Socket with roomId:", roomId);
-            socketInstance.emit(
-                "join_room",
-                {
-                    roomId,
-                    userId: session.user.email,
-                    userName: session.user.name,
-                    userAvatar: session.user.image || "",
-                },
-                () => {
-                    socketInstance.emit("request_sync", roomId);
-                },
-            );
-
-            const fetchInitialQueue = async () => {
-                try {
-                    const response = await axios.get(`/api/queue/fetch?roomCode=${roomId}`);
-
-                    if (!response.data.data) return;
-                    else {
-                        const receivedQueue: Song[] = response.data.data.queue;
-                        setQueue(receivedQueue);
-                    }
-                } catch (error) {
-                    console.error("Failed to fetch initial queue:", error);
-                }
-            };
-
-            // Not awaiting fetchInitialQueue() so that it can do it's task in background,
-            // and wont block the current execution
-            fetchInitialQueue();
-        };
-
-        const handleRoomParticipants = (
-            users: Array<{
-                socketId: string;
-                userId: string;
-                userName: string;
-                userAvatar: string;
-            }>,
-        ) => {
-            const participants: Participant[] = users.map(user => ({
-                id: user.socketId,
-                name: user.userName,
-                avatar: user.userAvatar,
-                isHost: user.userId === session.user?.email,
-                isActive: true,
-            }));
-            setonlineUsers(participants);
-        };
-
-        const handleIncomingMessage = (data: {
-            roomId: string;
-            userEmail: string;
-            userName: string;
-            userAvatar: string;
-            content: string;
-        }) => {
-            const newMessage: ChatMessage = {
-                id: `msg_${data.roomId}_${Date.now()}_${data.userEmail}`,
-                user: data.userName,
-                avatar: data.userAvatar || data.userName.substring(0, 2).toUpperCase(),
-                message: data.content,
-                timestamp: new Date().toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                }),
-            };
-            setMessages(prev => [newMessage, ...prev]);
-        };
-
-        const handleUpdatedQueue = (rawQueue: Song[]) => {
-            setQueue(rawQueue);
-        };
-
-        const handleProvideSync = (data: { requesterId: string }) => {
-            // TODO: Implement sync response
-        };
-
-        const handleReceiveSync = (data: { isPlaying: boolean; timestamp: number; currentSongIndex: number }) => {
-            // TODO: Handle received sync data
-        };
-
-        if (socketInstance.connected) {
-            handleConnect();
-        }
-
-        socketInstance.on("connect", handleConnect);
-        socketInstance.on("room_participants", handleRoomParticipants);
-        socketInstance.on("message", handleIncomingMessage);
-        socketInstance.on("updated_queue", handleUpdatedQueue);
-        socketInstance.on("provide_sync", handleProvideSync);
-        socketInstance.on("receive_sync", handleReceiveSync);
-
-        socketRef.current = socketInstance;
-    }, [roomId, session?.user, isChecking]);
-
-    // Cleanup when the user logouts or closes tab
-    useEffect(() => {
-        return () => {
-            hasInitializedSocket.current = false;
-            if (socketRef.current) {
-                disconnectSocket();
-            }
-        };
-    }, []);
-
-    useEffect(() => {
-        if (!roomId || !session?.user || isChecking) return;
-
-        const fetchRoomUsers = async () => {
-            try {
-                const response = await axios.get(`/api/roomusers?roomCode=${roomId}`);
-                const roomUsers = response.data;
-
-                const users: Participant[] = roomUsers.map((roomUser: RoomUserFromAPI) => ({
-                    id: roomUser.userId,
-                    name: roomUser.user.name || roomUser.user.email,
-                    avatar: roomUser.user.avatarUrl || roomUser.user.name?.substring(0, 2).toUpperCase(),
-                }));
-
-                setAllUsers(users);
-            } catch (error) {
-                console.error("Failed to fetch room users:", error);
-            }
-        };
-
-        fetchRoomUsers();
-    }, [roomId, session?.user, isChecking]);
 
     const handleAddSong = async (song: SongMetaData) => {
         const newSong = {
@@ -343,7 +152,7 @@ function RoomPageContent() {
     };
 
     const handleLeaveRoom = () => {
-        if (socketRef.current) {
+        if (socket) {
             disconnectSocket();
         }
         router.push("/dashboard");
@@ -352,7 +161,7 @@ function RoomPageContent() {
     const handleSendMessage = () => {
         if (!newMessage.trim()) return;
 
-        socketRef.current?.emit("send_message", {
+        socket.emit("send_message", {
             roomId,
             userEmail: session.user.email,
             userName: session.user.name,
@@ -368,8 +177,9 @@ function RoomPageContent() {
         <main className="min-h-screen bg-background flex flex-col">
             {/* YouTube Player Section */}
             <YouTubePlayerSection
+                ref={playerRef}
                 queue={queue}
-                socket={socketRef.current}
+                socket={socket}
                 roomId={roomId}
                 userEmail={session.user.email}
                 onSongEnd={videoId => {
