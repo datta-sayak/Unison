@@ -39,23 +39,28 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
         const [isReady, setIsReady] = useState(false);
         const [isLoading, setIsLoading] = useState(true);
         const currentVideoIdRef = useRef<string | null>(null);
-        const loadingSongRef = useRef<{ isPlaying: boolean; timestamp: number } | null>(null);
+        const loadingSongRef = useRef<{ isPlaying: boolean; timestamp: number; receivedAt: number } | null>(null);
         const youtubePlayerPromiseRef = useRef<{ resolve: () => void } | null>(null);
 
         const currentSong = queue[currentIndex] || null;
 
         function timeCompensation(sentAtTime: number, timestamp: number) {
             const receivedAtTime = Date.now();
-            const elspsedTime = receivedAtTime - sentAtTime;
-            const elspsedTimeSec = elspsedTime / 1000; // In seconds with decimal precision
+            const elapsedTime = receivedAtTime - sentAtTime;
+            let elapsedTimeSec = elapsedTime / 1000; // In seconds with decimal precision
 
-            console.log("sentAtTime: ", sentAtTime);
-            console.log("receivedAt: ", receivedAtTime);
-            console.log("elspsedTime: ", elspsedTime);
-            console.log("timestamp: ", timestamp);
-            console.log("compensatedTimestamp: ", timestamp + elspsedTimeSec);
+            if (elapsedTimeSec < 0) {
+                elapsedTimeSec = 0;
+            }
+            console.log({
+                sentAtTime: sentAtTime,
+                receivedAtTime: receivedAtTime,
+                timestamp: timestamp,
+                elapsedTimeSec: elapsedTimeSec,
+                compensatedTimestamp: timestamp + elapsedTimeSec,
+            });
 
-            return timestamp + elspsedTimeSec;
+            return { compensatedTimestamp: timestamp + elapsedTimeSec, receivedAtTime };
         }
 
         useImperativeHandle(
@@ -84,11 +89,12 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                     sentAt: number;
                 }) => {
                     console.log(data);
-                    const compensatedTimestamp = timeCompensation(data.sentAt, data.timestamp);
+                    const { compensatedTimestamp, receivedAtTime } = timeCompensation(data.sentAt, data.timestamp);
 
                     loadingSongRef.current = {
                         isPlaying: data.isPlaying,
                         timestamp: compensatedTimestamp,
+                        receivedAt: receivedAtTime,
                     };
                     setCurrentIndex(data.currentSongIndex);
 
@@ -130,7 +136,7 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
             }) => {
                 if (data.senderId === userEmail || !playerRef.current) return;
 
-                const compensatedTimestamp = timeCompensation(data.sentAt, data.timestamp);
+                const { compensatedTimestamp } = timeCompensation(data.sentAt, data.timestamp);
 
                 if (data.isPlaying) {
                     // The purpose of seekTo over here is to reduce the cumulative network delay over succesive play/pauses
@@ -210,7 +216,13 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                     events: {
                         onReady: (event: any) => {
                             if (loadingSongRef.current) {
-                                event.target.seekTo(loadingSongRef.current.timestamp, true);
+                                // Compensate for the buffering delay
+                                const { compensatedTimestamp } = timeCompensation(
+                                    loadingSongRef.current.receivedAt,
+                                    loadingSongRef.current.timestamp,
+                                );
+
+                                event.target.seekTo(compensatedTimestamp, true);
 
                                 if (loadingSongRef.current.isPlaying) {
                                     event.target.playVideo();
@@ -232,7 +244,7 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                             }
                         },
                         onStateChange: (event: any) => {
-                            // 0 = ended, 1 = playing, 2 = paused
+                            // 0 = ended, 1 = playing, 2 = paused, 5 - cued
                             if (event.data === 0) {
                                 handleSongEnd();
                             } else if (event.data === 1) {
@@ -241,7 +253,11 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                                 setIsPlaying(false);
                             } else if (event.data === 5) {
                                 if (loadingSongRef.current) {
-                                    event.target.seekTo(loadingSongRef.current.timestamp, true);
+                                    const { compensatedTimestamp } = timeCompensation(
+                                        loadingSongRef.current.receivedAt,
+                                        loadingSongRef.current.timestamp,
+                                    );
+                                    event.target.seekTo(compensatedTimestamp, true);
 
                                     if (loadingSongRef.current.isPlaying) {
                                         event.target.playVideo();
