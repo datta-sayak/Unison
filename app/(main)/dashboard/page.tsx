@@ -70,7 +70,7 @@ export default function DashboardPage() {
             const res = await axios.post("/api/rooms/delete", payload);
             if (res.data.status === 200) {
                 // Clear the room state from the store
-                resetRoom();
+                resetRoom(roomCode);
 
                 toast.success(res.data.message);
 

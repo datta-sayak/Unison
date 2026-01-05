@@ -34,17 +34,27 @@ function RoomPageContent() {
     const previousMessageCountRef = useRef(0);
 
     const {
-        queue: storedQueue,
-        messages: storedMessages,
-        allUsers: storedAllUsers,
-        activeSection,
-        userVotes,
+        setCurrentRoomId,
+        getCurrentRoomData,
         setQueue: setStoredQueue,
         setMessages: setStoredMessages,
         setAllUsers: setStoredAllUsers,
         setActiveSection,
         setUserVotes,
     } = useRoomStore();
+
+    useEffect(() => {
+        if (roomId) {
+            setCurrentRoomId(roomId);
+        }
+    }, [roomId, setCurrentRoomId]);
+
+    const roomData = getCurrentRoomData();
+    const storedQueue = roomData.queue;
+    const storedMessages = roomData.messages;
+    const storedAllUsers = roomData.allUsers;
+    const activeSection = roomData.activeSection;
+    const userVotes = roomData.userVotes;
 
     const { serverOnline, checkingServer } = useServerHealth();
 
@@ -70,45 +80,47 @@ function RoomPageContent() {
     const allUsers = storedAllUsers;
 
     useEffect(() => {
-        if (socketQueue.length > 0) {
-            setStoredQueue(socketQueue);
+        if (socketQueue.length > 0 && roomId) {
+            setStoredQueue(roomId, socketQueue);
         }
-    }, [socketQueue, setStoredQueue]);
+    }, [socketQueue, roomId, setStoredQueue]);
 
     useEffect(() => {
-        if (socketMessages.length > 0) {
-            setStoredMessages(socketMessages);
+        if (socketMessages.length > 0 && roomId) {
+            setStoredMessages(roomId, socketMessages);
         }
-    }, [socketMessages, setStoredMessages]);
+    }, [socketMessages, roomId, setStoredMessages]);
 
     useEffect(() => {
-        setStoredAllUsers(currentUsers => {
-            if (currentUsers.length === 0 && dbUsers.length > 0) {
-                return dbUsers;
-            }
-
-            const userAvatars = new Set();
-            currentUsers.forEach(user => userAvatars.add(user.avatar));
-
-            const newUsersToAdd = [];
-
-            dbUsers.forEach(dbUser => {
-                if (!userAvatars.has(dbUser.avatar)) {
-                    newUsersToAdd.push(dbUser);
-                    userAvatars.add(dbUser.avatar);
+        if (roomId) {
+            setStoredAllUsers(roomId, currentUsers => {
+                if (currentUsers.length === 0 && dbUsers.length > 0) {
+                    return dbUsers;
                 }
-            });
 
-            onlineUsers.forEach(onlineUser => {
-                if (!userAvatars.has(onlineUser.avatar)) {
-                    newUsersToAdd.push(onlineUser);
-                    userAvatars.add(onlineUser.avatar);
-                }
-            });
+                const userAvatars = new Set();
+                currentUsers.forEach(user => userAvatars.add(user.avatar));
 
-            return newUsersToAdd.length > 0 ? [...currentUsers, ...newUsersToAdd] : currentUsers;
-        });
-    }, [dbUsers, onlineUsers, setStoredAllUsers]);
+                const newUsersToAdd = [];
+
+                dbUsers.forEach(dbUser => {
+                    if (!userAvatars.has(dbUser.avatar)) {
+                        newUsersToAdd.push(dbUser);
+                        userAvatars.add(dbUser.avatar);
+                    }
+                });
+
+                onlineUsers.forEach(onlineUser => {
+                    if (!userAvatars.has(onlineUser.avatar)) {
+                        newUsersToAdd.push(onlineUser);
+                        userAvatars.add(onlineUser.avatar);
+                    }
+                });
+
+                return newUsersToAdd.length > 0 ? [...currentUsers, ...newUsersToAdd] : currentUsers;
+            });
+        }
+    }, [dbUsers, onlineUsers, roomId, setStoredAllUsers]);
 
     const usersWithStatus = allUsers
         .map(user => ({
@@ -200,7 +212,7 @@ function RoomPageContent() {
         const voteType = direction === "up" ? "upvote" : "downvote";
 
         const newVote = { ...currentUserVotes, [videoId]: voteType as "upvote" | "downvote" };
-        setUserVotes({ ...userVotes, [session.user.email]: newVote });
+        setUserVotes(roomId, { ...userVotes, [session.user.email]: newVote });
 
         try {
             const payload = {
@@ -268,7 +280,7 @@ function RoomPageContent() {
                 {/* Section Tabs */}
                 <div className="flex gap-1 sticky top-0 z-30 bg-card/95 backdrop-blur-sm shadow-sm p-2 max-w-4xl mx-auto">
                     <button
-                        onClick={() => setActiveSection("queue")}
+                        onClick={() => setActiveSection(roomId, "queue")}
                         className={`flex-1 px-3 py-2.5 text-sm font-medium transition-all rounded-lg flex flex-col items-center gap-1.5 ${
                             activeSection === "queue"
                                 ? "bg-primary text-primary-foreground shadow-md"
@@ -279,7 +291,7 @@ function RoomPageContent() {
                         <span className="text-xs font-semibold">Queue</span>
                     </button>
                     <button
-                        onClick={() => setActiveSection("songs")}
+                        onClick={() => setActiveSection(roomId, "songs")}
                         className={`flex-1 px-3 py-2.5 text-sm font-medium transition-all rounded-lg flex flex-col items-center gap-1.5 ${
                             activeSection === "songs"
                                 ? "bg-primary text-primary-foreground shadow-md"
@@ -290,7 +302,7 @@ function RoomPageContent() {
                         <span className="text-xs font-semibold">Songs</span>
                     </button>
                     <button
-                        onClick={() => setActiveSection("members")}
+                        onClick={() => setActiveSection(roomId, "members")}
                         className={`flex-1 px-3 py-2.5 text-sm font-medium transition-all rounded-lg flex flex-col items-center gap-1.5 ${
                             activeSection === "members"
                                 ? "bg-primary text-primary-foreground shadow-md"
@@ -301,7 +313,7 @@ function RoomPageContent() {
                         <span className="text-xs font-semibold">Members</span>
                     </button>
                     <button
-                        onClick={() => setActiveSection("chat")}
+                        onClick={() => setActiveSection(roomId, "chat")}
                         className={`flex-1 px-3 py-2.5 text-sm font-medium transition-all rounded-lg flex flex-col items-center gap-1.5 ${
                             activeSection === "chat"
                                 ? "bg-primary text-primary-foreground shadow-md"
@@ -312,7 +324,7 @@ function RoomPageContent() {
                         <span className="text-xs font-semibold">Chat</span>
                     </button>
                     <button
-                        onClick={() => setActiveSection("info")}
+                        onClick={() => setActiveSection(roomId, "info")}
                         className={`flex-1 px-3 py-2.5 text-sm font-medium transition-all rounded-lg flex flex-col items-center gap-1.5 ${
                             activeSection === "info"
                                 ? "bg-primary text-primary-foreground shadow-md"
