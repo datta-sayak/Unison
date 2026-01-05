@@ -19,12 +19,22 @@ export function roomEvents(io: Server, socket: Socket) {
             socket.join(data.roomId);
             if (!roomParticipants[data.roomId]) roomParticipants[data.roomId] = [];
 
-            roomParticipants[data.roomId]!.push({
-                socketId: socket.id,
-                userId: data.userId,
-                userName: data.userName,
-                userAvatar: data.userAvatar,
-            });
+            const checkIfSocketExistsIndex = roomParticipants[data.roomId]!.findIndex(
+                user => user.userId === data.userId,
+            );
+            if (checkIfSocketExistsIndex === -1) {
+                roomParticipants[data.roomId]!.push({
+                    socketId: socket.id,
+                    userId: data.userId,
+                    userName: data.userName,
+                    userAvatar: data.userAvatar,
+                });
+            } else {
+                const user = roomParticipants[data.roomId]![checkIfSocketExistsIndex];
+                user!.socketId = socket.id;
+            }
+
+            console.log(roomParticipants);
 
             io.to(data.roomId).emit("room_participants", roomParticipants[data.roomId]!);
             console.log(`User ${data.userId} joined room ${data.roomId}`);

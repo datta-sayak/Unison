@@ -119,9 +119,9 @@ export function useRoomSocket({ isChecking, roomId, session, playerRef }: UseRoo
             }
         };
 
-        const handleReceiveSync = (data: { isPlaying: boolean; timestamp: number; currentSongIndex: number }) => {
+        const handleReceiveSync = async (data: { isPlaying: boolean; timestamp: number; currentSongIndex: number }) => {
             if (playerRef?.current) {
-                playerRef.current.applySync(data);
+                await playerRef.current.applySync(data);
             }
         };
 

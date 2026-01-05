@@ -16,7 +16,7 @@ interface YouTubePlayerSectionProps {
 
 export interface YouTubePlayerHandle {
     getPlayerState: () => { isPlaying: boolean; timestamp: number; currentSongIndex: number } | null;
-    applySync: (data: { isPlaying: boolean; timestamp: number; currentSongIndex: number }) => void;
+    applySync: (data: { isPlaying: boolean; timestamp: number; currentSongIndex: number }) => Promise<void>;
 }
 
 declare global {
@@ -34,9 +34,10 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
         const [isReady, setIsReady] = useState(false);
         const [isLoading, setIsLoading] = useState(true);
         const currentVideoIdRef = useRef<string | null>(null);
+        const loadingSongRef = useRef<{ isPlaying: boolean; timestamp: number } | null>(null);
+        const youtubePlayerPromiseRef = useRef<{ resolve: () => void } | null>(null);
 
         const currentSong = queue[currentIndex] || null;
-        const loadingSongRef = useRef<{ isPlaying: boolean; timestamp: number } | null>(null);
 
         useImperativeHandle(ref, () => ({
             getPlayerState: () => {
@@ -50,12 +51,19 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                     return null;
                 }
             },
-            applySync: (data: { isPlaying: boolean; timestamp: number; currentSongIndex: number }) => {
+            applySync: async (data: { isPlaying: boolean; timestamp: number; currentSongIndex: number }) => {
+                console.log(data);
+                console.log(performance.now());
+
                 loadingSongRef.current = {
                     isPlaying: data.isPlaying,
                     timestamp: data.timestamp,
                 };
                 setCurrentIndex(data.currentSongIndex);
+
+                return new Promise<void>(resolve => {
+                    youtubePlayerPromiseRef.current = { resolve };
+                });
             },
         }));
 
@@ -85,10 +93,11 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                 if (data.senderId === userEmail || !playerRef.current) return;
 
                 if (data.isPlaying) {
-                    // The main initial seek 2 sync is done with the help of "loadingSongRef"
                     // The purpose of seekTo over here is to reduce the cumulative network delay over succesive play/pauses
                     // Hence improving the sync efficiency
+
                     playerRef.current.seekTo(data.timestamp, true);
+                    // The "true" is for also including and loading the non-buffered part of the video
 
                     playerRef.current.playVideo();
                     setIsPlaying(true);
@@ -116,7 +125,6 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
             if (currentSong && onSongEnd) {
                 onSongEnd(currentSong.videoId);
             }
-
             const nextIndex = currentIndex < queue.length - 1 ? currentIndex + 1 : 0;
             setCurrentIndex(nextIndex);
 
@@ -163,6 +171,7 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                         onReady: (event: any) => {
                             if (loadingSongRef.current) {
                                 event.target.seekTo(loadingSongRef.current.timestamp, true);
+
                                 if (loadingSongRef.current.isPlaying) {
                                     event.target.playVideo();
                                     setIsPlaying(true);
@@ -170,7 +179,13 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                                     event.target.pauseVideo();
                                     setIsPlaying(false);
                                 }
+
                                 loadingSongRef.current = null;
+
+                                if (youtubePlayerPromiseRef.current) {
+                                    youtubePlayerPromiseRef.current.resolve();
+                                    youtubePlayerPromiseRef.current = null;
+                                }
                             } else {
                                 event.target.playVideo();
                                 setIsPlaying(true);
@@ -184,17 +199,6 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                                 setIsPlaying(true);
                             } else if (event.data === 2) {
                                 setIsPlaying(false);
-                            } else if (event.data === 5) {
-                                if (loadingSongRef.current) {
-                                    if (loadingSongRef.current.isPlaying) {
-                                        event.target.playVideo();
-                                        setIsPlaying(true);
-                                    } else {
-                                        event.target.pauseVideo();
-                                        setIsPlaying(false);
-                                    }
-                                    loadingSongRef.current = null;
-                                }
                             }
                         },
                         onError: (event: any) => {
@@ -210,14 +214,7 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
 
             if (currentSong.videoId !== currentVideoIdRef.current) {
                 if (playerRef.current && typeof playerRef.current.loadVideoById === "function") {
-                    if (loadingSongRef.current) {
-                        playerRef.current.loadVideoById({
-                            videoId: currentSong.videoId,
-                            startSeconds: loadingSongRef.current.timestamp,
-                        });
-                    } else {
-                        playerRef.current.loadVideoById(currentSong.videoId);
-                    }
+                    playerRef.current.loadVideoById(currentSong.videoId);
                     currentVideoIdRef.current = currentSong.videoId;
                 }
             }
