@@ -1,21 +1,23 @@
 "use client";
 
 import Image from "next/image";
-import { Shield } from "lucide-react";
 import type { Participant } from "@/lib";
 
-interface MembersSectionProps {
-    allUsers: Participant[];
-    onlineUsers: Participant[];
+interface MemberWithStatus extends Participant {
+    isOnline: boolean;
 }
 
-export function MembersSection({ allUsers, onlineUsers }: MembersSectionProps) {
+interface MembersSectionProps {
+    allUsers: MemberWithStatus[];
+}
+
+export function MembersSection({ allUsers }: MembersSectionProps) {
     return (
         <div className="p-4 space-y-4 max-w-4xl mx-auto">
             <h3 className="text-sm font-semibold text-muted-foreground">Members ({allUsers.length})</h3>
             <div className="space-y-2">
                 {allUsers.map(member => {
-                    const isOnline = onlineUsers.some(u => u.avatar === member.avatar);
+                    const isOnline = member.isOnline ?? false;
 
                     return (
                         <div

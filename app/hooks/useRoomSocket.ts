@@ -155,7 +155,7 @@ export function useRoomSocket({ isChecking, roomId, session, playerRef }: UseRoo
                 disconnectSocket();
             }
         };
-    }, [socket]);
+    }, []);
 
     return { socket, queue, messages, onlineUsers };
 }

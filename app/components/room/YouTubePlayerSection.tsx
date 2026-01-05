@@ -221,7 +221,8 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                                     loadingSongRef.current.timestamp,
                                 );
 
-                                event.target.seekTo(compensatedTimestamp, true);
+                                // Here 0.3 sec is the apprx constant delay to change the state of the video
+                                event.target.seekTo(compensatedTimestamp + 0.3, true);
 
                                 if (loadingSongRef.current.isPlaying) {
                                     event.target.playVideo();

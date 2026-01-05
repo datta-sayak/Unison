@@ -49,7 +49,48 @@ function RoomPageContent() {
 
     const { isChecking } = useRoomMembership({ roomId, session, status });
     const { socket, queue, messages, onlineUsers } = useRoomSocket({ isChecking, roomId, session, playerRef });
-    const { allUsers } = useInitialFetch({ session, isChecking, roomId });
+    const { allUsers: dbUsers } = useInitialFetch({ session, isChecking, roomId });
+    const [allUsers, setAllUsers] = useState<typeof dbUsers>([]);
+
+    useEffect(() => {
+        setAllUsers(currentUsers => {
+            if (currentUsers.length === 0 && dbUsers.length > 0) {
+                return dbUsers;
+            }
+
+            const userAvatars = new Set();
+            currentUsers.forEach(user => userAvatars.add(user.avatar));
+
+            const newUsersToAdd = [];
+
+            dbUsers.forEach(dbUser => {
+                if (!userAvatars.has(dbUser.avatar)) {
+                    newUsersToAdd.push(dbUser);
+                    userAvatars.add(dbUser.avatar);
+                }
+            });
+
+            onlineUsers.forEach(onlineUser => {
+                if (!userAvatars.has(onlineUser.avatar)) {
+                    newUsersToAdd.push(onlineUser);
+                    userAvatars.add(onlineUser.avatar);
+                }
+            });
+
+            return newUsersToAdd.length > 0 ? [...currentUsers, ...newUsersToAdd] : currentUsers;
+        });
+    }, [dbUsers, onlineUsers]);
+
+    const usersWithStatus = allUsers
+        .map(user => ({
+            ...user,
+            isOnline: onlineUsers.some(u => u.avatar === user.avatar),
+        }))
+        .sort((a, b) => {
+            if (a.isOnline && !b.isOnline) return -1;
+            if (!a.isOnline && b.isOnline) return 1;
+            return 0;
+        });
 
     useEffect(() => {
         if (messages.length > previousMessageCountRef.current && activeSection !== "chat") {
@@ -60,12 +101,10 @@ function RoomPageContent() {
 
     // For auto scroll to bottom of the page
     useEffect(() => {
-        if (activeSection === "chat") {
-            window.scrollTo({
-                top: document.documentElement.scrollHeight,
-                behavior: "smooth",
-            });
-        }
+        window.scrollTo({
+            top: document.documentElement.scrollHeight,
+            behavior: "smooth",
+        });
     }, [activeSection]);
 
     const handleAddSong = async (song: SongMetaData) => {
@@ -236,22 +275,14 @@ function RoomPageContent() {
                         <span className="text-xs font-semibold">Members</span>
                     </button>
                     <button
-                        onClick={() => {
-                            setActiveSection("chat");
-                            setHasUnreadMessages(false);
-                        }}
+                        onClick={() => setActiveSection("chat")}
                         className={`flex-1 px-3 py-2.5 text-sm font-medium transition-all rounded-lg flex flex-col items-center gap-1.5 ${
                             activeSection === "chat"
                                 ? "bg-primary text-primary-foreground shadow-md"
                                 : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                         }`}
                     >
-                        <div className="relative">
-                            <MessageCircle className="w-5 h-5" />
-                            {hasUnreadMessages && (
-                                <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full" />
-                            )}
-                        </div>
+                        <MessageCircle className="w-5 h-5" />
                         <span className="text-xs font-semibold">Chat</span>
                     </button>
                     <button
@@ -281,7 +312,7 @@ function RoomPageContent() {
                 {activeSection === "songs" && <SongSection handleAddSong={handleAddSong} />}
 
                 {/* Members Section */}
-                {activeSection === "members" && <MembersSection allUsers={allUsers} onlineUsers={onlineUsers} />}
+                {activeSection === "members" && <MembersSection allUsers={usersWithStatus} />}
 
                 {/* Chat Section */}
                 {activeSection === "chat" && (
@@ -297,7 +328,7 @@ function RoomPageContent() {
                 {activeSection === "info" && (
                     <InfoSection
                         roomId={roomId}
-                        allUsers={allUsers}
+                        allUsers={usersWithStatus}
                         queue={queue}
                         handleCopyLink={handleCopyLink}
                         handleLeaveRoom={handleLeaveRoom}
