@@ -67,7 +67,7 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
             ref,
             () => ({
                 getPlayerState: () => {
-                    if (!playerRef.current || !currentSong) return null;
+                    if (!playerRef.current || !currentSong || !isReady) return null;
 
                     try {
                         const timestamp = playerRef.current.getCurrentTime() || 0;
@@ -88,7 +88,6 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                     currentSongIndex: number;
                     sentAt: number;
                 }) => {
-                    console.log(data);
                     const { compensatedTimestamp, receivedAtTime } = timeCompensation(data.sentAt, data.timestamp);
 
                     loadingSongRef.current = {

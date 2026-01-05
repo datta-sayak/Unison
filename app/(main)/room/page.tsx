@@ -30,6 +30,8 @@ function RoomPageContent() {
     const playerRef = useRef<YouTubePlayerHandle>(null);
     const [newMessage, setNewMessage] = useState("");
     const [activeSection, setActiveSection] = useState("queue");
+    const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
+    const previousMessageCountRef = useRef(0);
     const [userVotes, setUserVotes] = useState<Record<string, "upvote" | "downvote" | null>>(() => {
         if (!roomId || !session?.user?.email) return {};
         const storedVotes = localStorage.getItem(`votes:${roomId}:${session.user.email}`);
@@ -49,12 +51,21 @@ function RoomPageContent() {
     const { socket, queue, messages, onlineUsers } = useRoomSocket({ isChecking, roomId, session, playerRef });
     const { allUsers } = useInitialFetch({ session, isChecking, roomId });
 
+    useEffect(() => {
+        if (messages.length > previousMessageCountRef.current && activeSection !== "chat") {
+            setHasUnreadMessages(true);
+        }
+        previousMessageCountRef.current = messages.length;
+    }, [messages, activeSection]);
+
     // For auto scroll to bottom of the page
     useEffect(() => {
-        window.scrollTo({
-            top: document.documentElement.scrollHeight,
-            behavior: "smooth",
-        });
+        if (activeSection === "chat") {
+            window.scrollTo({
+                top: document.documentElement.scrollHeight,
+                behavior: "smooth",
+            });
+        }
     }, [activeSection]);
 
     const handleAddSong = async (song: SongMetaData) => {
@@ -225,14 +236,22 @@ function RoomPageContent() {
                         <span className="text-xs font-semibold">Members</span>
                     </button>
                     <button
-                        onClick={() => setActiveSection("chat")}
+                        onClick={() => {
+                            setActiveSection("chat");
+                            setHasUnreadMessages(false);
+                        }}
                         className={`flex-1 px-3 py-2.5 text-sm font-medium transition-all rounded-lg flex flex-col items-center gap-1.5 ${
                             activeSection === "chat"
                                 ? "bg-primary text-primary-foreground shadow-md"
                                 : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                         }`}
                     >
-                        <MessageCircle className="w-5 h-5" />
+                        <div className="relative">
+                            <MessageCircle className="w-5 h-5" />
+                            {hasUnreadMessages && (
+                                <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full" />
+                            )}
+                        </div>
                         <span className="text-xs font-semibold">Chat</span>
                     </button>
                     <button
