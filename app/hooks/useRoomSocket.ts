@@ -114,12 +114,18 @@ export function useRoomSocket({ isChecking, roomId, session, playerRef }: UseRoo
                         timestamp: playerState.timestamp,
                         currentSongIndex: playerState.currentSongIndex,
                         senderId: session.user.email,
+                        sentAt: playerState.sentAt,
                     });
                 }
             }
         };
 
-        const handleReceiveSync = async (data: { isPlaying: boolean; timestamp: number; currentSongIndex: number }) => {
+        const handleReceiveSync = async (data: {
+            isPlaying: boolean;
+            timestamp: number;
+            currentSongIndex: number;
+            sentAt: number;
+        }) => {
             if (playerRef?.current) {
                 await playerRef.current.applySync(data);
             }

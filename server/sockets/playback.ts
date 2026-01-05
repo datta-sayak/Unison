@@ -5,6 +5,7 @@ interface Playback {
     isPlaying: boolean;
     timestamp: number;
     senderId: string;
+    sentAt: number;
 }
 
 interface ChangeSong {
@@ -23,6 +24,7 @@ export function playbackEvents(io: Server, socket: Socket) {
             isPlaying: data.isPlaying,
             timestamp: data.timestamp,
             senderId: data.senderId,
+            sentAt: data.sentAt,
         });
     });
 
@@ -44,6 +46,7 @@ export function playbackEvents(io: Server, socket: Socket) {
             isPlaying: data.isPlaying,
             timestamp: data.timestamp,
             currentSongIndex: data.currentSongIndex,
+            sentAt: data.sentAt,
         });
     });
 }

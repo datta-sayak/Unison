@@ -15,8 +15,13 @@ interface YouTubePlayerSectionProps {
 }
 
 export interface YouTubePlayerHandle {
-    getPlayerState: () => { isPlaying: boolean; timestamp: number; currentSongIndex: number } | null;
-    applySync: (data: { isPlaying: boolean; timestamp: number; currentSongIndex: number }) => Promise<void>;
+    getPlayerState: () => { isPlaying: boolean; timestamp: number; currentSongIndex: number; sentAt: number } | null;
+    applySync: (data: {
+        isPlaying: boolean;
+        timestamp: number;
+        currentSongIndex: number;
+        sentAt: number;
+    }) => Promise<void>;
 }
 
 declare global {
@@ -39,33 +44,61 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
 
         const currentSong = queue[currentIndex] || null;
 
-        useImperativeHandle(ref, () => ({
-            getPlayerState: () => {
-                if (!playerRef.current || !currentSong) return null;
+        function timeCompensation(sentAtTime: number, timestamp: number) {
+            const receivedAtTime = Date.now();
+            const elspsedTime = receivedAtTime - sentAtTime;
+            const elspsedTimeSec = elspsedTime / 1000; // In seconds with decimal precision
 
-                try {
-                    const timestamp = playerRef.current.getCurrentTime() || 0;
-                    return { isPlaying, timestamp, currentSongIndex: currentIndex };
-                } catch (error) {
-                    console.error(error);
-                    return null;
-                }
-            },
-            applySync: async (data: { isPlaying: boolean; timestamp: number; currentSongIndex: number }) => {
-                console.log(data);
-                console.log(performance.now());
+            console.log("sentAtTime: ", sentAtTime);
+            console.log("receivedAt: ", receivedAtTime);
+            console.log("elspsedTime: ", elspsedTime);
+            console.log("timestamp: ", timestamp);
+            console.log("compensatedTimestamp: ", timestamp + elspsedTimeSec);
 
-                loadingSongRef.current = {
-                    isPlaying: data.isPlaying,
-                    timestamp: data.timestamp,
-                };
-                setCurrentIndex(data.currentSongIndex);
+            return timestamp + elspsedTimeSec;
+        }
 
-                return new Promise<void>(resolve => {
-                    youtubePlayerPromiseRef.current = { resolve };
-                });
-            },
-        }));
+        useImperativeHandle(
+            ref,
+            () => ({
+                getPlayerState: () => {
+                    if (!playerRef.current || !currentSong) return null;
+
+                    try {
+                        const timestamp = playerRef.current.getCurrentTime() || 0;
+                        return {
+                            isPlaying,
+                            timestamp,
+                            currentSongIndex: currentIndex,
+                            sentAt: Date.now(),
+                        };
+                    } catch (error) {
+                        console.error(error);
+                        return null;
+                    }
+                },
+                applySync: async (data: {
+                    isPlaying: boolean;
+                    timestamp: number;
+                    currentSongIndex: number;
+                    sentAt: number;
+                }) => {
+                    console.log(data);
+                    const compensatedTimestamp = timeCompensation(data.sentAt, data.timestamp);
+
+                    loadingSongRef.current = {
+                        isPlaying: data.isPlaying,
+                        timestamp: compensatedTimestamp,
+                    };
+                    setCurrentIndex(data.currentSongIndex);
+
+                    return new Promise<void>(resolve => {
+                        youtubePlayerPromiseRef.current = { resolve };
+                    });
+                },
+            }),
+            [currentIndex, isPlaying, currentSong],
+        );
 
         // Load YouTube IFrame API
         useEffect(() => {
@@ -89,14 +122,21 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
         useEffect(() => {
             if (!socket) return;
 
-            const handlePlayBackState = (data: { isPlaying: boolean; timestamp: number; senderId: string }) => {
+            const handlePlayBackState = (data: {
+                isPlaying: boolean;
+                timestamp: number;
+                senderId: string;
+                sentAt: number;
+            }) => {
                 if (data.senderId === userEmail || !playerRef.current) return;
+
+                const compensatedTimestamp = timeCompensation(data.sentAt, data.timestamp);
 
                 if (data.isPlaying) {
                     // The purpose of seekTo over here is to reduce the cumulative network delay over succesive play/pauses
                     // Hence improving the sync efficiency
 
-                    playerRef.current.seekTo(data.timestamp, true);
+                    playerRef.current.seekTo(compensatedTimestamp, true);
                     // The "true" is for also including and loading the non-buffered part of the video
 
                     playerRef.current.playVideo();
@@ -199,6 +239,25 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                                 setIsPlaying(true);
                             } else if (event.data === 2) {
                                 setIsPlaying(false);
+                            } else if (event.data === 5) {
+                                if (loadingSongRef.current) {
+                                    event.target.seekTo(loadingSongRef.current.timestamp, true);
+
+                                    if (loadingSongRef.current.isPlaying) {
+                                        event.target.playVideo();
+                                        setIsPlaying(true);
+                                    } else {
+                                        event.target.pauseVideo();
+                                        setIsPlaying(false);
+                                    }
+
+                                    loadingSongRef.current = null;
+
+                                    if (youtubePlayerPromiseRef.current) {
+                                        youtubePlayerPromiseRef.current.resolve();
+                                        youtubePlayerPromiseRef.current = null;
+                                    }
+                                }
                             }
                         },
                         onError: (event: any) => {
@@ -238,6 +297,7 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                 isPlaying: newPlayingState,
                 timestamp: playerRef.current.getCurrentTime(),
                 senderId: userEmail,
+                sentAt: Date.now(),
             });
         };
 
