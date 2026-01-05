@@ -20,6 +20,7 @@ import { useRoomMembership } from "@/hooks/useRoomMembership";
 import { useServerHealth } from "@/hooks/useServerHealth";
 import { useRoomSocket } from "@/hooks/useRoomSocket";
 import { useInitialFetch } from "@/hooks/useInitialFetch";
+import { useRoomStore } from "@/stores/roomStore";
 
 function RoomPageContent() {
     const router = useRouter();
@@ -29,14 +30,21 @@ function RoomPageContent() {
     const contentRef = useRef<HTMLDivElement | null>(null);
     const playerRef = useRef<YouTubePlayerHandle>(null);
     const [newMessage, setNewMessage] = useState("");
-    const [activeSection, setActiveSection] = useState("queue");
     const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
     const previousMessageCountRef = useRef(0);
-    const [userVotes, setUserVotes] = useState<Record<string, "upvote" | "downvote" | null>>(() => {
-        if (!roomId || !session?.user?.email) return {};
-        const storedVotes = localStorage.getItem(`votes:${roomId}:${session.user.email}`);
-        return storedVotes ? JSON.parse(storedVotes) : {};
-    });
+
+    const {
+        queue: storedQueue,
+        messages: storedMessages,
+        allUsers: storedAllUsers,
+        activeSection,
+        userVotes,
+        setQueue: setStoredQueue,
+        setMessages: setStoredMessages,
+        setAllUsers: setStoredAllUsers,
+        setActiveSection,
+        setUserVotes,
+    } = useRoomStore();
 
     const { serverOnline, checkingServer } = useServerHealth();
 
@@ -48,12 +56,33 @@ function RoomPageContent() {
     }, [status, router]);
 
     const { isChecking } = useRoomMembership({ roomId, session, status });
-    const { socket, queue, messages, onlineUsers } = useRoomSocket({ isChecking, roomId, session, playerRef });
+    const {
+        socket,
+        queue: socketQueue,
+        messages: socketMessages,
+        onlineUsers,
+    } = useRoomSocket({ isChecking, roomId, session, playerRef });
     const { allUsers: dbUsers } = useInitialFetch({ session, isChecking, roomId });
-    const [allUsers, setAllUsers] = useState<typeof dbUsers>([]);
+
+    // The data from the sockets and the API may take time so untill then show the stored ones
+    const queue = socketQueue.length > 0 ? socketQueue : storedQueue;
+    const messages = socketMessages.length > 0 ? socketMessages : storedMessages;
+    const allUsers = storedAllUsers;
 
     useEffect(() => {
-        setAllUsers(currentUsers => {
+        if (socketQueue.length > 0) {
+            setStoredQueue(socketQueue);
+        }
+    }, [socketQueue, setStoredQueue]);
+
+    useEffect(() => {
+        if (socketMessages.length > 0) {
+            setStoredMessages(socketMessages);
+        }
+    }, [socketMessages, setStoredMessages]);
+
+    useEffect(() => {
+        setStoredAllUsers(currentUsers => {
             if (currentUsers.length === 0 && dbUsers.length > 0) {
                 return dbUsers;
             }
@@ -79,7 +108,7 @@ function RoomPageContent() {
 
             return newUsersToAdd.length > 0 ? [...currentUsers, ...newUsersToAdd] : currentUsers;
         });
-    }, [dbUsers, onlineUsers]);
+    }, [dbUsers, onlineUsers, setStoredAllUsers]);
 
     const usersWithStatus = allUsers
         .map(user => ({
@@ -101,10 +130,12 @@ function RoomPageContent() {
 
     // For auto scroll to bottom of the page
     useEffect(() => {
-        window.scrollTo({
-            top: document.documentElement.scrollHeight,
-            behavior: "smooth",
-        });
+        if (activeSection === "chat") {
+            window.scrollTo({
+                top: document.documentElement.scrollHeight,
+                behavior: "smooth",
+            });
+        }
     }, [activeSection]);
 
     const handleAddSong = async (song: SongMetaData) => {
@@ -156,8 +187,11 @@ function RoomPageContent() {
         }
     };
 
-    const handleVote = async (id: string, direction: "up" | "down") => {
-        const song = queue.find(s => s.videoId === id);
+    // Get current users votes
+    const currentUserVotes = userVotes[session?.user?.email] || {};
+
+    const handleVote = async (videoId: string, direction: "up" | "down") => {
+        const song = queue.find(s => s.videoId === videoId);
         if (!song) {
             toast.error("Song not found in queue");
             return;
@@ -165,10 +199,8 @@ function RoomPageContent() {
 
         const voteType = direction === "up" ? "upvote" : "downvote";
 
-        // Update local vote state
-        const newVotes = { ...userVotes, [id]: voteType as "upvote" | "downvote" };
-        setUserVotes(newVotes);
-        localStorage.setItem(`votes:${roomId}:${session.user.email}`, JSON.stringify(newVotes));
+        const newVote = { ...currentUserVotes, [videoId]: voteType as "upvote" | "downvote" };
+        setUserVotes({ ...userVotes, [session.user.email]: newVote });
 
         try {
             const payload = {
@@ -180,19 +212,13 @@ function RoomPageContent() {
             const res = await axios.post("/api/queue/vote", payload);
 
             if (res?.data?.status === 200) {
-                toast.success(direction === "up" ? "Upvoted!" : "Downvoted!");
+                toast.success(direction === "up" ? "Upvoted" : "Downvoted");
             } else {
                 toast.error(res.data.message || "Failed to vote");
-                // Revert on failure
-                setUserVotes(userVotes);
-                localStorage.setItem(`votes:${roomId}:${session.user.email}`, JSON.stringify(userVotes));
             }
         } catch (error) {
             console.error("Failed to vote:", error);
             toast.error("Failed to vote");
-            // Revert on failure
-            setUserVotes(userVotes);
-            localStorage.setItem(`votes:${roomId}:${session.user.email}`, JSON.stringify(userVotes));
         }
     };
 
@@ -304,7 +330,7 @@ function RoomPageContent() {
                         queue={queue}
                         handleVote={handleVote}
                         handleRemoveSong={handleRemoveSong}
-                        userVotes={userVotes}
+                        userVotes={currentUserVotes}
                     />
                 )}
 

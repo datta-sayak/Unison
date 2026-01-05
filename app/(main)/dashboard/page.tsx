@@ -10,6 +10,7 @@ import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import { toast } from "sonner";
+import { useRoomStore } from "@/stores/roomStore";
 
 interface UserData {
     name: string;
@@ -36,6 +37,8 @@ export default function DashboardPage() {
     const router = useRouter();
     const [userData, setUserData] = useState<UserData | null>(null);
     const [loading, setLoading] = useState(true);
+
+    const { resetRoom } = useRoomStore();
 
     useEffect(() => {
         if (status === "loading") return;
@@ -66,12 +69,15 @@ export default function DashboardPage() {
             const payload: { roomCode: string } = { roomCode: roomCode };
             const res = await axios.post("/api/rooms/delete", payload);
             if (res.data.status === 200) {
+                // Clear the room state from the store
+                resetRoom();
+
                 toast.success(res.data.message);
 
-                // Mutate the room data list and which re-renders data component
+                // Mutate the room data list which re-renders the data component
                 setUserData(prev => ({
-                    ...prev!,
-                    room: prev!.room.filter(r => r.roomId !== roomCode),
+                    ...prev,
+                    room: prev.room.filter(r => r.roomId !== roomCode),
                 }));
             } else {
                 toast.error(res.data.message);
