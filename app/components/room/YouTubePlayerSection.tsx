@@ -52,13 +52,13 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
             if (elapsedTimeSec < 0) {
                 elapsedTimeSec = 0;
             }
-            console.log({
-                sentAtTime: sentAtTime,
-                receivedAtTime: receivedAtTime,
-                timestamp: timestamp,
-                elapsedTimeSec: elapsedTimeSec,
-                compensatedTimestamp: timestamp + elapsedTimeSec,
-            });
+            // console.log({
+            //     sentAtTime: sentAtTime,
+            //     receivedAtTime: receivedAtTime,
+            //     timestamp: timestamp,
+            //     elapsedTimeSec: elapsedTimeSec,
+            //     compensatedTimestamp: timestamp + elapsedTimeSec,
+            // });
 
             return { compensatedTimestamp: timestamp + elapsedTimeSec, receivedAtTime };
         }
@@ -201,7 +201,7 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                     width: "100%",
                     videoId: currentSong.videoId,
                     playerVars: {
-                        autoplay: 1,
+                        autoplay: 0,
                         controls: 0, // Disable all YouTube controls
                         rel: 0, // Don't show related videos
                         modestbranding: 1, // Hide YouTube logo
