@@ -10,12 +10,13 @@ interface Playback {
 
 interface ChangeSong {
     roomId: string;
-    currentSongIndex: number;
+    videoId: string;
     senderId: string;
 }
 
-interface Sync extends Playback, ChangeSong {
+interface Sync extends Playback {
     requesterId: string;
+    currentVideoId: string;
 }
 
 export function playbackEvents(io: Server, socket: Socket) {
@@ -30,7 +31,7 @@ export function playbackEvents(io: Server, socket: Socket) {
 
     socket.on("change_song", (data: ChangeSong) => {
         socket.to(data.roomId).emit("change_song", {
-            currentSongIndex: data.currentSongIndex,
+            videoId: data.videoId,
             senderId: data.senderId,
         });
     });
@@ -45,7 +46,7 @@ export function playbackEvents(io: Server, socket: Socket) {
         socket.to(data.requesterId).emit("receive_sync", {
             isPlaying: data.isPlaying,
             timestamp: data.timestamp,
-            currentSongIndex: data.currentSongIndex,
+            currentVideoId: data.currentVideoId,
             sentAt: data.sentAt,
         });
     });

@@ -99,11 +99,10 @@ export default function DashboardPage() {
             <div className="max-w-6xl mx-auto px-6 py-8">
                 {/* Hero Section */}
                 <div className="mb-8">
-                    <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 leading-tight">
-                        Your Rooms
-                    </h1>
+                    <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 leading-tight">Your Rooms</h1>
                     <p className="text-base text-muted-foreground leading-relaxed max-w-2xl">
-                        Create collaborative music rooms or join existing ones. Vote on songs and listen in perfect sync.
+                        Create collaborative music rooms or join existing ones. Vote on songs and listen in perfect
+                        sync.
                     </p>
                 </div>
 
@@ -141,7 +140,7 @@ export default function DashboardPage() {
                 {/* Rooms Section */}
                 <div>
                     <h2 className="text-xl font-bold mb-4">Active Rooms</h2>
-                    
+
                     {loading ? (
                         <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
                             <Loader2 className="w-8 h-8 animate-spin mb-3" />
@@ -156,7 +155,8 @@ export default function DashboardPage() {
                             </div>
                             <h3 className="text-lg font-semibold mb-2">No rooms yet</h3>
                             <p className="text-sm text-muted-foreground mb-4 max-w-md mx-auto leading-relaxed">
-                                Create your first collaborative music room or join one using a room code. Start listening together today.
+                                Create your first collaborative music room or join one using a room code. Start
+                                listening together today.
                             </p>
                             <Link href="/create">
                                 <Button size="default" className="bg-foreground text-background hover:opacity-90">
@@ -186,9 +186,7 @@ export default function DashboardPage() {
                                                         />
                                                     ) : (
                                                         <span className="text-sm font-bold text-foreground">
-                                                            {(room.createdBy.name || "H")
-                                                                .charAt(0)
-                                                                .toUpperCase()}
+                                                            {(room.createdBy.name || "H").charAt(0).toUpperCase()}
                                                         </span>
                                                     )}
                                                 </div>
@@ -204,7 +202,10 @@ export default function DashboardPage() {
                                                 </div>
                                                 {room.createdBy && (
                                                     <p className="text-sm text-muted-foreground mb-2">
-                                                        by <span className="font-medium text-foreground">{room.createdBy.name}</span>
+                                                        by{" "}
+                                                        <span className="font-medium text-foreground">
+                                                            {room.createdBy.name}
+                                                        </span>
                                                     </p>
                                                 )}
                                                 <div className="flex items-center gap-3 text-xs text-muted-foreground">
@@ -219,7 +220,7 @@ export default function DashboardPage() {
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                         {/* Quick Actions */}
                                         <div className="flex gap-1.5 flex-shrink-0">
                                             <Button
@@ -245,7 +246,10 @@ export default function DashboardPage() {
 
                                     {/* Primary Action */}
                                     <Link href={`/room?id=${room.roomId}`} className="block">
-                                        <Button size="sm" className="w-full bg-gradient-to-r from-foreground to-foreground/90 text-background hover:from-foreground/90 hover:to-foreground/80 h-9 text-sm font-medium shadow-sm border border-foreground/10 transition-all">
+                                        <Button
+                                            size="sm"
+                                            className="w-full bg-gradient-to-r from-foreground to-foreground/90 text-background hover:from-foreground/90 hover:to-foreground/80 h-9 text-sm font-medium shadow-sm border border-foreground/10 transition-all"
+                                        >
                                             <Play className="h-3.5 w-3.5 mr-2 fill-current" />
                                             Enter Room
                                         </Button>

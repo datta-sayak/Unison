@@ -14,7 +14,11 @@ export function AppHeader() {
         <header className="sticky top-0 z-40 border-b border-border/50 backdrop-blur-md bg-background/80 relative">
             <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-2">
                 <Link href="/" className="flex items-center gap-1">
-                    <img src={mode === 'dark' ? "/unison-logo-white.svg" : "/unison-logo.svg"} alt="Unison Logo" className="w-6 h-6" />
+                    <img
+                        src={mode === "dark" ? "/unison-logo-white.svg" : "/unison-logo.svg"}
+                        alt="Unison Logo"
+                        className="w-6 h-6"
+                    />
                     <h1 className="text-lg font-bold tracking-tight">Unison</h1>
                 </Link>
                 <div className="flex items-center gap-2">

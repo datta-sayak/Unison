@@ -112,7 +112,7 @@ export function useRoomSocket({ isChecking, roomId, session, playerRef }: UseRoo
                         requesterId: data.requesterId,
                         isPlaying: playerState.isPlaying,
                         timestamp: playerState.timestamp,
-                        currentSongIndex: playerState.currentSongIndex,
+                        currentVideoId: playerState.currentVideoId,
                         senderId: session.user.email,
                         sentAt: playerState.sentAt,
                     });
@@ -123,7 +123,7 @@ export function useRoomSocket({ isChecking, roomId, session, playerRef }: UseRoo
         const handleReceiveSync = async (data: {
             isPlaying: boolean;
             timestamp: number;
-            currentSongIndex: number;
+            currentVideoId: string;
             sentAt: number;
         }) => {
             if (playerRef?.current) {
@@ -147,7 +147,7 @@ export function useRoomSocket({ isChecking, roomId, session, playerRef }: UseRoo
         setSocket(socketInstance);
     }, [roomId, session?.user, isChecking, playerRef]);
 
-    // Cleanup when the user logouts or closes tab
+    // Cleanup websockets when the user logouts or closes tab
     useEffect(() => {
         return () => {
             hasInitializedSocket.current = false;

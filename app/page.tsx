@@ -94,41 +94,41 @@ export default function LandingPage() {
             <section id="features" className="py-20 relative">
                 <div className="max-w-6xl mx-auto px-6">
                     <h2 className="text-3xl font-bold mb-12">What you can do</h2>
-                <div className="grid md:grid-cols-3 gap-8">
-                    {/* Collaborative Queue */}
-                    <div className="space-y-3">
-                        <div className="w-10 h-10 bg-muted border border-border rounded flex items-center justify-center">
-                            <ChevronUp className="w-5 h-5" />
+                    <div className="grid md:grid-cols-3 gap-8">
+                        {/* Collaborative Queue */}
+                        <div className="space-y-3">
+                            <div className="w-10 h-10 bg-muted border border-border rounded flex items-center justify-center">
+                                <ChevronUp className="w-5 h-5" />
+                            </div>
+                            <h3 className="text-lg font-semibold">Collaborative Queue</h3>
+                            <p className="text-sm text-muted-foreground leading-relaxed">
+                                Add YouTube songs to a shared queue. Vote on what plays next. Higher votes play first.
+                            </p>
                         </div>
-                        <h3 className="text-lg font-semibold">Collaborative Queue</h3>
-                        <p className="text-sm text-muted-foreground leading-relaxed">
-                            Add YouTube songs to a shared queue. Vote on what plays next. Higher votes play first.
-                        </p>
-                    </div>
 
-                    {/* Synced Playback */}
-                    <div className="space-y-3">
-                        <div className="w-10 h-10 bg-muted border border-border rounded flex items-center justify-center">
-                            <Play className="w-5 h-5" />
+                        {/* Synced Playback */}
+                        <div className="space-y-3">
+                            <div className="w-10 h-10 bg-muted border border-border rounded flex items-center justify-center">
+                                <Play className="w-5 h-5" />
+                            </div>
+                            <h3 className="text-lg font-semibold">Synced Playback</h3>
+                            <p className="text-sm text-muted-foreground leading-relaxed">
+                                Everyone hears the same thing at the same time. Play, pause, and skip are synced across
+                                all listeners.
+                            </p>
                         </div>
-                        <h3 className="text-lg font-semibold">Synced Playback</h3>
-                        <p className="text-sm text-muted-foreground leading-relaxed">
-                            Everyone hears the same thing at the same time. Play, pause, and skip are synced across all
-                            listeners.
-                        </p>
-                    </div>
 
-                    {/* Live Chat */}
-                    <div className="space-y-3">
-                        <div className="w-10 h-10 bg-muted border border-border rounded flex items-center justify-center">
-                            <MessageCircle className="w-5 h-5" />
+                        {/* Live Chat */}
+                        <div className="space-y-3">
+                            <div className="w-10 h-10 bg-muted border border-border rounded flex items-center justify-center">
+                                <MessageCircle className="w-5 h-5" />
+                            </div>
+                            <h3 className="text-lg font-semibold">Live Chat</h3>
+                            <p className="text-sm text-muted-foreground leading-relaxed">
+                                Talk with your room while listening. Messages sync in real-time.
+                            </p>
                         </div>
-                        <h3 className="text-lg font-semibold">Live Chat</h3>
-                        <p className="text-sm text-muted-foreground leading-relaxed">
-                            Talk with your room while listening. Messages sync in real-time.
-                        </p>
                     </div>
-                </div>
                 </div>
             </section>
 
@@ -141,26 +141,26 @@ export default function LandingPage() {
             <section className="py-20 relative">
                 <div className="max-w-6xl mx-auto px-6">
                     <h2 className="text-3xl font-bold mb-12">How it works</h2>
-                <div className="grid md:grid-cols-4 gap-8">
-                    {[
-                        { num: "1", label: "Create or join a room", detail: "Room code: A9K2Q" },
-                        { num: "2", label: "Add a YouTube song", detail: "Search by title or URL" },
-                        { num: "3", label: "Vote with the room", detail: "Queue sorts by votes" },
-                        { num: "4", label: "Music plays automatically", detail: "Synced for everyone" },
-                    ].map((step, i) => (
-                        <div key={i} className="space-y-3">
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 bg-foreground text-background rounded font-bold flex items-center justify-center text-sm">
-                                    {step.num}
+                    <div className="grid md:grid-cols-4 gap-8">
+                        {[
+                            { num: "1", label: "Create or join a room", detail: "Room code: A9K2Q" },
+                            { num: "2", label: "Add a YouTube song", detail: "Search by title or URL" },
+                            { num: "3", label: "Vote with the room", detail: "Queue sorts by votes" },
+                            { num: "4", label: "Music plays automatically", detail: "Synced for everyone" },
+                        ].map((step, i) => (
+                            <div key={i} className="space-y-3">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 bg-foreground text-background rounded font-bold flex items-center justify-center text-sm">
+                                        {step.num}
+                                    </div>
+                                    {i < 3 && <ArrowRight className="w-4 h-4 text-muted-foreground" />}
                                 </div>
-                                {i < 3 && <ArrowRight className="w-4 h-4 text-muted-foreground" />}
+                                <div className="text-sm font-medium">{step.label}</div>
+                                <div className="text-xs text-muted-foreground font-mono">{step.detail}</div>
                             </div>
-                            <div className="text-sm font-medium">{step.label}</div>
-                            <div className="text-xs text-muted-foreground font-mono">{step.detail}</div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
-            </div>
             </section>
 
             {/* Separator Line */}
@@ -173,35 +173,37 @@ export default function LandingPage() {
                 <div className="max-w-6xl mx-auto px-6">
                     <div className="bg-card border border-border rounded-lg p-8">
                         <h2 className="text-2xl font-semibold mb-8">Everything stays in sync</h2>
-                    <div className="grid md:grid-cols-3 gap-8">
-                        <div className="space-y-3">
-                            <div className="w-10 h-10 bg-muted border border-border rounded flex items-center justify-center">
-                                <div className="w-2 h-2 bg-foreground rounded-full animate-pulse" />
+                        <div className="grid md:grid-cols-3 gap-8">
+                            <div className="space-y-3">
+                                <div className="w-10 h-10 bg-muted border border-border rounded flex items-center justify-center">
+                                    <div className="w-2 h-2 bg-foreground rounded-full animate-pulse" />
+                                </div>
+                                <h3 className="text-base font-semibold">Real-time updates</h3>
+                                <p className="text-sm text-muted-foreground leading-relaxed">
+                                    When someone adds a song or casts a vote, you see it instantly. No refreshing
+                                    needed.
+                                </p>
                             </div>
-                            <h3 className="text-base font-semibold">Real-time updates</h3>
-                            <p className="text-sm text-muted-foreground leading-relaxed">
-                                When someone adds a song or casts a vote, you see it instantly. No refreshing needed.
-                            </p>
-                        </div>
-                        <div className="space-y-3">
-                            <div className="w-10 h-10 bg-muted border border-border rounded flex items-center justify-center">
-                                <Play className="w-5 h-5" />
+                            <div className="space-y-3">
+                                <div className="w-10 h-10 bg-muted border border-border rounded flex items-center justify-center">
+                                    <Play className="w-5 h-5" />
+                                </div>
+                                <h3 className="text-base font-semibold">Perfect sync</h3>
+                                <p className="text-sm text-muted-foreground leading-relaxed">
+                                    Everyone hears the same moment at the same time. Play, pause, and skip stay
+                                    synchronized.
+                                </p>
                             </div>
-                            <h3 className="text-base font-semibold">Perfect sync</h3>
-                            <p className="text-sm text-muted-foreground leading-relaxed">
-                                Everyone hears the same moment at the same time. Play, pause, and skip stay synchronized.
-                            </p>
-                        </div>
-                        <div className="space-y-3">
-                            <div className="w-10 h-10 bg-muted border border-border rounded flex items-center justify-center">
-                                <Users className="w-5 h-5" />
+                            <div className="space-y-3">
+                                <div className="w-10 h-10 bg-muted border border-border rounded flex items-center justify-center">
+                                    <Users className="w-5 h-5" />
+                                </div>
+                                <h3 className="text-base font-semibold">Built for groups</h3>
+                                <p className="text-sm text-muted-foreground leading-relaxed">
+                                    Works smoothly whether you're listening with 2 friends or 200. No lag, no delays.
+                                </p>
                             </div>
-                            <h3 className="text-base font-semibold">Built for groups</h3>
-                            <p className="text-sm text-muted-foreground leading-relaxed">
-                                Works smoothly whether you're listening with 2 friends or 200. No lag, no delays.
-                            </p>
                         </div>
-                    </div>
                     </div>
                 </div>
             </section>
@@ -216,29 +218,29 @@ export default function LandingPage() {
                 <div className="max-w-6xl mx-auto px-6">
                     <div className="max-w-2xl">
                         <h2 className="text-2xl font-semibold mb-6">Privacy & Security</h2>
-                    <div className="space-y-4 text-sm text-muted-foreground">
-                        <div className="flex items-start gap-3">
-                            <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2" />
-                            <div>
-                                <span className="text-foreground font-medium">Sign in with Google</span> — Quick and
-                                secure. No passwords to remember.
+                        <div className="space-y-4 text-sm text-muted-foreground">
+                            <div className="flex items-start gap-3">
+                                <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2" />
+                                <div>
+                                    <span className="text-foreground font-medium">Sign in with Google</span> — Quick and
+                                    secure. No passwords to remember.
+                                </div>
+                            </div>
+                            <div className="flex items-start gap-3">
+                                <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2" />
+                                <div>
+                                    <span className="text-foreground font-medium">Keep rooms private</span> — Only
+                                    people with your room code can join.
+                                </div>
+                            </div>
+                            <div className="flex items-start gap-3">
+                                <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2" />
+                                <div>
+                                    <span className="text-foreground font-medium">Your data stays yours</span> — No
+                                    tracking, no ads, no data selling.
+                                </div>
                             </div>
                         </div>
-                        <div className="flex items-start gap-3">
-                            <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2" />
-                            <div>
-                                <span className="text-foreground font-medium">Keep rooms private</span> — Only people
-                                with your room code can join.
-                            </div>
-                        </div>
-                        <div className="flex items-start gap-3">
-                            <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2" />
-                            <div>
-                                <span className="text-foreground font-medium">Your data stays yours</span> — No tracking,
-                                no ads, no data selling.
-                            </div>
-                        </div>
-                    </div>
                     </div>
                 </div>
             </section>
@@ -252,20 +254,16 @@ export default function LandingPage() {
             <section className="py-32 relative">
                 <div className="max-w-5xl mx-auto px-6">
                     <div className="flex items-center gap-8">
-                    <img 
-                        src={mode === 'dark' ? "/unison-logo-white.svg" : "/unison-logo.svg"} 
-                        alt="Unison Logo" 
-                        className="w-32 h-32 flex-shrink-0" 
-                    />
-                    <div className="text-left">
-                        <h2 className="text-5xl md:text-6xl font-bold leading-tight">
-                            Listen together.
-                        </h2>
-                        <h2 className="text-5xl md:text-6xl font-bold leading-tight">
-                            Decide together.
-                        </h2>
+                        <img
+                            src={mode === "dark" ? "/unison-logo-white.svg" : "/unison-logo.svg"}
+                            alt="Unison Logo"
+                            className="w-32 h-32 flex-shrink-0"
+                        />
+                        <div className="text-left">
+                            <h2 className="text-5xl md:text-6xl font-bold leading-tight">Listen together.</h2>
+                            <h2 className="text-5xl md:text-6xl font-bold leading-tight">Decide together.</h2>
+                        </div>
                     </div>
-                </div>
                 </div>
             </section>
 
@@ -276,7 +274,7 @@ export default function LandingPage() {
                         <div className="space-y-3">
                             <div className="flex items-center gap-2">
                                 <img
-                                    src={mode === 'dark' ? "/unison-logo-white.svg" : "/unison-logo.svg"}
+                                    src={mode === "dark" ? "/unison-logo-white.svg" : "/unison-logo.svg"}
                                     alt="Unison Logo"
                                     className="w-6 h-6"
                                 />

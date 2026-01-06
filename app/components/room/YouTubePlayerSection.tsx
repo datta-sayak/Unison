@@ -15,11 +15,11 @@ interface YouTubePlayerSectionProps {
 }
 
 export interface YouTubePlayerHandle {
-    getPlayerState: () => { isPlaying: boolean; timestamp: number; currentSongIndex: number; sentAt: number } | null;
+    getPlayerState: () => { isPlaying: boolean; timestamp: number; currentVideoId: string; sentAt: number } | null;
     applySync: (data: {
         isPlaying: boolean;
         timestamp: number;
-        currentSongIndex: number;
+        currentVideoId: string;
         sentAt: number;
     }) => Promise<void>;
 }
@@ -38,11 +38,24 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
         const [isPlaying, setIsPlaying] = useState(false);
         const [isReady, setIsReady] = useState(false);
         const [isLoading, setIsLoading] = useState(true);
+        const [currentSong, setCurrentSong] = useState<Song | null>(null);
         const currentVideoIdRef = useRef<string | null>(null);
         const loadingSongRef = useRef<{ isPlaying: boolean; timestamp: number; receivedAt: number } | null>(null);
         const youtubePlayerPromiseRef = useRef<{ resolve: () => void } | null>(null);
 
-        const currentSong = queue[currentIndex] || null;
+        // Keeping the current song playing when the queue is reordered
+        useEffect(() => {
+            if (currentVideoIdRef.current && queue.length > 0) {
+                const currentVideoIndex = queue.findIndex(song => song.videoId === currentVideoIdRef.current);
+                if (currentVideoIndex !== -1 && currentVideoIndex !== currentIndex) {
+                    // To keep on playing that song until it ends
+                    setCurrentIndex(currentVideoIndex);
+                    setCurrentSong(queue[currentVideoIndex]);
+                }
+            } else if (queue.length === 0) {
+                setCurrentSong(null);
+            }
+        }, [queue]);
 
         function timeCompensation(sentAtTime: number, timestamp: number) {
             const receivedAtTime = Date.now();
@@ -74,7 +87,7 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                         return {
                             isPlaying,
                             timestamp,
-                            currentSongIndex: currentIndex,
+                            currentVideoId: currentSong.videoId,
                             sentAt: Date.now(),
                         };
                     } catch (error) {
@@ -85,24 +98,28 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                 applySync: async (data: {
                     isPlaying: boolean;
                     timestamp: number;
-                    currentSongIndex: number;
+                    currentVideoId: string;
                     sentAt: number;
                 }) => {
                     const { compensatedTimestamp, receivedAtTime } = timeCompensation(data.sentAt, data.timestamp);
+
+                    const songIndex = queue.findIndex(song => song.videoId === data.currentVideoId);
+                    if (songIndex === -1) return;
 
                     loadingSongRef.current = {
                         isPlaying: data.isPlaying,
                         timestamp: compensatedTimestamp,
                         receivedAt: receivedAtTime,
                     };
-                    setCurrentIndex(data.currentSongIndex);
+                    setCurrentIndex(songIndex);
+                    setCurrentSong(queue[songIndex]);
 
                     return new Promise<void>(resolve => {
                         youtubePlayerPromiseRef.current = { resolve };
                     });
                 },
             }),
-            [currentIndex, isPlaying, currentSong],
+            [currentIndex, isPlaying, currentSong, queue],
         );
 
         // Load YouTube IFrame API
@@ -152,9 +169,18 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                 }
             };
 
-            const handleSongChange = (data: { currentSongIndex: number; senderId: string }) => {
+            const handleSongChange = (data: { videoId: string; senderId: string }) => {
                 if (data.senderId === userEmail) return;
-                setCurrentIndex(data.currentSongIndex);
+
+                const actualIndex = queue.findIndex(song => song.videoId === data.videoId);
+
+                if (actualIndex !== -1) {
+                    // Reset the video reference first
+                    currentVideoIdRef.current = null;
+                    // Setting the actual index of the song as on vote the queue changed for other users
+                    setCurrentIndex(actualIndex);
+                    setCurrentSong(queue[actualIndex]);
+                }
             };
 
             socket.on("playback_controls", handlePlayBackState);
@@ -166,16 +192,27 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
             };
         }, [socket, userEmail]);
 
+        // Autoplay first song if no sync received
+        useEffect(() => {
+            if (queue.length > 0 && !currentSong && isReady) {
+                setCurrentSong(queue[0]);
+                setCurrentIndex(0);
+            }
+        }, [queue, currentSong, isReady]);
+
         const handleSongEnd = () => {
             if (currentSong && onSongEnd) {
                 onSongEnd(currentSong.videoId);
             }
             const nextIndex = currentIndex < queue.length - 1 ? currentIndex + 1 : 0;
+            const nextSong = queue[nextIndex];
+            currentVideoIdRef.current = null;
             setCurrentIndex(nextIndex);
+            setCurrentSong(nextSong);
 
             socket?.emit("change_song", {
                 roomId,
-                currentSongIndex: nextIndex,
+                videoId: nextSong?.videoId || "",
                 senderId: userEmail,
             });
         };
@@ -288,9 +325,35 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
             }
 
             if (currentSong.videoId !== currentVideoIdRef.current) {
+                // This if condition is for when the song is changed
+
                 if (playerRef.current && typeof playerRef.current.loadVideoById === "function") {
                     playerRef.current.loadVideoById(currentSong.videoId);
                     currentVideoIdRef.current = currentSong.videoId;
+                }
+            } else if (loadingSongRef.current && playerRef.current) {
+                // This if condition is for when there is the same song and new user joins they must sync
+
+                const { compensatedTimestamp } = timeCompensation(
+                    loadingSongRef.current.receivedAt,
+                    loadingSongRef.current.timestamp,
+                );
+
+                playerRef.current.seekTo(compensatedTimestamp, true);
+
+                if (loadingSongRef.current.isPlaying) {
+                    playerRef.current.playVideo();
+                    setIsPlaying(true);
+                } else {
+                    playerRef.current.pauseVideo();
+                    setIsPlaying(false);
+                }
+
+                loadingSongRef.current = null;
+
+                if (youtubePlayerPromiseRef.current) {
+                    youtubePlayerPromiseRef.current.resolve();
+                    youtubePlayerPromiseRef.current = null;
                 }
             }
         }, [isReady, currentSong]);
