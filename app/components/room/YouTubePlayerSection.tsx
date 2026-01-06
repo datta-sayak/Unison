@@ -42,7 +42,7 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
         const currentVideoIdRef = useRef<string | null>(null);
         const [needsUserInteraction, setNeedsUserInteraction] = useState(false);
         const hasUserInteractedRef = useRef(false);
-        const newJoinSyncRef = useRef<number | null>(null);
+        const newJoinSyncRef = useRef<{ timestamp: number; receivedAt: number } | null>(null);
         const youtubePlayerPromiseRef = useRef<{ resolve: () => void } | null>(null);
 
         const loadingSongRef = useRef<{
@@ -117,7 +117,10 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
 
                     if (!hasUserInteractedRef.current && data.isPlaying) {
                         setNeedsUserInteraction(true);
-                        newJoinSyncRef.current = data.timestamp;
+                        newJoinSyncRef.current = {
+                            receivedAt: data.sentAt,
+                            timestamp: data.timestamp,
+                        };
                     }
 
                     loadingSongRef.current = {
@@ -294,7 +297,8 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                                     setIsPlaying(false);
                                 }
 
-                                newJoinSyncRef.current = loadingSongRef.current.timestamp;
+                                newJoinSyncRef.current.timestamp = loadingSongRef.current.timestamp;
+                                newJoinSyncRef.current.receivedAt = loadingSongRef.current.receivedAt;
                                 loadingSongRef.current = null;
 
                                 if (youtubePlayerPromiseRef.current) {
@@ -422,7 +426,11 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
             setNeedsUserInteraction(false);
 
             if (newJoinSyncRef.current) {
-                playerRef.current.seekTo(newJoinSyncRef.current, true);
+                const { compensatedTimestamp } = timeCompensation(
+                    newJoinSyncRef.current.receivedAt,
+                    newJoinSyncRef.current.timestamp,
+                );
+                playerRef.current.seekTo(compensatedTimestamp, true);
                 newJoinSyncRef.current = null;
             }
 
