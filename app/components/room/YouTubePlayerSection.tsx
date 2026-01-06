@@ -43,7 +43,9 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
 
         const currentVideoIdRef = useRef<string | null>(null);
         const hasUserInteractedRef = useRef(false);
-        const syncDataRef = useRef<{ timestamp: number; sentAt: number } | null>(null);
+        const syncDataRef = useRef<{ timestamp: number; sentAt: number; videoId: string; isPlaying: boolean } | null>(
+            null,
+        );
 
         // Keeping the current song playing when the queue is reordered
         useEffect(() => {
@@ -98,11 +100,14 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
 
                     if (!hasUserInteractedRef.current && data.isPlaying) {
                         setNeedsUserInteraction(true);
-                        syncDataRef.current = {
-                            timestamp: data.timestamp,
-                            sentAt: data.sentAt,
-                        };
                     }
+
+                    syncDataRef.current = {
+                        timestamp: data.timestamp,
+                        sentAt: data.sentAt,
+                        videoId: data.currentVideoId,
+                        isPlaying: data.isPlaying,
+                    };
 
                     currentVideoIdRef.current = data.currentVideoId;
                     setCurrentIndex(songIndex);
@@ -114,7 +119,7 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                         playerRef.current.loadVideoById(data.currentVideoId);
                         playerRef.current.seekTo(compensatedTimestamp + 0.3, true);
 
-                        if (data.isPlaying) {
+                        if (data.isPlaying && hasUserInteractedRef.current) {
                             playerRef.current.playVideo();
                             setIsPlaying(true);
                         } else {
@@ -248,7 +253,7 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                 playerRef.current = new window.YT.Player("youtube-player", {
                     height: "100%",
                     width: "100%",
-                    videoId: currentSong.videoId,
+                    videoId: syncDataRef.current?.videoId || currentSong.videoId,
                     playerVars: {
                         autoplay: 0,
                         controls: 0,
@@ -264,9 +269,35 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                     },
                     events: {
                         onReady: (event: any) => {
-                            event.target.playVideo();
-                            setIsPlaying(true);
-                            hasUserInteractedRef.current = true;
+                            if (syncDataRef.current) {
+                                const { compensatedTimestamp } = timeCompensation(
+                                    syncDataRef.current.sentAt,
+                                    syncDataRef.current.timestamp,
+                                );
+
+                                event.target.seekTo(compensatedTimestamp + 0.3, true);
+
+                                if (needsUserInteraction) {
+                                    currentVideoIdRef.current = syncDataRef.current.videoId;
+                                    return;
+                                }
+
+                                if (syncDataRef.current.isPlaying) {
+                                    event.target.playVideo();
+                                    setIsPlaying(true);
+                                } else {
+                                    event.target.pauseVideo();
+                                    setIsPlaying(false);
+                                }
+
+                                currentVideoIdRef.current = syncDataRef.current.videoId;
+                                syncDataRef.current = null;
+                            } else {
+                                event.target.playVideo();
+                                setIsPlaying(true);
+                                hasUserInteractedRef.current = true;
+                                currentVideoIdRef.current = currentSong.videoId;
+                            }
                         },
                         onStateChange: (event: any) => {
                             if (event.data === 0) {
@@ -284,7 +315,7 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                         },
                     },
                 });
-                currentVideoIdRef.current = currentSong.videoId;
+                currentVideoIdRef.current = syncDataRef.current?.videoId || currentSong.videoId;
                 return;
             }
 
@@ -381,7 +412,7 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                     {/* Interaction Overlay */}
                     {needsUserInteraction && (
                         <div className="absolute inset-0 bg-gradient-to-br from-black/50 to-gray-900/40 backdrop-blur-md z-10 flex flex-col items-center justify-center gap-4 p-6 text-center">
-                            <h3 className="text-xl font-semibold text-white">A song is currently playing</h3>
+                            <h3 className="text-xl font-semibold text-white">Connect to ongoing live music session</h3>
                             <Button
                                 onClick={handleUserInteraction}
                                 size="lg"
