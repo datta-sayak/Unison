@@ -313,8 +313,11 @@ function RoomPageContent() {
                         <span className="text-xs font-semibold">Members</span>
                     </button>
                     <button
-                        onClick={() => setActiveSection(roomId, "chat")}
-                        className={`flex-1 px-3 py-2.5 text-sm font-medium transition-all rounded-lg flex flex-col items-center gap-1.5 ${
+                        onClick={() => {
+                            setActiveSection(roomId, "chat");
+                            setHasUnreadMessages(false);
+                        }}
+                        className={`flex-1 px-3 py-2.5 text-sm font-medium transition-all rounded-lg flex flex-col items-center gap-1.5 relative ${
                             activeSection === "chat"
                                 ? "bg-primary text-primary-foreground shadow-md"
                                 : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
@@ -322,6 +325,9 @@ function RoomPageContent() {
                     >
                         <MessageCircle className="w-5 h-5" />
                         <span className="text-xs font-semibold">Chat</span>
+                        {hasUnreadMessages && (
+                            <span className="top-1 right-13 absolute bg-green-500 rounded-full h-3 w-3"></span>
+                        )}
                     </button>
                     <button
                         onClick={() => setActiveSection(roomId, "info")}
