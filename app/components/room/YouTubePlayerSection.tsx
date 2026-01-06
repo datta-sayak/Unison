@@ -40,7 +40,12 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
         const [isLoading, setIsLoading] = useState(true);
         const [currentSong, setCurrentSong] = useState<Song | null>(null);
         const currentVideoIdRef = useRef<string | null>(null);
-        const loadingSongRef = useRef<{ isPlaying: boolean; timestamp: number; receivedAt: number } | null>(null);
+        const loadingSongRef = useRef<{
+            isPlaying: boolean;
+            timestamp: number;
+            currentVideoId: string;
+            receivedAt: number;
+        } | null>(null);
         const youtubePlayerPromiseRef = useRef<{ resolve: () => void } | null>(null);
 
         // Keeping the current song playing when the queue is reordered
@@ -109,6 +114,7 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                     loadingSongRef.current = {
                         isPlaying: data.isPlaying,
                         timestamp: compensatedTimestamp,
+                        currentVideoId: data.currentVideoId,
                         receivedAt: receivedAtTime,
                     };
                     setCurrentIndex(songIndex);
@@ -266,18 +272,17 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                                 );
 
                                 // Here 0.3 sec is the apprx constant delay to change the state of the video
-                                event.target.seekTo(compensatedTimestamp + 0.3 + 0.5, true);
+                                event.target.seekTo(compensatedTimestamp + 0.3, true);
 
-                                setTimeout(() => {
-                                    if (loadingSongRef.current.isPlaying) {
-                                        event.target.playVideo();
-                                        setIsPlaying(true);
-                                    } else {
-                                        event.target.pauseVideo();
-                                        setIsPlaying(false);
-                                    }
-                                    loadingSongRef.current = null;
-                                }, 500);
+                                if (loadingSongRef.current.isPlaying) {
+                                    event.target.playVideo();
+                                    setIsPlaying(true);
+                                } else {
+                                    event.target.pauseVideo();
+                                    setIsPlaying(false);
+                                }
+
+                                loadingSongRef.current = null;
 
                                 if (youtubePlayerPromiseRef.current) {
                                     youtubePlayerPromiseRef.current.resolve();
@@ -347,6 +352,8 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                     loadingSongRef.current.timestamp,
                 );
 
+                playerRef.current.loadVideoById(loadingSongRef.current.currentVideoId);
+                currentVideoIdRef.current = loadingSongRef.current.currentVideoId;
                 playerRef.current.seekTo(compensatedTimestamp, true);
 
                 if (loadingSongRef.current.isPlaying) {
