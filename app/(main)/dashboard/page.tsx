@@ -94,163 +94,166 @@ export default function DashboardPage() {
     };
 
     return (
-        <main className="min-h-screen bg-background">
+        <main className="min-h-screen bg-background text-foreground relative overflow-hidden">
             {/* Main Content */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 rounded-t-3xl">
-                <div className="flex justify-center">
-                    <div className="w-full max-w-5xl">
-                        <div className="space-y-6">
-                            {/* Section Header */}
-                            <div className="flex items-center justify-between">
+            <div className="max-w-6xl mx-auto px-6 py-8">
+                {/* Hero Section */}
+                <div className="mb-8">
+                    <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2 leading-tight">
+                        Your Rooms
+                    </h1>
+                    <p className="text-base text-muted-foreground leading-relaxed max-w-2xl">
+                        Create collaborative music rooms or join existing ones. Vote on songs and listen in perfect sync.
+                    </p>
+                </div>
+
+                {/* Quick Actions */}
+                <div className="grid md:grid-cols-2 gap-4 mb-8">
+                    <Link href="/join">
+                        <div className="bg-card border border-border rounded-lg p-4 hover:border-foreground/20 transition-all cursor-pointer group">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-foreground text-background rounded flex items-center justify-center">
+                                    <LogIn className="h-5 w-5" />
+                                </div>
                                 <div>
-                                    <h2 className="text-2xl font-bold text-foreground">Your Rooms</h2>
+                                    <h3 className="text-base font-semibold mb-0.5">Join Room</h3>
+                                    <p className="text-xs text-muted-foreground">Enter with a room code</p>
                                 </div>
                             </div>
-                            {/* Join Room and New Room Cards - Above Empty State */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <Link href="/join" className="block">
-                                    <div className="bg-card border-2 border-border rounded-2xl p-4 hover:border-primary hover:shadow-lg transition-all cursor-pointer group active:scale-95">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-lg bg-primary text-primary-foreground flex items-center justify-center shadow-lg">
-                                                <LogIn className="h-5 w-5" />
-                                            </div>
-                                            <div className="flex-1">
-                                                <h3 className="font-semibold text-foreground">Join Room</h3>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Link>
-
-                                <Link href="/create" className="block">
-                                    <div className="bg-card border-2 border-border rounded-2xl p-4 hover:border-primary hover:shadow-lg transition-all cursor-pointer group active:scale-95">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-lg bg-primary text-primary-foreground flex items-center justify-center shadow-lg">
-                                                <Plus className="h-5 w-5" />
-                                            </div>
-                                            <div className="flex-1">
-                                                <h3 className="font-semibold text-foreground">New Room</h3>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Link>
-                            </div>
-                            {/* Rooms Grid */}
-                            {loading ? (
-                                <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
-                                    <Loader2 className="w-8 h-8 animate-spin text-primary mb-3" />
-                                    <p>Loading rooms...</p>
-                                </div>
-                            ) : userData.room.length === 0 ? (
-                                <>
-                                    <div className="border-2 border-dashed border-border rounded-2xl p-12 text-center space-y-4">
-                                        <div className="flex justify-center">
-                                            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                                                <Play className="h-8 w-8 text-primary" />
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <h3 className="font-semibold text-foreground text-lg">No rooms yet</h3>
-                                            <p className="text-sm text-muted-foreground mt-2 max-w-xs mx-auto">
-                                                Create your first collaborative music room or join one using a room code
-                                            </p>
-                                        </div>
-                                        <Link href="/create">
-                                            <Button className="bg-primary text-primary-foreground hover:opacity-90">
-                                                Create Your First Room
-                                            </Button>
-                                        </Link>
-                                    </div>
-                                </>
-                            ) : (
-                                <>
-                                    {/* Rooms Grid */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        {...userData.room.map(room => (
-                                            <div
-                                                key={room.roomId}
-                                                className="group rounded-xl bg-card border border-border p-4 hover:border-primary/50 hover:shadow-lg transition-all"
-                                            >
-                                                {/* Room Header */}
-                                                <div className="flex items-start gap-3 mb-3">
-                                                    {room.createdBy && (
-                                                        <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                                                            {room.createdBy.avatarUrl ? (
-                                                                <Image
-                                                                    src={room.createdBy.avatarUrl}
-                                                                    alt={room.createdBy.name || "Host"}
-                                                                    width={40}
-                                                                    height={40}
-                                                                    className="w-10 h-10 rounded-full object-cover"
-                                                                />
-                                                            ) : (
-                                                                <span className="text-sm font-bold text-primary">
-                                                                    {(room.createdBy.name || "H")
-                                                                        .charAt(0)
-                                                                        .toUpperCase()}
-                                                                </span>
-                                                            )}
-                                                        </div>
-                                                    )}
-                                                    <div className="flex-1 min-w-0">
-                                                        <h3 className="text-lg font-bold text-foreground truncate">
-                                                            {room.roomName}
-                                                        </h3>
-                                                        {room.createdBy && (
-                                                            <p className="text-xs text-muted-foreground truncate mb-1">
-                                                                Created by: <b>{room.createdBy.name}</b> <br />
-                                                                Room ID: <b>{room.roomId}</b>
-                                                            </p>
-                                                        )}
-                                                        <div className="flex items-center gap-2">
-                                                            <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                                                <Users className="h-3 w-3" />
-                                                                {room._count.roomUsers}
-                                                            </span>
-                                                            {room.accessMode === "Private" && (
-                                                                <>
-                                                                    <span className="text-xs text-muted-foreground">
-                                                                        •
-                                                                    </span>
-                                                                    <Lock className="h-3 w-3 text-muted-foreground" />
-                                                                    <span className="text-xs text-muted-foreground">
-                                                                        Private
-                                                                    </span>
-                                                                </>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                {/* Action Buttons */}
-                                                <div className="flex gap-2">
-                                                    <Link href={`/room?id=${room.roomId}`} className="flex-1">
-                                                        <button className="w-full px-3 py-2 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
-                                                            <Play className="h-4 w-4" />
-                                                            Enter
-                                                        </button>
-                                                    </Link>
-                                                    <button
-                                                        onClick={() => handleShareRoom(room.roomId)}
-                                                        className="px-3 py-2 rounded-lg border border-border hover:bg-muted transition-colors"
-                                                        title="Share room"
-                                                    >
-                                                        <Share2 className="h-4 w-4" />
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleDeleteRoom(room.roomId)}
-                                                        className="px-3 py-2 rounded-lg border border-border hover:bg-destructive/10 hover:border-destructive/30 hover:text-destructive transition-colors"
-                                                        title="Delete room"
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </>
-                            )}
                         </div>
-                    </div>
+                    </Link>
+
+                    <Link href="/create">
+                        <div className="bg-card border border-border rounded-lg p-4 hover:border-foreground/20 transition-all cursor-pointer group">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-foreground text-background rounded flex items-center justify-center">
+                                    <Plus className="h-5 w-5" />
+                                </div>
+                                <div>
+                                    <h3 className="text-base font-semibold mb-0.5">Create Room</h3>
+                                    <p className="text-xs text-muted-foreground">Start a new music session</p>
+                                </div>
+                            </div>
+                        </div>
+                    </Link>
+                </div>
+
+                {/* Rooms Section */}
+                <div>
+                    <h2 className="text-xl font-bold mb-4">Active Rooms</h2>
+                    
+                    {loading ? (
+                        <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
+                            <Loader2 className="w-8 h-8 animate-spin mb-3" />
+                            <p className="text-sm">Loading rooms...</p>
+                        </div>
+                    ) : userData?.room.length === 0 ? (
+                        <div className="bg-card border border-border rounded-lg p-8 text-center">
+                            <div className="flex justify-center mb-4">
+                                <div className="w-12 h-12 bg-muted border border-border rounded-full flex items-center justify-center">
+                                    <Play className="h-6 w-6 text-muted-foreground" />
+                                </div>
+                            </div>
+                            <h3 className="text-lg font-semibold mb-2">No rooms yet</h3>
+                            <p className="text-sm text-muted-foreground mb-4 max-w-md mx-auto leading-relaxed">
+                                Create your first collaborative music room or join one using a room code. Start listening together today.
+                            </p>
+                            <Link href="/create">
+                                <Button size="default" className="bg-foreground text-background hover:opacity-90">
+                                    Create Your First Room
+                                </Button>
+                            </Link>
+                        </div>
+                    ) : (
+                        <div className="grid md:grid-cols-2 gap-4">
+                            {userData?.room.map(room => (
+                                <div
+                                    key={room.roomId}
+                                    className="bg-card border border-border rounded-xl p-5 hover:border-foreground/30 hover:shadow-sm transition-all duration-200"
+                                >
+                                    {/* Room Header */}
+                                    <div className="flex items-start justify-between gap-3 mb-4">
+                                        <div className="flex items-start gap-4 flex-1 min-w-0">
+                                            {room.createdBy && (
+                                                <div className="w-11 h-11 rounded-full bg-gradient-to-br from-muted to-muted/50 border border-border flex items-center justify-center flex-shrink-0 shadow-sm">
+                                                    {room.createdBy.avatarUrl ? (
+                                                        <Image
+                                                            src={room.createdBy.avatarUrl}
+                                                            alt={room.createdBy.name || "Host"}
+                                                            width={44}
+                                                            height={44}
+                                                            className="w-11 h-11 rounded-full object-cover"
+                                                        />
+                                                    ) : (
+                                                        <span className="text-sm font-bold text-foreground">
+                                                            {(room.createdBy.name || "H")
+                                                                .charAt(0)
+                                                                .toUpperCase()}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            )}
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-start gap-2 mb-1">
+                                                    <h3 className="text-lg font-semibold truncate leading-tight">
+                                                        {room.roomName}
+                                                    </h3>
+                                                    {room.accessMode === "Private" && (
+                                                        <Lock className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />
+                                                    )}
+                                                </div>
+                                                {room.createdBy && (
+                                                    <p className="text-sm text-muted-foreground mb-2">
+                                                        by <span className="font-medium text-foreground">{room.createdBy.name}</span>
+                                                    </p>
+                                                )}
+                                                <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                                                    <div className="flex items-center gap-1.5">
+                                                        <Users className="h-3.5 w-3.5" />
+                                                        <span className="font-medium">{room._count.roomUsers}</span>
+                                                    </div>
+                                                    <span className="text-muted-foreground/60">•</span>
+                                                    <span className="font-mono text-[11px] tracking-wide bg-muted/50 px-2 py-0.5 rounded">
+                                                        {room.roomId}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        {/* Quick Actions */}
+                                        <div className="flex gap-1.5 flex-shrink-0">
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => handleShareRoom(room.roomId)}
+                                                className="h-8 w-8 p-0 hover:bg-muted/80"
+                                                title="Share room"
+                                            >
+                                                <Share2 className="h-3.5 w-3.5" />
+                                            </Button>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => handleDeleteRoom(room.roomId)}
+                                                className="h-8 w-8 p-0 hover:bg-red-500/10 hover:text-red-500"
+                                                title="Delete room"
+                                            >
+                                                <Trash2 className="h-3.5 w-3.5" />
+                                            </Button>
+                                        </div>
+                                    </div>
+
+                                    {/* Primary Action */}
+                                    <Link href={`/room?id=${room.roomId}`} className="block">
+                                        <Button size="sm" className="w-full bg-gradient-to-r from-foreground to-foreground/90 text-background hover:from-foreground/90 hover:to-foreground/80 h-9 text-sm font-medium shadow-sm border border-foreground/10 transition-all">
+                                            <Play className="h-3.5 w-3.5 mr-2 fill-current" />
+                                            Enter Room
+                                        </Button>
+                                    </Link>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
         </main>

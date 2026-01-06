@@ -9,9 +9,12 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-    title: "Unison - Listen Together, Seamlessly",
+    title: "Listen together, Decide together.",
     description: "Create a room, invite friends, and enjoy music in sync",
-    generator: "v0.app",
+    generator: "figma.make",
+    icons: {
+        icon: "/unison-logo-white.svg",
+    },
 };
 
 export const viewport: Viewport = {
