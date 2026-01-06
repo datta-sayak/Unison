@@ -147,10 +147,17 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
             const handlePlayBackState = (data: {
                 isPlaying: boolean;
                 timestamp: number;
+                currentVideoId: string;
                 senderId: string;
                 sentAt: number;
             }) => {
                 if (data.senderId === userEmail || !playerRef.current) return;
+
+                // This makes sure if by chance 2 users are not on the ssame song when playing it syncs the videoId first
+                if (data.currentVideoId && data.currentVideoId !== currentVideoIdRef.current) {
+                    playerRef.current.loadVideoById(data.currentVideoId);
+                    currentVideoIdRef.current = data.currentVideoId;
+                }
 
                 const { compensatedTimestamp } = timeCompensation(data.sentAt, data.timestamp);
 
@@ -259,17 +266,18 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                                 );
 
                                 // Here 0.3 sec is the apprx constant delay to change the state of the video
-                                event.target.seekTo(compensatedTimestamp + 0.3, true);
+                                event.target.seekTo(compensatedTimestamp + 0.3 + 0.5, true);
 
-                                if (loadingSongRef.current.isPlaying) {
-                                    event.target.playVideo();
-                                    setIsPlaying(true);
-                                } else {
-                                    event.target.pauseVideo();
-                                    setIsPlaying(false);
-                                }
-
-                                loadingSongRef.current = null;
+                                setTimeout(() => {
+                                    if (loadingSongRef.current.isPlaying) {
+                                        event.target.playVideo();
+                                        setIsPlaying(true);
+                                    } else {
+                                        event.target.pauseVideo();
+                                        setIsPlaying(false);
+                                    }
+                                    loadingSongRef.current = null;
+                                }, 500);
 
                                 if (youtubePlayerPromiseRef.current) {
                                     youtubePlayerPromiseRef.current.resolve();
@@ -375,6 +383,7 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                 roomId,
                 isPlaying: newPlayingState,
                 timestamp: playerRef.current.getCurrentTime(),
+                currentVideoId: currentVideoIdRef.current,
                 senderId: userEmail,
                 sentAt: Date.now(),
             });

@@ -4,6 +4,7 @@ interface Playback {
     roomId: string;
     isPlaying: boolean;
     timestamp: number;
+    currentVideoId?: string;
     senderId: string;
     sentAt: number;
 }
@@ -24,6 +25,7 @@ export function playbackEvents(io: Server, socket: Socket) {
         socket.to(data.roomId).emit("playback_controls", {
             isPlaying: data.isPlaying,
             timestamp: data.timestamp,
+            currentVideoId: data.currentVideoId,
             senderId: data.senderId,
             sentAt: data.sentAt,
         });
