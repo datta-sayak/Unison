@@ -40,13 +40,16 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
         const [isLoading, setIsLoading] = useState(true);
         const [currentSong, setCurrentSong] = useState<Song | null>(null);
         const currentVideoIdRef = useRef<string | null>(null);
+        const [needsUserInteraction, setNeedsUserInteraction] = useState(false);
+        const hasUserInteractedRef = useRef(false);
+        const youtubePlayerPromiseRef = useRef<{ resolve: () => void } | null>(null);
+
         const loadingSongRef = useRef<{
             isPlaying: boolean;
             timestamp: number;
             currentVideoId: string;
             receivedAt: number;
         } | null>(null);
-        const youtubePlayerPromiseRef = useRef<{ resolve: () => void } | null>(null);
 
         // Keeping the current song playing when the queue is reordered
         useEffect(() => {
@@ -111,12 +114,19 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                     const songIndex = queue.findIndex(song => song.videoId === data.currentVideoId);
                     if (songIndex === -1) return;
 
+                    if (!hasUserInteractedRef.current && data.isPlaying) {
+                        setNeedsUserInteraction(true);
+                    }
+
                     loadingSongRef.current = {
                         isPlaying: data.isPlaying,
                         timestamp: compensatedTimestamp,
                         currentVideoId: data.currentVideoId,
                         receivedAt: receivedAtTime,
                     };
+
+                    currentVideoIdRef.current = data.currentVideoId;
+
                     setCurrentIndex(songIndex);
                     setCurrentSong(queue[songIndex]);
 
@@ -347,13 +357,14 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
             } else if (loadingSongRef.current && playerRef.current) {
                 // This if condition is for when there is the same song and new user joins they must sync
 
+                playerRef.current.loadVideoById(loadingSongRef.current.currentVideoId);
+                currentVideoIdRef.current = loadingSongRef.current.currentVideoId;
+
                 const { compensatedTimestamp } = timeCompensation(
                     loadingSongRef.current.receivedAt,
                     loadingSongRef.current.timestamp,
                 );
 
-                playerRef.current.loadVideoById(loadingSongRef.current.currentVideoId);
-                currentVideoIdRef.current = loadingSongRef.current.currentVideoId;
                 playerRef.current.seekTo(compensatedTimestamp, true);
 
                 if (loadingSongRef.current.isPlaying) {
@@ -376,6 +387,7 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
         const handlePlayPause = () => {
             if (!playerRef.current) return;
 
+            hasUserInteractedRef.current = true;
             const newPlayingState = !isPlaying;
 
             if (newPlayingState) {
@@ -398,6 +410,16 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
 
         const handleSkip = () => {
             handleSongEnd();
+        };
+
+        const handleUserInteraction = () => {
+            if (!playerRef.current) return;
+
+            hasUserInteractedRef.current = true;
+            setNeedsUserInteraction(false);
+
+            playerRef.current.playVideo();
+            setIsPlaying(true);
         };
 
         if (isLoading) {
@@ -434,39 +456,55 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                 <div className="aspect-video w-full max-w-4xl mx-auto bg-black relative">
                     <div id="youtube-player" className="w-full h-full pointer-events-none" />
 
+                    {/* Interaction Overlay - Shows on top when needed */}
+                    {needsUserInteraction && (
+                        <div className="absolute inset-0 bg-gradient-to-br from-black/50 to-gray-900/40 backdrop-blur-md z-10 flex flex-col items-center justify-center gap-4 p-6 text-center">
+                            <h3 className="text-xl font-semibold text-white">A song is currently playing</h3>
+                            <Button
+                                onClick={handleUserInteraction}
+                                size="lg"
+                                className="bg-white text-black hover:bg-gray-100 shadow-md"
+                            >
+                                Play
+                            </Button>
+                        </div>
+                    )}
+
                     {/* Song Info Overlay */}
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background/90 via-background/70 to-transparent p-6">
-                        <div className="flex items-center justify-between">
-                            <div className="flex-1 min-w-0">
-                                <p className="text-foreground font-bold text-xl truncate">{currentSong.title}</p>
-                                <p className="text-muted-foreground text-base truncate mt-1">
-                                    {currentSong.channelName}
-                                </p>
+                    {!needsUserInteraction && (
+                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background/90 via-background/70 to-transparent p-6">
+                            <div className="flex items-center justify-between">
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-foreground font-bold text-xl truncate">{currentSong.title}</p>
+                                    <p className="text-muted-foreground text-base truncate mt-1">
+                                        {currentSong.channelName}
+                                    </p>
+                                </div>
+                                <div className="flex gap-3 ml-8">
+                                    <Button
+                                        onClick={handlePlayPause}
+                                        className="w-16 h-16 rounded-full bg-card/60 hover:bg-card/90 border border-border flex items-center justify-center transition-all"
+                                    >
+                                        {isPlaying ? (
+                                            <Pause className="w-8 h-8 text-primary" />
+                                        ) : (
+                                            <Play className="w-8 h-8 text-primary" />
+                                        )}
+                                    </Button>
+                                    <Button
+                                        onClick={handleSkip}
+                                        className="w-16 h-16 rounded-full bg-card/60 hover:bg-card/90 border border-border flex items-center justify-center transition-all"
+                                        disabled={queue.length <= 1}
+                                    >
+                                        <SkipForward className="w-8 h-8 text-primary" strokeWidth={2.5} />
+                                    </Button>
+                                </div>
                             </div>
-                            <div className="flex gap-3 ml-8">
-                                <Button
-                                    onClick={handlePlayPause}
-                                    className="w-16 h-16 rounded-full bg-card/60 hover:bg-card/90 border border-border flex items-center justify-center transition-all"
-                                >
-                                    {isPlaying ? (
-                                        <Pause className="w-8 h-8 text-primary" />
-                                    ) : (
-                                        <Play className="w-8 h-8 text-primary" />
-                                    )}
-                                </Button>
-                                <Button
-                                    onClick={handleSkip}
-                                    className="w-16 h-16 rounded-full bg-card/60 hover:bg-card/90 border border-border flex items-center justify-center transition-all"
-                                    disabled={queue.length <= 1}
-                                >
-                                    <SkipForward className="w-8 h-8 text-primary" strokeWidth={2.5} />
-                                </Button>
+                            <div className="mt-3 text-primary text-base font-medium">
+                                Playing {currentIndex + 1} of {queue.length}
                             </div>
                         </div>
-                        <div className="mt-3 text-primary text-base font-medium">
-                            Playing {currentIndex + 1} of {queue.length}
-                        </div>
-                    </div>
+                    )}
                 </div>
             </div>
         );
