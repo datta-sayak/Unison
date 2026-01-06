@@ -40,6 +40,9 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
         const [isLoading, setIsLoading] = useState(true);
         const [currentSong, setCurrentSong] = useState<Song | null>(null);
         const [needsUserInteraction, setNeedsUserInteraction] = useState(false);
+        const hasUserInteractedRef = useRef(false);
+        const newJoinSyncRef = useRef<number | null>(null);
+        const youtubePlayerPromiseRef = useRef<{ resolve: () => void } | null>(null);
 
         const currentVideoIdRef = useRef<string | null>(null);
         const hasUserInteractedRef = useRef(false);
@@ -100,6 +103,7 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
 
                     if (!hasUserInteractedRef.current && data.isPlaying) {
                         setNeedsUserInteraction(true);
+                        newJoinSyncRef.current = data.timestamp;
                     }
 
                     syncDataRef.current = {
@@ -290,8 +294,13 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                                     setIsPlaying(false);
                                 }
 
-                                currentVideoIdRef.current = syncDataRef.current.videoId;
-                                syncDataRef.current = null;
+                                newJoinSyncRef.current = loadingSongRef.current.timestamp;
+                                loadingSongRef.current = null;
+
+                                if (youtubePlayerPromiseRef.current) {
+                                    youtubePlayerPromiseRef.current.resolve();
+                                    youtubePlayerPromiseRef.current = null;
+                                }
                             } else {
                                 event.target.playVideo();
                                 setIsPlaying(true);
@@ -362,13 +371,9 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
             hasUserInteractedRef.current = true;
             setNeedsUserInteraction(false);
 
-            if (syncDataRef.current) {
-                const { compensatedTimestamp } = timeCompensation(
-                    syncDataRef.current.sentAt,
-                    syncDataRef.current.timestamp,
-                );
-                playerRef.current.seekTo(compensatedTimestamp, true);
-                syncDataRef.current = null;
+            if (newJoinSyncRef.current) {
+                playerRef.current.seekTo(newJoinSyncRef.current, true);
+                newJoinSyncRef.current = null;
             }
 
             playerRef.current.playVideo();
