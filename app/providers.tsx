@@ -17,11 +17,20 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 function ThemeProviderInner({ children }: { children: React.ReactNode }) {
-    const [mode, setMode] = useState<Mode>("light");
+    const [mode, setMode] = useState<Mode>(() => {
+        if (typeof window !== "undefined") {
+            const savedTheme = localStorage.getItem("theme");
+            return savedTheme === "light" ? "light" : "dark";
+        }
+        return "light";
+    });
     const [roomId, setRoomId] = useState<string>("");
 
     useEffect(() => {
         document.documentElement.className = mode;
+        if (typeof window !== "undefined") {
+            localStorage.setItem("theme", mode);
+        }
     }, [mode]);
 
     return (

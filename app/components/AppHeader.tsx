@@ -6,10 +6,19 @@ import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/UserAvatar";
 import { ThemeSelector } from "@/components/ThemeSelector";
 import { useTheme } from "../providers";
+import { useEffect, useState } from "react";
 
 export function AppHeader() {
     const { mode } = useTheme();
     const { data } = useSession();
+    const [mounted, setMounted] = useState(false);
+
+    // To prevent the hydration error while setting the saved theme which was conflicting with the SSR
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+    if (!mounted) return null;
+
     return (
         <header className="sticky top-0 z-40 border-b border-border/50 backdrop-blur-md bg-background/80 relative">
             <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-2">
