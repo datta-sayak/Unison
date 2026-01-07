@@ -66,7 +66,7 @@ export default function LandingPage() {
                     </h1>
                     <p className="text-xl text-muted-foreground mb-8 leading-relaxed max-w-2xl">
                         A collaborative music room where everyone controls the queue. Vote on songs. Chat in real-time.
-                        Synced playback.
+                        Synced playback. No ads. No interruptions.
                     </p>
                     <div className="flex gap-3">
                         <Link href={session?.user ? "/dashboard" : "/api/auth/signin"}>
@@ -102,7 +102,8 @@ export default function LandingPage() {
                             </div>
                             <h3 className="text-lg font-semibold">Collaborative Queue</h3>
                             <p className="text-sm text-muted-foreground leading-relaxed">
-                                Add YouTube songs to a shared queue. Vote on what plays next. Higher votes play first.
+                                Add YouTube songs to a shared queue. Vote on what plays next. Higher votes play first —
+                                without ads breaking the flow.
                             </p>
                         </div>
 
@@ -144,9 +145,13 @@ export default function LandingPage() {
                     <div className="grid md:grid-cols-4 gap-8">
                         {[
                             { num: "1", label: "Create or join a room", detail: "Room code: A9K2Q" },
-                            { num: "2", label: "Add a YouTube song", detail: "Search by title or URL" },
+                            { num: "2", label: "Add a YouTube song", detail: "Search by title or paste a link" },
                             { num: "3", label: "Vote with the room", detail: "Queue sorts by votes" },
-                            { num: "4", label: "Music plays automatically", detail: "Synced for everyone" },
+                            {
+                                num: "4",
+                                label: "Music plays automatically",
+                                detail: "Synced for everyone. No ads in between.",
+                            },
                         ].map((step, i) => (
                             <div key={i} className="space-y-3">
                                 <div className="flex items-center gap-3">
@@ -180,8 +185,8 @@ export default function LandingPage() {
                                 </div>
                                 <h3 className="text-base font-semibold">Real-time updates</h3>
                                 <p className="text-sm text-muted-foreground leading-relaxed">
-                                    When someone adds a song or casts a vote, you see it instantly. No refreshing
-                                    needed.
+                                    When someone adds a song or casts a vote, you see it instantly. No refreshing. No
+                                    waiting.
                                 </p>
                             </div>
                             <div className="space-y-3">
@@ -200,7 +205,8 @@ export default function LandingPage() {
                                 </div>
                                 <h3 className="text-base font-semibold">Built for groups</h3>
                                 <p className="text-sm text-muted-foreground leading-relaxed">
-                                    Works smoothly whether you're listening with 2 friends or 200. No lag, no delays.
+                                    Works smoothly whether you're listening with 2 friends or 200. No lag. No delays. No
+                                    ads.
                                 </p>
                             </div>
                         </div>
@@ -237,7 +243,7 @@ export default function LandingPage() {
                                 <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2" />
                                 <div>
                                     <span className="text-foreground font-medium">Your data stays yours</span> — No
-                                    tracking, no ads, no data selling.
+                                    tracking. No ads. No data selling.
                                 </div>
                             </div>
                         </div>
@@ -262,6 +268,18 @@ export default function LandingPage() {
                         <div className="text-left">
                             <h2 className="text-5xl md:text-6xl font-bold leading-tight">Listen together.</h2>
                             <h2 className="text-5xl md:text-6xl font-bold leading-tight">Decide together.</h2>
+                            <div className="mt-8 flex gap-3">
+                                <Link href={session?.user ? "/dashboard" : "/api/auth/signin"}>
+                                    <Button size="lg" className="bg-foreground text-background hover:opacity-90">
+                                        Get Started
+                                    </Button>
+                                </Link>
+                                <Link href={session?.user ? "/dashboard" : "/api/auth/signin"}>
+                                    <Button size="lg" variant="outline" className="border-2">
+                                        Create a Room
+                                    </Button>
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -280,7 +298,9 @@ export default function LandingPage() {
                                 />
                                 <div className="font-semibold">Unison</div>
                             </div>
-                            <div className="text-xs text-muted-foreground">Listen together, anywhere</div>
+                            <div className="text-xs text-muted-foreground">
+                                <strong>Ad-free</strong>. Real-time. Built for shared listening.
+                            </div>
                         </div>
                         <div className="flex flex-col md:items-end gap-3">
                             <div className="flex items-center gap-2">
@@ -301,9 +321,7 @@ export default function LandingPage() {
                                           : "Checking status..."}
                                 </span>
                             </div>
-                            <div className="text-xs text-muted-foreground">
-                                © {new Date().getFullYear()} Sayak Datta
-                            </div>
+                            <div className="text-xs text-muted-foreground">© 2026 Sayak Datta</div>
                         </div>
                     </div>
                 </div>

@@ -208,6 +208,11 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                     // Setting the actual index of the song as on vote the queue changed for other users
                     setCurrentIndex(actualIndex);
                     setCurrentSong(queue[actualIndex]);
+
+                    if (playerRef.current && typeof playerRef.current.loadVideoById === "function") {
+                        playerRef.current.loadVideoById(data.videoId);
+                        currentVideoIdRef.current = data.videoId;
+                    }
                 }
             };
 
@@ -361,7 +366,7 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                     playerRef.current.loadVideoById(currentSong.videoId);
                     currentVideoIdRef.current = currentSong.videoId;
                 }
-            } else if (loadingSongRef.current && playerRef.current) {
+            } else if (loadingSongRef.current && playerRef.current.loadVideoById === "function") {
                 // This if condition is for when there is the same song and new user joins they must sync
 
                 playerRef.current.loadVideoById(loadingSongRef.current.currentVideoId);
