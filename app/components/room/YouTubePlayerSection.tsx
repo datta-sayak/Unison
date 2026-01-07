@@ -130,8 +130,6 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                         receivedAt: receivedAtTime,
                     };
 
-                    currentVideoIdRef.current = data.currentVideoId;
-
                     setCurrentIndex(songIndex);
                     setCurrentSong(queue[songIndex]);
 
@@ -365,33 +363,6 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                 if (playerRef.current && typeof playerRef.current.loadVideoById === "function") {
                     playerRef.current.loadVideoById(currentSong.videoId);
                     currentVideoIdRef.current = currentSong.videoId;
-                }
-            } else if (loadingSongRef.current && playerRef.current.loadVideoById === "function") {
-                // This if condition is for when there is the same song and new user joins they must sync
-
-                playerRef.current.loadVideoById(loadingSongRef.current.currentVideoId);
-                currentVideoIdRef.current = loadingSongRef.current.currentVideoId;
-
-                const { compensatedTimestamp } = timeCompensation(
-                    loadingSongRef.current.receivedAt,
-                    loadingSongRef.current.timestamp,
-                );
-
-                playerRef.current.seekTo(compensatedTimestamp, true);
-
-                if (loadingSongRef.current.isPlaying) {
-                    playerRef.current.playVideo();
-                    setIsPlaying(true);
-                } else {
-                    playerRef.current.pauseVideo();
-                    setIsPlaying(false);
-                }
-
-                loadingSongRef.current = null;
-
-                if (youtubePlayerPromiseRef.current) {
-                    youtubePlayerPromiseRef.current.resolve();
-                    youtubePlayerPromiseRef.current = null;
                 }
             }
         }, [isReady, currentSong]);
