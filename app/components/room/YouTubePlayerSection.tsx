@@ -343,6 +343,8 @@ export const YouTubePlayerSection = forwardRef<YouTubePlayerHandle, YouTubePlaye
                                         youtubePlayerPromiseRef.current.resolve();
                                         youtubePlayerPromiseRef.current = null;
                                     }
+                                } else if (isPlaying) {
+                                    event.target.playVideo();
                                 }
                             }
                         },

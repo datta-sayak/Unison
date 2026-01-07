@@ -34,8 +34,6 @@ export function roomEvents(io: Server, socket: Socket) {
                 user!.socketId = socket.id;
             }
 
-            console.log(roomParticipants);
-
             io.to(data.roomId).emit("room_participants", roomParticipants[data.roomId]!);
             console.log(`User ${data.userId} joined room ${data.roomId}`);
 
