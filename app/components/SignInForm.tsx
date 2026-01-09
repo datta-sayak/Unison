@@ -8,12 +8,19 @@ import Link from "next/link";
 
 export default function SignInForm() {
     const [isLoading, setIsLoading] = useState(false);
+    const [guestName, setGuestName] = useState("");
     const searchParams = useSearchParams();
     const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
 
     const handleGoogleSignIn = async () => {
         setIsLoading(true);
         signIn("google", { callbackUrl });
+    };
+
+    const handleGuestSignIn = async () => {
+        if (!guestName.trim()) return;
+        setIsLoading(true);
+        signIn("credentials", { name: guestName, callbackUrl });
     };
 
     return (
@@ -50,6 +57,34 @@ export default function SignInForm() {
                         </svg>
                         {isLoading ? "Signing in" : "Sign in with Google"}
                     </Button>
+
+                    <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                            <span className="w-full border-t border-border" />
+                        </div>
+                        <div className="relative flex justify-center text-xs uppercase">
+                            <span className="bg-card px-2 text-muted-foreground">Or continue as</span>
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <input
+                            type="text"
+                            placeholder="Enter your name"
+                            value={guestName}
+                            onChange={e => setGuestName(e.target.value)}
+                            onKeyPress={e => e.key === "Enter" && handleGuestSignIn()}
+                            className="w-full h-11 px-4 bg-background border border-border rounded-lg text-foreground"
+                            disabled={isLoading}
+                        />
+                        <Button
+                            onClick={handleGuestSignIn}
+                            disabled={isLoading || !guestName.trim()}
+                            className="w-full bg-primary text-primary-foreground hover:bg-primary/90 h-11 font-medium"
+                        >
+                            {isLoading ? "Signing in" : "Continue as Guest"}
+                        </Button>
+                    </div>
 
                     <p className="text-center text-sm text-muted-foreground">
                         {"Already have an account?    "}
